@@ -1,0 +1,3 @@
+app/Configs/db.ini
+vendor/
+composer.lock
