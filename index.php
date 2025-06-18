@@ -10,4 +10,11 @@ $base->set('DB', new \DB\SQL(
     [PDO::ATTR_STRINGIFY_FETCHES => false]
 ));
 
+function JSON_response($message, int $code = 200)
+{
+    header("Content-Type: application/json");
+    http_response_code($code);
+    echo json_encode($message);
+}
+
 $base->run();
