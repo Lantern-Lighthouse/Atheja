@@ -31,4 +31,29 @@ class User
         }
         JSON_response(true, 201);
     }
+
+    public function postUserEdit(\Base $base)
+    {
+        $model = new \Models\User();
+
+        $entry = $model->findone(['username=?', $base->get('POST.user_identification')]);
+        if (!$entry) {
+            JSON_response("User not found", 404);
+            return;
+        }
+
+        $entry->username = $base->get('POST.username') ?? $entry->username;
+        $entry->displayname = $base->get('POST.displayname') ?? $entry->displayname;
+        $entry->email = $base->get('POST.email') ?? $entry->email;
+        $entry->password = password_hash($base->get('POST.password'), PASSWORD_DEFAULT) ?? $entry->password;
+        $entry->is_admin = $base->get('POST.permissions') ?? $entry->is_admin;
+
+        try {
+            $entry->save();
+        } catch (Exception $e) {
+            JSON_response($e->getMessage(), intval($e->getCode()));
+            return;
+        }
+        JSON_response(true, 200);
+    }
 }
