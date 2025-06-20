@@ -14,7 +14,7 @@ class User extends \DB\Cortex
             'nullable' => false,
             'index' => true
         ],
-        'display' => [
+        'displayname' => [
             'type' => 'VARCHAR128',
             'required' => true,
             'unique' => false,
