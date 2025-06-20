@@ -40,10 +40,15 @@ class User
             return;
         }
 
+        if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
+            JSON_response("User already exists", 409);
+            return;
+        }
+
         $entry->username = $base->get('POST.username') ?? $entry->username;
         $entry->displayname = $base->get('POST.displayname') ?? $entry->displayname;
         $entry->email = $base->get('POST.email') ?? $entry->email;
-        $entry->password = password_hash($base->get('POST.password'), PASSWORD_DEFAULT) ?? $entry->password;
+        $entry->password = $base->get('POST.password') ? password_hash($base->get('POST.password'), PASSWORD_DEFAULT) : $entry->password;
         $entry->is_admin = $base->get('POST.permissions') ?? $entry->is_admin;
 
         try {
@@ -52,6 +57,6 @@ class User
             JSON_response($e->getMessage(), intval($e->getCode()));
             return;
         }
-        JSON_response(true, 200);
+        JSON_response($base->get('POST.username'), 200);
     }
 }
