@@ -18,9 +18,7 @@ class User
         $model->username = $base->get('POST.username');
         $model->displayname = $base->get('POST.displayname');
         $model->email = $base->get('POST.email');
-        $model->password = password_hash($base->get('POST.email'), PASSWORD_DEFAULT);
-        $model->email = $base->get('POST.email');
-
+        $model->password = password_hash($base->get('POST.password'), PASSWORD_DEFAULT);
         $model->is_admin = $model->count() ? 0 : 1;
 
         try {
