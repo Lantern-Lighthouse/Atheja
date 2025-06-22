@@ -8,12 +8,30 @@ class User
 {
     public function postUserCreate(\Base $base)
     {
-        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0) {
-            JSON_response("User creation is disabled", 503);
-            return;
-        }
-
         $model = new \Models\User();
+        $authHeader = $base->get('HEADERS.Authorization');
+
+        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0) {
+            if (empty($authHeader)) {
+                JSON_response("Authorization required", 401);
+                return;
+            }
+
+            $admins = $model->find(['is_admin=1']);
+            $validAdmin = false;
+
+            foreach($admins as $admin){
+                if(password_verify($authHeader, $admin->key)){
+                    $validAdmin = true;
+                    break;
+                }
+            }
+
+            if(!$validAdmin){
+                JSON_response("User creation is disabled", 503);
+                return;
+            }
+        }
 
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
             JSON_response("User already exists", 409);
@@ -25,7 +43,8 @@ class User
         $model->email = $base->get('POST.email');
         $model->password = password_hash($base->get('POST.password'), PASSWORD_DEFAULT);
         $model->is_admin = $model->count() ? 0 : 1;
-        $model->key = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
+        $key = bin2hex(random_bytes(16));
+        $model->key = password_hash($key, PASSWORD_DEFAULT);
 
         try {
             $model->save();
@@ -33,7 +52,7 @@ class User
             JSON_response($e->getMessage(), intval($e->getCode()));
             return;
         }
-        JSON_response(true, 201);
+        JSON_response($key, 201);
     }
 
     public function postUserEdit(\Base $base)
