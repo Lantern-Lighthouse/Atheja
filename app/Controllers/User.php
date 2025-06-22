@@ -8,6 +8,11 @@ class User
 {
     public function postUserCreate(\Base $base)
     {
+        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0) {
+            JSON_response("User creation is disabled", 503);
+            return;
+        }
+        
         $model = new \Models\User();
 
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
