@@ -11,26 +11,9 @@ class User
         $model = new \Models\User();
         $authHeader = $base->get('HEADERS.Authorization');
 
-        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0) {
-            if (empty($authHeader)) {
-                JSON_response("Authorization required", 401);
-                return;
-            }
-
-            $admins = $model->find(['is_admin=1']);
-            $validAdmin = false;
-
-            foreach($admins as $admin){
-                if(password_verify($authHeader, $admin->key)){
-                    $validAdmin = true;
-                    break;
-                }
-            }
-
-            if(!$validAdmin){
-                JSON_response("User creation is disabled", 503);
-                return;
-            }
+        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0 && !VerifyAuth($base)) {
+            JSON_response("User creation is disabled", 503);
+            return;
         }
 
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
