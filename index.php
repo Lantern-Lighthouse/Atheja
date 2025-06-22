@@ -70,7 +70,8 @@ function VerifyAuth(\Base $base)
     }
 
     if (!$validAdmin)
-        JSON_response("User creation is disabled", 503);
+        JSON_response("Feature is disabled", 503);
+
     return $validAdmin;
 }
 
