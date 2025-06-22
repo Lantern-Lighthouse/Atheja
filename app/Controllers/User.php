@@ -12,7 +12,7 @@ class User
             JSON_response("User creation is disabled", 503);
             return;
         }
-        
+
         $model = new \Models\User();
 
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
@@ -25,6 +25,7 @@ class User
         $model->email = $base->get('POST.email');
         $model->password = password_hash($base->get('POST.password'), PASSWORD_DEFAULT);
         $model->is_admin = $model->count() ? 0 : 1;
+        $model->key = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
 
         try {
             $model->save();
