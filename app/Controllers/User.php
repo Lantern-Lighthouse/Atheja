@@ -59,7 +59,7 @@ class User
     {
         $model = new \Models\User();
 
-        $entry = $model->findone(['username=?', $base->get('POST.user_identification')]);
+        $entry = $model->findone(['username=?', $base->get('PARAMS.user')]);
         if (!$entry) {
             JSON_response("User not found", 404);
             return;
@@ -74,7 +74,7 @@ class User
         $entry->displayname = $base->get('POST.displayname') ?? $entry->displayname;
         $entry->email = $base->get('POST.email') ?? $entry->email;
         $entry->password = $base->get('POST.password') ? password_hash($base->get('POST.password'), PASSWORD_DEFAULT) : $entry->password;
-        $entry->is_admin = $base->get('POST.permissions') ?? $entry->is_admin;
+        // $entry->is_admin = $base->get('POST.permissions') ?? $entry->is_admin;
 
         try {
             $entry->save();
@@ -82,6 +82,6 @@ class User
             JSON_response($e->getMessage(), intval($e->getCode()));
             return;
         }
-        JSON_response($base->get('POST.username'), 200);
+        JSON_response(true, 200);
     }
 }
