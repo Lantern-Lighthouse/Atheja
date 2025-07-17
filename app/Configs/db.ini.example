@@ -1,0 +1,8 @@
+[db]
+; mysql
+dsn = "mysql:host=localhost;port=3306;dbname=lantern;charset=utf8"
+username = "root"
+password = ""
+
+; sqlite
+; dsn = "sqlite:data/db.sqlite"

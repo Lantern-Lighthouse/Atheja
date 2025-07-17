@@ -3,12 +3,20 @@ require('./vendor/autoload.php');
 $base = \Base::instance();
 $base->config('./app/Configs/config.ini');
 
-$base->set('DB', new \DB\SQL(
-    $base->get('db.dsn'),
-    $base->get('db.username'),
-    $base->get('db.password'),
-    [PDO::ATTR_STRINGIFY_FETCHES => false]
-));
+switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
+    case "sqlite":
+        $base->set('DB', new DB\SQL($base->get('db.dsn'), null, null,[PDO::ATTR_STRINGIFY_FETCHES => false]));
+        break;
+    default:
+    case "mysql":
+        $base->set('DB', new \DB\SQL(
+            $base->get('db.dsn'),
+            $base->get('db.username'),
+            $base->get('db.password'),
+            [PDO::ATTR_STRINGIFY_FETCHES => false]
+        ));
+        break;
+}
 
 function JSON_response($message, int $code = 200)
 {
