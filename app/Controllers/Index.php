@@ -15,11 +15,13 @@ class Index
     {
         try {
             \Models\User::setdown();
+            \Models\Sessions::setdown();
         } catch (Exception $e) {
             JSON_response($e->getMessage(), $e->getMessage());
         }
         try {
             \Models\User::setup();
+            \Models\Sessions::setup();
         } catch (Exception $e) {
             JSON_response($e->getMessage(), $e->getMessage());
         }

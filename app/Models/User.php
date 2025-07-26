@@ -51,13 +51,6 @@ class User extends \DB\Cortex
             'type' => 'BOOLEAN',
             'default' => 0,
             'required' => true
-        ],
-        'key' => [
-            'type' => 'BLOB',
-            'required' => true,
-            'unique' => true,
-            'nullable' => false,
-            'index' => true
         ]
     ];
 }

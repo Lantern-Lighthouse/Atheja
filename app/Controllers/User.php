@@ -26,8 +26,6 @@ class User
         $model->email = $base->get('POST.email');
         $model->password = password_hash($base->get('POST.password'), PASSWORD_DEFAULT);
         $model->is_admin = $model->count() ? 0 : 1;
-        $key = bin2hex(random_bytes(16));
-        $model->key = password_hash($key, PASSWORD_DEFAULT);
 
         try {
             $model->save();
@@ -35,7 +33,27 @@ class User
             JSON_response($e->getMessage(), intval($e->getCode()));
             return;
         }
-        JSON_response($key, 201);
+        JSON_response(true, 201);
+    }
+
+    public function postUserLogin(\Base $base)
+    {
+        $userModel = new \Models\User();
+        $user = $userModel->findone(['username=? OR email=?', $base->get('POST.username') ?? $base->get('POST.email')]);
+
+        if (!$user || !password_verify($base->get('POST.password'), $user->password))
+            return JSON_response('User not found', 401);
+
+        $sessionToken = bin2hex(random_bytes(32));
+        $expiry = date('Y-m-d H:i:s', strtotime($base->get('ATH.SESSION_DURATION')));
+
+        $sessionModel = new \Models\Sessions();
+        $sessionModel->user = $user;
+        $sessionModel->key = password_hash($sessionToken, PASSWORD_DEFAULT);
+        $sessionModel->expires_at = $expiry;
+        $sessionModel->save();
+
+        JSON_response(['session_token' => $sessionToken, 'expires_at' => $expiry]);
     }
 
     public function getUser(\Base $base)
