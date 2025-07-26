@@ -38,6 +38,27 @@ class User
         JSON_response($key, 201);
     }
 
+    public function getUser(\Base $base)
+    {
+        $model = new \Models\User();
+
+        $entry = $model->findone(['username=?', $base->get('PARAMS.user')]);
+        if (!$entry) {
+            return JSON_response('User not found', 404);
+        }
+
+        $cast = [
+            'id' => $entry->id,
+            'username' => $entry->username,
+            'displayname' => $entry->displayname,
+            'email' => $entry->email,
+            'karma' => $entry->karma,
+            'account_created_at' => $entry->account_created,
+        ];
+
+        JSON_response($cast);
+    }
+
     public function postUserEdit(\Base $base)
     {
         $model = new \Models\User();
