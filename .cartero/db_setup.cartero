@@ -1,9 +1,0 @@
-version = 1
-url = "http://localhost:8000/api/db/setup"
-method = "GET"
-
-[headers]
-
-[variables]
-
-[inactive-params]
