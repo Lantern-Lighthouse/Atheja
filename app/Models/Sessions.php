@@ -17,12 +17,15 @@ class Sessions extends \DB\Cortex
             'nullable' => false,
             'index' => true
         ],
-        'last_login' => [
-            'type' => 'TIMESTAMP',
-            'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP
-        ],
         'expires_at' => [
             'type' => 'DATETIME',
+        ],
+        'created_at' => [
+            'type' => 'DATETIME',
+            'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP
+        ],
+        'last_used_at' => [
+            'type' => 'DATETIME'
         ]
     ];
 }

@@ -83,4 +83,30 @@ function VerifyAuth(\Base $base)
     return $validAdmin;
 }
 
+function VerifySessionToken(\Base $base)
+{
+    $authHeader = $base->get('HEADERS.Authorization');
+    if (!$authHeader)
+        return false;
+
+    if (!preg_match('/^Bearer\s+(.+)$/', $authHeader, $matches))
+        return false;
+
+    $token = $matches[1];
+
+    $sessionModel = new \Models\Sessions();
+    $sessions = $sessionModel->find(['expires_at > ?', date('Y-m-d H:i:s')]);
+
+    foreach ($sessions as $session) {
+        if (password_verify($token, $session->key)) {
+            $session->last_used_at = date('Y-m-d H:i:s');
+            $session->save();
+
+            return $session->user;
+        }
+    }
+
+    return false;
+}
+
 $base->run();
