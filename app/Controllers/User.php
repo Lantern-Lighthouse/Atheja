@@ -42,7 +42,7 @@ class User
         $user = $userModel->findone(['username=? OR email=?', $base->get('POST.username') ?? $base->get('POST.email')]);
 
         if (!$user || !password_verify($base->get('POST.password'), $user->password))
-            return JSON_response('User not found', 401);
+            return JSON_response('User not found or unauthorized', 401);
 
         $sessionToken = bin2hex(random_bytes(32));
         $expiry = date('Y-m-d H:i:s', strtotime($base->get('ATH.SESSION_DURATION')));
@@ -60,7 +60,7 @@ class User
     {
         $model = new \Models\User();
 
-        $entry = $model->findone(['username=?', $base->get('PARAMS.user')]);
+        $entry = $model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')]);
         if (!$entry) {
             return JSON_response('User not found', 404);
         }

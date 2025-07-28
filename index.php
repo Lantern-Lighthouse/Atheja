@@ -5,7 +5,7 @@ $base->config('./app/Configs/config.ini');
 
 switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
     case "sqlite":
-        $base->set('DB', new DB\SQL($base->get('db.dsn'), null, null,[PDO::ATTR_STRINGIFY_FETCHES => false]));
+        $base->set('DB', new DB\SQL($base->get('db.dsn'), null, null, [PDO::ATTR_STRINGIFY_FETCHES => false]));
         break;
     default:
     case "mysql":
@@ -25,9 +25,9 @@ function JSON_response($message, int $code = 200)
     echo json_encode($message);
 }
 
-function updateConfigValue($f3, $key, $value, $iniFile = 'app/Configs/config.ini')
+function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.ini')
 {
-    $f3->set($key, $value);
+    $base->set($key, $value);
     $config = [];
     if (file_exists($iniFile))
         $config = parse_ini_file($iniFile, true);
