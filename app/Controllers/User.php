@@ -106,4 +106,22 @@ class User
         }
         JSON_response(true, 200);
     }
+
+    public function postUserDelete(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\User();
+
+        $user = $model->findone(['username=? OR email=?', $base->get('PARAMS.user') ?? $base->get('POST.username'), $base->get('POST.email')]);
+        if (!$user)
+            return JSON_response('User not found', 404);
+
+        try {
+            $user->erase();
+        } catch (Exception $e) {
+            return JSON_response('Unable to delete user', 500);
+        }
+    }
 }
