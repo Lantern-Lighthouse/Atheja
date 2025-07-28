@@ -57,32 +57,6 @@ function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.i
     return file_put_contents($iniFile, $content);
 }
 
-function VerifyAuth(\Base $base)
-{
-    $model = new \Models\User();
-    $authHeader = $base->get('HEADERS.Authorization');
-
-    if (empty($authHeader)) {
-        JSON_response("Authorization required", 401);
-        return false;
-    }
-
-    $admins = $model->find(['is_admin=1']);
-    $validAdmin = false;
-
-    foreach ($admins as $admin) {
-        if (password_verify($authHeader, $admin->key)) {
-            $validAdmin = true;
-            break;
-        }
-    }
-
-    if (!$validAdmin)
-        JSON_response("Feature is disabled", 503);
-
-    return $validAdmin;
-}
-
 function VerifySessionToken(\Base $base)
 {
     $authHeader = $base->get('HEADERS.Authorization');

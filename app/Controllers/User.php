@@ -11,7 +11,7 @@ class User
         $model = new \Models\User();
         $authHeader = $base->get('HEADERS.Authorization');
 
-        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0 && !VerifyAuth($base)) {
+        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0 && !VerifySessionToken($base)) {
             JSON_response("User creation is disabled", 503);
             return;
         }
