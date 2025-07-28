@@ -27,4 +27,17 @@ class Index
         }
         JSON_response(true);
     }
+
+    public function getDBCleanSessions(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Sessions();
+
+        $expiredSessions = $model->find(['expires_at < ?', date('Y-m-d H:i:s')]);
+        foreach ($expiredSessions as $session) {
+            $session->erase();
+        }
+    }
 }
