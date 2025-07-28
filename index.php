@@ -57,6 +57,12 @@ function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.i
     return file_put_contents($iniFile, $content);
 }
 
+if ($base->get('DEBUG') < 3) {
+    $base->set('ONERROR', function ($base) {
+        JSON_response(['status' => $base->get('ERROR.status'), 'text' => $base->get('ERROR.text')], $base->get('ERROR.code'));
+    });
+}
+
 function VerifySessionToken(\Base $base)
 {
     $authHeader = $base->get('HEADERS.Authorization');
