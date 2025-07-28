@@ -8,7 +8,12 @@ class Index
 {
     public function getStatus(\Base $base)
     {
-        JSON_response(['message' => 'API is running', 'status' => 'ok']);
+        JSON_response([
+            'message' => 'API is running',
+            'stats' => [
+                'users' => (new \Models\User())->count()
+            ]
+        ]);
     }
 
     public function getDBsetup(\Base $base)
