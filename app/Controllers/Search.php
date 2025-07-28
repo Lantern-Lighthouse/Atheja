@@ -4,8 +4,25 @@ namespace Controllers;
 
 use Exception;
 
-class Search {
-    public function postSearchCategoryCreate (\Base $base) {
+class Search
+{
+    public function getSearchCategory(\Base $base)
+    {
+        $model = new \Models\Category();
+        $entries = $model->afind();
+        $cast = array();
+        foreach ($entries as $entry) {
+            $cast[$entry['name']] = array(
+                'id' => $entry['_id'],
+                'type' => $entry['type'],
+                'icon' => $entry['icon'],
+            );
+        }
+        JSON_response($cast);
+    }
+
+    public function postSearchCategoryCreate(\Base $base)
+    {
         if (!VerifySessionToken($base))
             return JSON_response('Unauthorized', 401);
 
@@ -14,10 +31,9 @@ class Search {
         $model->type = $base->get('POST.type');
         $model->icon = $base->get('POST.icon');
 
-        try{
+        try {
             $model->save();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return JSON_response($e->getMessage(), 500);
         }
 
