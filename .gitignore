@@ -1,3 +1,9 @@
 app/Configs/db.ini
 vendor/
 composer.lock
+
+# SQLite support
+data/db.sqlite
+
+# Yaak API client
+.yaak/
