@@ -62,4 +62,23 @@ class Search
 
         JSON_response(true);
     }
+
+    public function postSearchCategoryDelete(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Category();
+        $entry = $model->findone(['name=?', $base->get('PARAMS.category')]);
+        if (!$entry)
+            return JSON_response('Category not found', 404);
+
+        try {
+            $entry->erase();
+        } catch (Exception $e) {
+            return JSON_response('Unable to delete category', 500);
+        }
+
+        JSON_response(true);
+    }
 }
