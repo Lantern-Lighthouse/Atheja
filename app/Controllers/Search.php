@@ -39,4 +39,27 @@ class Search
 
         JSON_response(true);
     }
+
+    public function postSearchCategoryEdit(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Category();
+        $entry = $model->findone(['name=?', $base->get('PARAMS.category')]);
+        if (!$entry)
+            return JSON_response('Category not found', 404);
+
+        $entry->name = $base->get('POST.name') ?? $entry->name;
+        $entry->type = $base->get('POST.type') ?? $entry->type;
+        $entry->icon = $base->get('POST.icon') ?? $entry->icon;
+
+        try {
+            $entry->save();
+        } catch (Exception $e) {
+            return JSON_response($e->getMessage(), 500);
+        }
+
+        JSON_response(true);
+    }
 }
