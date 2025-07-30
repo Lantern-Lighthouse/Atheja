@@ -11,7 +11,8 @@ class Index
         JSON_response([
             'message' => 'API is running',
             'stats' => [
-                'users' => (new \Models\User())->count()
+                'users' => (new \Models\User())->count(),
+                'categories' => (new \Models\Category())->count(),
             ]
         ]);
     }
