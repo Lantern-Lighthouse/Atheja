@@ -9,7 +9,12 @@ class Index
     public function getStatus(\Base $base)
     {
         JSON_response([
-            'message' => 'API is running',
+            'message' => $base->get('ATH.GREETING_MESSAGE'),
+            'version' => [
+                'API version' => $base->get('ATH.vAPI'),
+                'Atheja version' => $base->get('ATH.VERSION'),
+                'Atheja codename' => $base->get('ATH.CODENAME')
+            ],
             'stats' => [
                 'users' => (new \Models\User())->count()
             ]
