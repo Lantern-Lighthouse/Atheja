@@ -6,6 +6,7 @@ use Exception;
 
 class Search
 {
+    //region Categories
     public function getSearchCategory(\Base $base)
     {
         $model = new \Models\Category();
@@ -81,4 +82,50 @@ class Search
 
         JSON_response(true);
     }
+    //endregion
+
+    //region Tags
+    public function getSearchTags(\Base $base)
+    {
+        $model = new \Models\Tag();
+        $entries = $model->find();
+        if (!$entries)
+            return JSON_response('Tag not found', 404);
+
+        $cast = array();
+        foreach ($entries as $entry) {
+            array_push($cast, $entry->name);
+        }
+        if (sizeof($cast) != 0)
+            JSON_response($cast);
+        else
+            JSON_response(false, 404);
+    }
+
+    public function getSearchTag(\Base $base)
+    {
+        $model = new \Models\Tag();
+        $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
+        if (!$entry) {
+            return JSON_response('Tag not found', 404);
+        }
+        
+        $cast = [
+            'name' => $base->get('PARAMS.tag'),
+        ];
+
+        JSON_response($cast);
+    }
+
+    public static function CreateTag(string $tagName)
+    {
+        $model = new \Models\Tag();
+        if (!$model->findone(['name=?', $tagName])) {
+            $model->name = $tagName;
+            $model->save();
+            return true;
+        }
+        return false;
+    }
+    //endregion
 }

@@ -23,6 +23,7 @@ class Index
             \Models\User::setdown();
             \Models\Sessions::setdown();
             \Models\Category::setdown();
+            \Models\Tag::setdown();
         } catch (Exception $e) {
             JSON_response($e->getMessage(), $e->getMessage());
         }
@@ -31,6 +32,7 @@ class Index
             \Models\User::setup();
             \Models\Sessions::setup();
             \Models\Category::setup();
+            \Models\Tag::setup();
         } catch (Exception $e) {
             JSON_response($e->getMessage(), $e->getMessage());
         }
