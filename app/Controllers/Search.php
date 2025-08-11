@@ -109,7 +109,7 @@ class Search
         if (!$entry) {
             return JSON_response('Tag not found', 404);
         }
-        
+
         $cast = [
             'name' => $base->get('PARAMS.tag'),
         ];
@@ -126,6 +126,17 @@ class Search
             return true;
         }
         return false;
+    }
+
+    public function postSearchTagAdd(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        if(self::CreateTag($base->get('POST.tagname')))
+            return JSON_response('Tag added', 201);
+        else
+            return JSON_response('Tag already exists', 409);
     }
     //endregion
 }
