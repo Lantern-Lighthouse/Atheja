@@ -15,15 +15,38 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
-
-	"Verify::Token":{
+	"Verify::Token": {
 		"scope": "php",
 		"prefix": "Verify",
 		"body": [
-			"if (!VerifySessionToken($base))",
-            "return JSON_response('Unauthorized', 401);",
+			"if (!VerifySessionToken(\\$base))",
+			"return JSON_response('Unauthorized', 401);",
 			"$1"
 		],
 		"description": "Snippet to verify if user is using valid auth token"
+	},
+	"Public Function": {
+		"prefix": [
+			"pubf",
+			"pfnc"
+		],
+		"body": [
+			"public function $2 ($1) {",
+			"\t$0",
+			"}"
+		],
+		"description": "Create new public function."
+	},
+	"Public Function with Base": {
+		"prefix": [
+			"pubf:base",
+			"pfnc:base"
+		],
+		"body": [
+			"public function $1 (\\Base \\$base) {",
+			"\t$0",
+			"}"
+		],
+		"description": "Create new public function."
 	}
 }

@@ -76,6 +76,7 @@ function VerifySessionToken(\Base $base)
 
     $sessionModel = new \Models\Sessions();
     $sessions = $sessionModel->find(['expires_at > ?', date('Y-m-d H:i:s')]);
+    if ($sessions == false) return false;
 
     foreach ($sessions as $session) {
         if (password_verify($token, $session->key)) {
