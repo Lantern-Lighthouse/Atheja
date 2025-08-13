@@ -137,10 +137,50 @@ class Search
         if (!VerifySessionToken($base))
             return JSON_response('Unauthorized', 401);
 
-        if(self::CreateTag($base->get('POST.tagname')))
+        if (self::CreateTag($base->get('POST.tagname')))
             return JSON_response('Tag added', 201);
         else
             return JSON_response('Tag already exists', 409);
+    }
+
+    public function postSearchTagEdit(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Tag();
+        $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
+        if (!$entry)
+            return JSON_response('Tag not found', 404);
+
+        $entry->name = $base->get('POST.tagname') ?? $entry->name;
+
+        try {
+            $entry->save();
+        } catch (Exception $e) {
+            JSON_response('Changes not saved', 500);
+            return;
+        }
+        JSON_response(true);
+    }
+
+    public function postSearchTagDelete(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Tag();
+        $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
+        if (!$entry)
+            return JSON_response('Tag not found', 404);
+
+        try {
+            $entry->erase();
+        } catch (Exception $e) {
+            JSON_response('Tag not deleted', 500);
+            return;
+        }
+        JSON_response(null, 204);
     }
     //endregion
 }
