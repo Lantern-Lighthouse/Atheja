@@ -109,9 +109,13 @@ class Search
         if (!$entry) {
             return JSON_response('Tag not found', 404);
         }
+        unset($model);
+        $model = new \Models\Entry();
+        $entries = $model->afind(['tags=?', $base->get('PARAMS.tag')]);
 
         $cast = [
             'name' => $base->get('PARAMS.tag'),
+            'count' => $entries ? count($entries) : 0
         ];
 
         JSON_response($cast);
