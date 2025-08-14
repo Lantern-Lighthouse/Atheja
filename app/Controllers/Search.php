@@ -241,6 +241,7 @@ class Search
             $tagID = (new \Models\Tag())->findone(['name=?', $tag])['_id'];
             array_push($tagsOut, $tagID);
         }
+        array_push($tagsOut, \lib\URLser::parse_domain($base->get('POST.page-url')));
         $model->tags = $tagsOut;
 
         $model->save();

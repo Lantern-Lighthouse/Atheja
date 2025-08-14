@@ -1,8 +1,10 @@
 <?php
 
+namespace Lib;
+
 class URLser
 {
-    public static function parse_domain(String $address)
+    public static function parse_domain(string $address)
     {
         $address = parse_url($address);
         $domain = $address['host'];
