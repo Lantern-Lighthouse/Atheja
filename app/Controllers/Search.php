@@ -183,4 +183,68 @@ class Search
         JSON_response(null, 204);
     }
     //endregion
+
+    //region Entries
+    public function getSearchEntry(\Base $base)
+    {
+        $model = new \Models\Entry();
+        $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
+        if (!$entry)
+            return JSON_response('Entry not found', 404);
+
+        JSON_response($entry->cast());
+    }
+
+    public function postSearchEntryCreate(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Entry();
+
+        // Name setting
+        if ($base->get('POST.fetch-name-from-site')) {
+            // TODO: Name fetching
+        } else {
+            if (!$base->get('POST.page-name'))
+                return JSON_response('Page name not found', 404);
+            $model->name = $base->get('POST.page-name');
+        }
+
+        // Description setting
+        $model->description = $base->get('POST.page-desc');
+
+        // URL setting
+        if (!$base->get('POST.page-url'))
+            return JSON_response('URL not found', 404);
+        else if ($model->findone(['url=?', $base->get('POST.page-url')]))
+            return JSON_response('URL already found', 409);
+        $model->url = $base->get('POST.page-url');
+
+        // Category setting
+        $model->category = $base->get('POST.view-category') ?? 1;
+
+        // Favicon setting
+        // TODO: Favicon fetching
+
+        // Karma setting
+        $model->karma = 1;
+
+        // Author setting
+        $model->author = (new \Models\User())->findone(['username=? OR email=?', $base->get('POST.author-username'), $base->get('POST.author-email')]);
+
+        // Tags setting
+        $tagsIn = explode(';', $base->get('POST.tags'));
+        $tagsOut = array();
+        foreach ($tagsIn as $tag) {
+            self::CreateTag($tag);
+            $tagID = (new \Models\Tag())->findone(['name=?', $tag])['_id'];
+            array_push($tagsOut, $tagID);
+        }
+        $model->tags = $tagsOut;
+
+        $model->save();
+        JSON_response('Entry added');
+    }
+    //endregion
 }
