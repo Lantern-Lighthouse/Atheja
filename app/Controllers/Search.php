@@ -246,5 +246,22 @@ class Search
         $model->save();
         JSON_response('Entry added');
     }
+
+    public function postSearchEntryEdit(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Entry();
+        $entry = $model->findone('id=?', $base->get('PARAMS.entry'));
+        if (!$entry)
+            return JSON_response('Entry not found', 404);
+
+        $entry->name = $base->get('POST.site-name') ?? $entry->name;
+        $entry->description = $base->get('POST.site-desc') ?? $entry->description;
+        $entry->url = $base->get('POST.site-url') ?? $entry->url;
+        $entry->category = $base->get('POST.view-category') ?? $entry->category;
+        $entry->favicon = $base->get('POST.site-favicon') ?? $entry->favicon;
+    }
     //endregion
 }
