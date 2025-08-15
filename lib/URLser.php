@@ -2,6 +2,11 @@
 
 namespace Lib;
 
+/*
+ * URLser
+ * URL parser
+ * Functions useful for parsing URLs into tags
+ */
 class URLser
 {
     public static function parse_domain(string $address)

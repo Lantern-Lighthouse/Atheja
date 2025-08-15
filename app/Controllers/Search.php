@@ -242,8 +242,14 @@ class Search
             $tagID = (new \Models\Tag())->findone(['name=?', $tag])['_id'];
             array_push($tagsOut, $tagID);
         }
-        array_push($tagsOut, URLser::parse_domain($base->get('POST.page-url')));
-        $model->tags = $tagsOut;
+        foreach (URLser::parse_domain($base->get('POST.page-url')) as $tag) {
+            if (empty($tag))
+                continue;
+            self::CreateTag($tag);
+            $tagID = (new \Models\Tag())->findone(['name=?', $tag])['_id'];
+            array_push($tagsOut, $tagID);
+        }
+        $model->tags = array_unique($tagsOut);
 
         $model->save();
         JSON_response('Entry added');
