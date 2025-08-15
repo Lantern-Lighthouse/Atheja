@@ -6,10 +6,10 @@ class URLser
 {
     public static function parse_domain(string $address)
     {
-        $address = parse_url($address);
-        $domain = $address['host'];
-        $subdomain = self::split_domain($address)[0];
-        return array($subdomain, $domain);
+        $parsed = parse_url($address);
+        $host = $parsed['host'];
+        $parts = self::split_domain($host);
+        return array($parts[0], $parts[1]);
     }
 
     private static function split_domain($host, $SLDs = 'co|com|edu|gov|mil|net|org|cz|de|gg')

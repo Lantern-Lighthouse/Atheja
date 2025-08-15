@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Exception;
+use Lib\URLser;
 
 class Search
 {
@@ -241,7 +242,7 @@ class Search
             $tagID = (new \Models\Tag())->findone(['name=?', $tag])['_id'];
             array_push($tagsOut, $tagID);
         }
-        array_push($tagsOut, \Lib\URLser::parse_domain($base->get('POST.page-url')));
+        array_push($tagsOut, URLser::parse_domain($base->get('POST.page-url')));
         $model->tags = $tagsOut;
 
         $model->save();
