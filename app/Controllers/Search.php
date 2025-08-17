@@ -205,7 +205,16 @@ class Search
 
         // Name setting
         if ($base->get('POST.fetch-name-from-site')) {
-            // TODO: Name fetching
+            if (!$base->get('POST.page-url'))
+                return JSON_response('URL not found', 404);
+            else if ($model->findone(['url=?', $base->get('POST.page-url')]))
+                return JSON_response('URL already found', 409);
+
+            $pgName = URLser::get_page_name($base->get('POST.page-url'));
+            if ($pgName != false)
+                $model->name = $pgName;
+            else
+                return JSON_response("Error getting page title. Please insert the name manually.", 500);
         } else {
             if (!$base->get('POST.page-name'))
                 return JSON_response('Page name not found', 404);
