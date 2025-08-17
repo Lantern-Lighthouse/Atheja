@@ -1,0 +1,46 @@
+type: http_request
+model: http_request
+id: rq_ZaVKzeqMyn
+createdAt: 2025-06-20T17:53:13.232065300
+updatedAt: 2025-06-20T19:07:09.004789800
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ghAVc4Zzxq
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: username
+    value: krmeni
+  - enabled: true
+    name: displayname
+    value: Krmení
+  - enabled: true
+    name: email
+    value: bozablazku@kuku.prd
+  - enabled: true
+    name: password
+    value: šneků
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: y2rSmbqtmJ
+- enabled: true
+  name: ''
+  value: ''
+  id: PwFVtseXZ5
+- enabled: true
+  name: ''
+  value: ''
+  id: GeGZKUI0nA
+method: POST
+name: Create user
+sortPriority: -0.0001
+url: http://localhost/Atheja/api/user/create
+urlParameters: []

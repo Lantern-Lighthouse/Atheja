@@ -1,0 +1,15 @@
+type: workspace
+model: workspace
+id: wk_iRyJisk9Us
+createdAt: 2025-06-18T22:50:10.326427200
+updatedAt: 2025-08-17T22:09:32.460905400
+authentication:
+  token: ${[ secure(value=b64'WUVOQ19lVUUwYXpOdVF3SGN0UFo1WkJhQyttMG84SFBydzErNEpRNTl4RWVqcG8wSU5wcUJKMllaTU1NVzJkUHhCcHFpN2NFbHVWcnc5UndoT1RCUmFRPT0') ]}
+authenticationType: bearer
+description: ''
+headers: []
+name: Lantern
+encryptionKeyChallenge: eUE0azNuQwHvO78o0wkmAzFbswVw4j5noDXfJuE8Nokd3YwqOHD04D21gBh60npsZWcSiEKPxCOQm3O31SpKP9xjG15NB/Gd8i53BXOKfj9wnfg76XVISuG4XR4QRxeQp0g=
+settingValidateCertificates: true
+settingFollowRedirects: true
+settingRequestTimeout: 0

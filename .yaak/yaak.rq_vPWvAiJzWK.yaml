@@ -1,0 +1,43 @@
+type: http_request
+model: http_request
+id: rq_vPWvAiJzWK
+createdAt: 2025-07-26T19:08:00.633337400
+updatedAt: 2025-07-26T19:13:03.946210
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ghAVc4Zzxq
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: username
+    value: krmeni
+  - enabled: false
+    name: email
+    value: bozablazku@kuku.prd
+  - enabled: true
+    name: password
+    value: šneků
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: y2rSmbqtmJ
+- enabled: true
+  name: ''
+  value: ''
+  id: PwFVtseXZ5
+- enabled: true
+  name: ''
+  value: ''
+  id: GeGZKUI0nA
+method: POST
+name: Login user
+sortPriority: 0.0009
+url: http://localhost/Atheja/api/user/login
+urlParameters: []
