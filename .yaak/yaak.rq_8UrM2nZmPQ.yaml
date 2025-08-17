@@ -1,0 +1,40 @@
+type: http_request
+model: http_request
+id: rq_8UrM2nZmPQ
+createdAt: 2025-07-26T20:28:00.227458500
+updatedAt: 2025-08-17T22:09:58.135272600
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ghAVc4Zzxq
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: false
+    name: username
+    value: krmeni
+  - enabled: false
+    name: email
+    value: bozablazku@kuku.prd
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: y2rSmbqtmJ
+- enabled: true
+  name: ''
+  value: ''
+  id: PwFVtseXZ5
+- enabled: true
+  name: ''
+  value: ''
+  id: GeGZKUI0nA
+method: POST
+name: Delete user
+sortPriority: 0.0019
+url: http://localhost/Atheja/api/user/krmeni/delete
+urlParameters: []
