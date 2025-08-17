@@ -247,15 +247,15 @@ class Search
         $tagsIn = explode(';', $base->get('POST.tags'));
         $tagsOut = array();
         foreach ($tagsIn as $tag) {
-            self::CreateTag($tag);
-            $tagID = (new \Models\Tag())->findone(['name=?', $tag])['_id'];
+            self::CreateTag(trim($tag));
+            $tagID = (new \Models\Tag())->findone(['name=?', trim($tag)])['_id'];
             array_push($tagsOut, $tagID);
         }
         foreach (URLser::parse_domain($base->get('POST.page-url')) as $tag) {
             if (empty($tag))
                 continue;
-            self::CreateTag($tag);
-            $tagID = (new \Models\Tag())->findone(['name=?', $tag])['_id'];
+            self::CreateTag(trim($tag));
+            $tagID = (new \Models\Tag())->findone(['name=?', trim($tag)])['_id'];
             array_push($tagsOut, $tagID);
         }
         $model->tags = array_unique($tagsOut);
