@@ -29,7 +29,7 @@ class Entry extends \DB\Cortex
             'index' => true
         ],
         'category' => [
-            'belongs-to-one' => 'models\Category',
+            'belongs-to-one' => 'Models\Category',
             'required' => true,
             'unique' => false,
             'nullable' => false,
@@ -52,12 +52,12 @@ class Entry extends \DB\Cortex
             'default' => 0
         ],
         'author' => [
-            'belongs-to-one' => 'models\User',
+            'belongs-to-one' => 'Models\User',
             'required' => true,
             'index' => true
         ],
         'tags' => [
-            'belongs-to-many' => 'models\Tag',
+            'belongs-to-many' => 'Models\Tag',
             'required' => true,
             'unique' => false,
             'index' => true
