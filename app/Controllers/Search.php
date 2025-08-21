@@ -211,15 +211,14 @@ class Search
                 return JSON_response('URL already found', 409);
 
             $pgName = URLser::get_page_name($base->get('POST.page-url'));
-            if ($pgName != false)
-                $model->name = $pgName;
-            else
+            if ($pgName == false)
                 return JSON_response("Error getting page title. Please insert the name manually.", 500);
         } else {
             if (!$base->get('POST.page-name'))
                 return JSON_response('Page name not found', 404);
-            $model->name = $base->get('POST.page-name');
+            $pgName = $base->get('POST.page-name');
         }
+        $model->name = $pgName;
 
         // Description setting
         $model->description = $base->get('POST.page-desc');
@@ -245,19 +244,29 @@ class Search
 
         // Tags setting
         $tagsIn = explode(';', $base->get('POST.tags'));
+        $tagsIn = array_change_key_case($tagsIn);
         $tagsOut = array();
+
+        foreach (array_change_key_case(explode(' ', $pgName)) as $tag) {
+            self::CreateTag(trim($tag));
+            $tagID = (new \Models\Tag())->findone(["name=?", trim($tag)])['_id'];
+            array_push($tagsOut, $tagID);
+        }
+
         foreach ($tagsIn as $tag) {
             self::CreateTag(trim($tag));
             $tagID = (new \Models\Tag())->findone(['name=?', trim($tag)])['_id'];
             array_push($tagsOut, $tagID);
         }
-        foreach (URLser::parse_domain($base->get('POST.page-url')) as $tag) {
+
+        foreach (array_change_key_case(URLser::parse_domain($base->get('POST.page-url'))) as $tag) {
             if (empty($tag))
                 continue;
             self::CreateTag(trim($tag));
             $tagID = (new \Models\Tag())->findone(['name=?', trim($tag)])['_id'];
             array_push($tagsOut, $tagID);
         }
+
         $model->tags = array_unique($tagsOut);
 
         $model->save();
