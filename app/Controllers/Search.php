@@ -3,7 +3,7 @@
 namespace Controllers;
 
 use Exception;
-use Lib\URLser;
+use lib\URLser;
 
 class Search
 {
