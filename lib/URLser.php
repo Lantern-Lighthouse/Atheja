@@ -55,4 +55,30 @@ class URLser
             return false;
         return $matches[1];
     }
+
+    private static function extractTextParts($text)
+    {
+        preg_match_all('/[\p{L}\p{N}]+/u', $text, $matches);
+        return $matches[0];
+    }
+
+    public static function extractTextPartsLowercase($text)
+    {
+        $parts = self::extractTextParts($text);
+        return array_map('strtolower', $parts);
+    }
+
+    public static function extractTextPartsWithMinLength($text, $minLength = 2)
+    {
+        $parts = self::extractTextParts($text);
+        return array_filter($parts, function ($part) use ($minLength) {
+            return mb_strlen($part) >= $minLength;
+        });
+    }
+
+    public static function extractTextPartsUnique($text)
+    {
+        $parts = self::extractTextParts($text);
+        return array_unique(array_map('strtolower', $parts));
+    }
 }

@@ -235,6 +235,7 @@ class Search
 
         // Favicon setting
         // TODO: Favicon fetching
+        $model->favicon = 0;
 
         // Karma setting
         $model->karma = 1;
@@ -243,11 +244,10 @@ class Search
         $model->author = (new \Models\User())->findone(['username=? OR email=?', $base->get('POST.author-username'), $base->get('POST.author-email')]);
 
         // Tags setting
-        $tagsIn = explode(';', $base->get('POST.tags'));
-        $tagsIn = array_change_key_case($tagsIn);
+        $tagsIn = array_map("strtolower", explode(';', $base->get('POST.tags')));
         $tagsOut = array();
 
-        foreach (array_change_key_case(explode(' ', $pgName)) as $tag) {
+        foreach (array_map("strtolower", URLser::extractTextPartsUnique($pgName)) as $tag) {
             self::CreateTag(trim($tag));
             $tagID = (new \Models\Tag())->findone(["name=?", trim($tag)])['_id'];
             array_push($tagsOut, $tagID);
@@ -259,7 +259,7 @@ class Search
             array_push($tagsOut, $tagID);
         }
 
-        foreach (array_change_key_case(URLser::parse_domain($base->get('POST.page-url'))) as $tag) {
+        foreach (array_map("strtolower", URLser::parse_domain($base->get('POST.page-url'))) as $tag) {
             if (empty($tag))
                 continue;
             self::CreateTag(trim($tag));
