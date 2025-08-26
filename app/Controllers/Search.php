@@ -211,8 +211,9 @@ class Search
                 return JSON_response('URL already found', 409);
 
             $pgName = URLser::get_page_name($base->get('POST.page-url'));
-            if ($pgName == false)
+            if ($pgName == false && !$base->get('POST.page-name'))
                 return JSON_response("Error getting page title. Please insert the name manually.", 500);
+            else $pgName = $base->get('POST.page-name');
         } else {
             if (!$base->get('POST.page-name'))
                 return JSON_response('Page name not found', 404);
