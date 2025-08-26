@@ -289,5 +289,19 @@ class Search
         $entry->category = $base->get('POST.view-category') ?? $entry->category;
         $entry->favicon = $base->get('POST.site-favicon') ?? $entry->favicon;
     }
+
+    public function postSearchEntryDelete(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Entry();
+        $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
+        if (!$entry)
+            return JSON_response('Entry not found', 404);
+
+        if ($entry->erase())
+            JSON_response(null, 204);
+    }
     //endregion
 }
