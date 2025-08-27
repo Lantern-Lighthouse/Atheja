@@ -43,7 +43,15 @@ class Entry extends \DB\Cortex
             'nullable' => false,
             'index' => false
         ],
-        'karma' => [
+        'upvotes' => [
+            'type' => 'INT4',
+            'required' => true,
+            'unique' => false,
+            'nullable' => false,
+            'index' => false,
+            'default' => 0
+        ],
+        'downvotes' => [
             'type' => 'INT4',
             'required' => true,
             'unique' => false,
@@ -63,5 +71,16 @@ class Entry extends \DB\Cortex
             'index' => true
         ]
     ];
+
+    public function getKarma()
+    {
+        return $this->upvotes - $this->downvotes;
+    }
+
+    public function getVoteRatio()
+    {
+        $total = $this->upvotes + $this->downvotes;
+        return $total > 0 ? ($this->upvotes / $total) * 100 : 0;
+    }
 }
 
