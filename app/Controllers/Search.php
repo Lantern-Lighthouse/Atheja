@@ -194,7 +194,6 @@ class Search
         if (!$entry)
             return JSON_response('Entry not found', 404);
 
-        // changed style: proper output without any sensitive informations
         $tags = [];
         foreach ($entry->tags as $tag) {
             $tags[] = [
@@ -210,7 +209,6 @@ class Search
                 'name' => $entry->category->name,
                 'id' => $entry->category->_id,
             ],
-                //'favicon' => $base->get('GET.show_favicon') ? $entry->favicon : 'hidden',
             ...($base->get('GET.show_favicon') ? ['favicon' => $entry->favicon] : []),
             'karma' => $entry->karma,
             'author' => [

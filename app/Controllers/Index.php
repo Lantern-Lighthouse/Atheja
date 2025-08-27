@@ -30,6 +30,7 @@ class Index
             \Models\Category::setdown();
             \Models\Entry::setdown();
             \Models\Tag::setdown();
+            \Models\Vote::setdown();
         } catch (Exception $e) {
             JSON_response($e->getMessage(), $e->getMessage());
         }
@@ -40,6 +41,7 @@ class Index
             \Models\Category::setup();
             \Models\Entry::setup();
             \Models\Tag::setup();
+            \Models\Vote::setup();
         } catch (Exception $e) {
             JSON_response($e->getMessage(), $e->getMessage());
         }
