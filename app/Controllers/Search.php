@@ -194,7 +194,37 @@ class Search
         if (!$entry)
             return JSON_response('Entry not found', 404);
 
-        JSON_response($entry->cast());
+        // changed style: proper output without any sensitive informations
+        $tags = [];
+        foreach ($entry->tags as $tag) {
+            $tags[] = [
+                'name' => $tag->name,
+                'id' => $tag->_id,
+            ];
+        }
+
+        $cast = [
+            'name' => $entry->name,
+            'description' => $entry->description,
+            'category' => [
+                'name' => $entry->category->name,
+                'id' => $entry->category->_id,
+            ],
+                //'favicon' => $base->get('GET.show_favicon') ? $entry->favicon : 'hidden',
+            ...($base->get('GET.show_favicon') ? ['favicon' => $entry->favicon] : []),
+            'karma' => $entry->karma,
+            'author' => [
+                'username' => $entry->author->username,
+                'displayname' => $entry->author->displayname,
+                'karma' => $entry->author->karma,
+                'account_created' => $entry->author->account_created,
+            ],
+            // 'tags' => $tags,
+            'tags' => $tags,
+            'id' => $entry->_id,
+        ];
+
+        JSON_response($cast);
     }
 
     public function postSearchEntryCreate(\Base $base)
