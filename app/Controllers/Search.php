@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Exception;
+use lib\FavFet;
 use lib\URLser;
 
 class Search
@@ -213,7 +214,8 @@ class Search
             $pgName = URLser::get_page_name($base->get('POST.page-url'));
             if ($pgName == false && !$base->get('POST.page-name'))
                 return JSON_response("Error getting page title. Please insert the name manually.", 500);
-            else $pgName = $base->get('POST.page-name');
+            else
+                $pgName = $base->get('POST.page-name');
         } else {
             if (!$base->get('POST.page-name'))
                 return JSON_response('Page name not found', 404);
@@ -235,8 +237,7 @@ class Search
         $model->category = $base->get('POST.view-category') ?? 1;
 
         // Favicon setting
-        // TODO: Favicon fetching
-        $model->favicon = 0;
+        $model->favicon = FavFet::get_favicon_as_base64($base->get('POST.page-url'));
 
         // Karma setting
         $model->karma = 1;

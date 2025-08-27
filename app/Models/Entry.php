@@ -37,7 +37,7 @@ class Entry extends \DB\Cortex
             'default' => 1
         ],
         'favicon' => [
-            'type' => 'BLOB',
+            'type' => 'LONGTEXT',
             'required' => false,
             'unique' => false,
             'nullable' => false,
