@@ -9,7 +9,6 @@ authenticationType: bearer
 description: ''
 headers: []
 name: Lantern
-encryptionKeyChallenge: eUE0azNuQwHvO78o0wkmAzFbswVw4j5noDXfJuE8Nokd3YwqOHD04D21gBh60npsZWcSiEKPxCOQm3O31SpKP9xjG15NB/Gd8i53BXOKfj9wnfg76XVISuG4XR4QRxeQp0g=
 settingValidateCertificates: true
 settingFollowRedirects: true
 settingRequestTimeout: 0
