@@ -271,7 +271,7 @@ class Search
         $model->karma = 1;
 
         // Author setting
-        $model->author = (new \Models\User())->findone(['username=? OR email=?', $base->get('POST.author-username'), $base->get('POST.author-email')]);
+        $model->author = VerifySessionToken($base);
 
         // Tags setting
         $tagsIn = array_map("strtolower", explode(';', $base->get('POST.tags')));

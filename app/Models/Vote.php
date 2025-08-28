@@ -18,7 +18,7 @@ class Vote extends \DB\Cortex
             'index' => true
         ],
         'vote_type' => [
-            'type' => 'INT1', // 1 for upvote, -1 for downvote,
+            'type' => 'INT1', // 1 for upvote, -1 for downvote
             'required' => true,
             'index' => false
         ],

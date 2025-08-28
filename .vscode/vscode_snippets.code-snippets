@@ -31,8 +31,31 @@
 			"pfnc"
 		],
 		"body": [
-			"public function $2 ($1) {",
-			"\t$0",
+			"public function $1 ($2) {",
+			"\t$3",
+			"}"
+		],
+		"description": "Create new public function."
+	},
+	"Private Function": {
+		"prefix": [
+			"prif",
+		],
+		"body": [
+			"private function $1 ($2) {",
+			"\t$3",
+			"}"
+		],
+		"description": "Create new private function."
+	},
+	"Static Function": {
+		"prefix": [
+			"staf",
+			"sfnc"
+		],
+		"body": [
+			"static function $1 ($2) {",
+			"\t$3",
 			"}"
 		],
 		"description": "Create new public function."

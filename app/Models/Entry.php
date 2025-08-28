@@ -49,7 +49,7 @@ class Entry extends \DB\Cortex
             'unique' => false,
             'nullable' => false,
             'index' => false,
-            'default' => 0
+            'default' => 1
         ],
         'downvotes' => [
             'type' => 'INT4',
