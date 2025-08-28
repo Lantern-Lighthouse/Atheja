@@ -210,7 +210,7 @@ class Search
                 'id' => $entry->category->_id,
             ],
             ...($base->get('GET.show_favicon') ? ['favicon' => $entry->favicon] : []),
-            'karma' => $entry->karma,
+            'karma' => $entry->getKarma(),
             'author' => [
                 'username' => $entry->author->username,
                 'displayname' => $entry->author->displayname,
@@ -332,6 +332,81 @@ class Search
 
         if ($entry->erase())
             JSON_response(null, 204);
+    }
+
+    public function postSearchEntryRate(\Base $base)
+    {
+        $user = VerifySessionToken($base);
+        if (!$user)
+            return JSON_response('Unauthorized', 401);
+
+        $entryId = $base->get('PARAMS.entry');
+        $voteType = $base->get('POST.vote_type'); // 1 for upvote, -1 for downvote
+
+        if (!in_array($voteType, [1, -1]))
+            return JSON_response('Invalid vote type', 400);
+
+        $entryModel = new \Models\Entry();
+        $entry = $entryModel->findone(['id=?', $entryId]);
+        if (!$entry)
+            return JSON_response('Entry not found', 404);
+
+        $voteModel = new \Models\Vote();
+        $existingVote = $voteModel->findone([
+            'user=? AND entry=?',
+            $user->id,
+            $entryId
+        ]);
+
+        try {
+            if ($existingVote) {
+                if ($existingVote->vote_type == $voteType) { // Same vote -> remove vote
+                    $this->updateEntryVoteCounts($entry, $existingVote->vote_type, 0);
+                    $existingVote->erase();
+                    $message = 'Vote removed';
+                } else { // Different vote -> change vote
+                    $this->updateEntryVoteCounts($entry, $existingVote->vote_type, $voteType);
+                    $existingVote->vote_type = $voteType;
+                    $existingVote->updated_at = date('Y-m-d H:i:s');
+                    $existingVote->save();
+                    $message = 'Vote updated';
+                }
+            } else { // New vote
+                $voteModel->user = $user;
+                $voteModel->entry = $entry;
+                $voteModel->vote_type = $voteType;
+                $voteModel->save();
+
+                $this->updateEntryVoteCounts($entry, 0, $voteType);
+                $message = 'Vote added';
+            }
+
+            $entry->save();
+
+            return JSON_response([
+                'message' => $message,
+                'upvotes' => $entry->upvotes,
+                'downvotes' => $entry->downvotes,
+                'karma' => $entry->getKarma(),
+                'user_vote' => $existingVote ? ($existingVote->dry() ? null : $existingVote->vote_type) : $voteType
+            ]);
+        } catch (Exception $e) {
+            return JSON_response($e->getMessage(), 500);
+        }
+    }
+
+    private function updateEntryVoteCounts($entry, $oldVote, $newVote)
+    {
+        // Remove old value count
+        if ($oldVote == 1)
+            $entry->upvotes = max(0, $entry->upvotes - 1);
+        elseif ($oldVote == -1)
+            $entry->downvotes = max(0, $entry->downvotes - 1);
+
+        if ($newVote == 1)
+            $entry->upvotes++;
+        elseif ($newVote == -1)
+            $entry->downvotes++;
     }
     //endregion
 }
