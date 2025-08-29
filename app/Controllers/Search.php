@@ -227,7 +227,8 @@ class Search
 
     public function postSearchEntryCreate(\Base $base)
     {
-        if (!VerifySessionToken($base))
+        $author = VerifySessionToken($base);
+        if (!$author)
             return JSON_response('Unauthorized', 401);
 
         $model = new \Models\Entry();
@@ -271,7 +272,7 @@ class Search
         $model->karma = 1;
 
         // Author setting
-        $model->author = VerifySessionToken($base);
+        $model->author = $author;
 
         // Tags setting
         $tagsIn = array_map("strtolower", explode(';', $base->get('POST.tags')));
@@ -299,8 +300,15 @@ class Search
 
         $model->tags = array_unique($tagsOut);
 
-        $model->save();
-        JSON_response('Entry added');
+        try {
+            $model->save();
+
+            $this->createAuthorUpvote($author, $model);
+            JSON_response('Entry added', 201);
+        } catch (Exception $e) {
+            return JSON_response($e->getMessage, 500);
+        }
+
     }
 
     public function postSearchEntryEdit(\Base $base)
@@ -407,6 +415,21 @@ class Search
             $entry->upvotes++;
         elseif ($newVote == -1)
             $entry->downvotes++;
+    }
+
+    private function createAuthorUpvote($user, $entry)
+    {
+        try {
+            $model = new \Models\Vote();
+            $model->user = $user;
+            $model->entry = $entry;
+            $model->vote_type = 1;
+            $model->save();
+            return true;
+        } catch (Exception $e) {
+            error_log("Failed to create author upvote: " . $e->getMessage());
+            return false;
+        }
     }
     //endregion
 }
