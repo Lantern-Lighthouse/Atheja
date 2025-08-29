@@ -16,7 +16,8 @@ class Index
                 'Atheja codename' => $base->get('ATH.CODENAME')
             ],
             'stats' => [
-                'users' => (new \Models\User())->count()
+                'users' => (new \Models\User())->count(),
+                'categories' => (new \Models\Category())->count(),
             ]
         ]);
     }
@@ -26,14 +27,43 @@ class Index
         try {
             \Models\User::setdown();
             \Models\Sessions::setdown();
+            \Models\Category::setdown();
+            \Models\Entry::setdown();
+            \Models\Tag::setdown();
+            \Models\Vote::setdown();
         } catch (Exception $e) {
             JSON_response($e->getMessage(), $e->getMessage());
         }
+
         try {
             \Models\User::setup();
             \Models\Sessions::setup();
+            \Models\Category::setup();
+            \Models\Entry::setup();
+            \Models\Tag::setup();
+            \Models\Vote::setup();
         } catch (Exception $e) {
             JSON_response($e->getMessage(), $e->getMessage());
+        }
+
+        try {
+            // Setup dummy values - Categories: Web Links
+            $model = new \Models\Category();
+            $model->name = "Pages";
+            $model->type = "articles";
+            $model->icon = "language";
+            $model->save();
+            unset($model);
+
+            // Setup dummy values - Categories: Images
+            $model = new \Models\Category();
+            $model->name = "Images";
+            $model->type = "gallery";
+            $model->icon = "photo";
+            $model->save();
+            unset($model);
+        } catch (Exception $e) {
+            JSON_response($e->getMessage(), 500);
         }
         JSON_response(true);
     }

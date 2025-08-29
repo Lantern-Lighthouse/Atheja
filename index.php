@@ -1,4 +1,15 @@
 <?php
+spl_autoload_register(function ($className) {
+    $classFile = str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php';
+    $filePath = __DIR__ . DIRECTORY_SEPARATOR . $classFile;
+
+    if (file_exists($filePath)) {
+        require_once $filePath;
+        return true;
+    }
+    return false;
+});
+
 require('./vendor/autoload.php');
 $base = \Base::instance();
 $base->config('./app/Configs/config.ini');
@@ -76,6 +87,7 @@ function VerifySessionToken(\Base $base)
 
     $sessionModel = new \Models\Sessions();
     $sessions = $sessionModel->find(['expires_at > ?', date('Y-m-d H:i:s')]);
+    if ($sessions == false) return false;
 
     foreach ($sessions as $session) {
         if (password_verify($token, $session->key)) {

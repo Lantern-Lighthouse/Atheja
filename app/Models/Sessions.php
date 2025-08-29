@@ -8,7 +8,7 @@ class Sessions extends \DB\Cortex
 
     protected $fieldConf = [
         'user' => [
-            'belongs-to-one' => 'models\User'
+            'belongs-to-one' => 'Models\User'
         ],
         'key' => [
             'type' => 'VARCHAR256',
