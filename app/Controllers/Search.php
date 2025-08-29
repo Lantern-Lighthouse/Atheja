@@ -359,6 +359,8 @@ class Search
         if (!$entry)
             return JSON_response('Entry not found', 404);
 
+        $entryAuthor = $entry->author;
+
         $voteModel = new \Models\Vote();
         $existingVote = $voteModel->findone([
             'user=? AND entry=?',
@@ -370,10 +372,12 @@ class Search
             if ($existingVote) {
                 if ($existingVote->vote_type == $voteType) { // Same vote -> remove vote
                     $this->updateEntryVoteCounts($entry, $existingVote->vote_type, 0);
+                    $this->updateUserKarma($entryAuthor, $existingVote->vote_type, 0);
                     $existingVote->erase();
                     $message = 'Vote removed';
                 } else { // Different vote -> change vote
                     $this->updateEntryVoteCounts($entry, $existingVote->vote_type, $voteType);
+                    $this->updateUserKarma($entryAuthor, $existingVote->vote_type, $voteType);
                     $existingVote->vote_type = $voteType;
                     $existingVote->updated_at = date('Y-m-d H:i:s');
                     $existingVote->save();
@@ -386,10 +390,12 @@ class Search
                 $voteModel->save();
 
                 $this->updateEntryVoteCounts($entry, 0, $voteType);
+                $this->updateUserKarma($entryAuthor, 0, $voteType);
                 $message = 'Vote added';
             }
 
             $entry->save();
+            $entryAuthor->save();
 
             return JSON_response([
                 'message' => $message,
@@ -425,11 +431,29 @@ class Search
             $model->entry = $entry;
             $model->vote_type = 1;
             $model->save();
+
+            $user->karma += 1;
+            $user->save();
+
             return true;
         } catch (Exception $e) {
             error_log("Failed to create author upvote: " . $e->getMessage());
             return false;
         }
+    }
+
+    private function updateUserKarma($user, $oldVote, $newVote)
+    {
+        if ($oldVote == 1)
+            $user->karma = max(0, $user->karma - 1);
+        elseif ($oldVote == -1)
+            $user->karma++;
+
+        if ($newVote == 1)
+            $user->karma++;
+        elseif ($newVote == -1)
+            // $user->karma = max(0, $user->karma - 1);
+            $user->karma--;
     }
     //endregion
 }
