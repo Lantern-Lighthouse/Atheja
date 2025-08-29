@@ -1,0 +1,31 @@
+type: http_request
+model: http_request
+id: rq_Ds5rt3dpYU
+createdAt: 2025-08-29T15:01:48.047295300
+updatedAt: 2025-08-29T15:02:56.711147600
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ghAVc4Zzxq
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: name
+    value: Videos
+  - enabled: true
+    name: type
+    value: gallery
+  - enabled: true
+    name: icon
+    value: videocam
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Get user
+sortPriority: 1500.0
+url: http://localhost/Atheja/api/user/krmeni
+urlParameters: []
