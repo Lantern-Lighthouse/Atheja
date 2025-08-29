@@ -455,5 +455,43 @@ class Search
             // $user->karma = max(0, $user->karma - 1);
             $user->karma--;
     }
+
+    public function postSearchEntryTagPush(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Entry();
+        $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
+        if (!$entry)
+            return JSON_response('Entry not found', 404);
+
+        // loading current tags to a stack
+        $tagStack = [];
+        foreach ($entry->tags as $tag)
+            $tagStack[] = $tag->_id;
+
+        // Pushing new tags
+        $tagsToPush = explode(';', strtolower($base->get('POST.tags')));
+        foreach ($tagsToPush as $tag) {
+            if (empty($tag))
+                continue;
+            $tag = trim($tag);
+            self::CreateTag($tag);
+            $tagID = (new \Models\Tag())->findone(['name=?', $tag])['_id'];
+            array_push($tagStack, $tagID);
+        }
+
+        $tagStack = array_unique($tagStack);
+        $entry->tags = $tagStack;
+
+        try {
+            $entry->updated_at = date('Y-m-d H:i:s');
+            $entry->save();
+            return JSON_response('Tags pushed');
+        } catch (Exception $e) {
+            return JSON_response($e->getMessage(), 500);
+        }
+    }
     //endregion
 }
