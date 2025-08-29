@@ -497,5 +497,49 @@ class Search
             return JSON_response($e->getMessage(), 500);
         }
     }
+
+    public function postSearchEntryTagPop(\Base $base)
+    {
+        if (!VerifySessionToken($base))
+            return JSON_response('Unauthorized', 401);
+
+        $model = new \Models\Entry();
+        $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
+        if (!$entry)
+            return JSON_response('Entry not found', 404);
+
+        unset($model);
+
+        // loading current tags to a stack
+        $tagStack = [];
+        foreach ($entry->tags as $tag)
+            $tagStack[] = $tag->_id;
+
+        // Popping selected tags
+        $tagsToPop = explode(';', strtolower($base->get('POST.tags')));
+        foreach ($tagsToPop as $tag) {
+            if (empty($tag))
+                continue;
+            $tag = trim($tag);
+            $model = (new \Models\Tag())->findone(['name=?', $tag]);
+            if ($model)
+                $tagID = $model['_id'];
+            else
+                continue;
+            $searchResult = array_search($tagID, $tagStack);
+            array_splice($tagStack, $searchResult, 1);
+        }
+
+        $tagStack = array_unique($tagStack);
+        $entry->tags = $tagStack;
+
+        try {
+            $entry->updated_at = date('Y-m-d H:i:s');
+            $entry->save();
+            return JSON_response('Tags popped');
+        } catch (Exception $e) {
+            return JSON_response($e->getMessage(), 500);
+        }
+    }
     //endregion
 }
