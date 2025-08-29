@@ -275,16 +275,20 @@ class Search
         $model->author = $author;
 
         // Tags setting
-        $tagsIn = array_map("strtolower", explode(';', $base->get('POST.tags')));
+        $tagsIn = explode(';', strtolower($base->get('POST.tags')));
         $tagsOut = array();
 
         foreach (array_map("strtolower", URLser::extractTextPartsUnique($pgName)) as $tag) {
+            if (empty($tag))
+                continue;
             self::CreateTag(trim($tag));
             $tagID = (new \Models\Tag())->findone(["name=?", trim($tag)])['_id'];
             array_push($tagsOut, $tagID);
         }
 
         foreach ($tagsIn as $tag) {
+            if (empty($tag))
+                continue;
             self::CreateTag(trim($tag));
             $tagID = (new \Models\Tag())->findone(['name=?', trim($tag)])['_id'];
             array_push($tagsOut, $tagID);
@@ -306,7 +310,7 @@ class Search
             $this->createAuthorUpvote($author, $model);
             JSON_response('Entry added', 201);
         } catch (Exception $e) {
-            return JSON_response($e->getMessage, 500);
+            return JSON_response($e->getMessage(), 500);
         }
 
     }
