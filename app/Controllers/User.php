@@ -60,7 +60,7 @@ class User
     {
         $model = new \Models\User();
 
-        $entry = $model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')]);
+        $entry = $model->findone(['username=? OR email=?', $base->get('PARAMS.user') ?? $base->get('POST.username'), $base->get('POST.email')]);
         if (!$entry) {
             return JSON_response('User not found', 404);
         }
