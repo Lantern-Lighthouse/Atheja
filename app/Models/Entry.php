@@ -69,6 +69,14 @@ class Entry extends \DB\Cortex
             'required' => true,
             'unique' => false,
             'index' => true
+        ],
+        'created_at' => [
+            'type' => 'DATETIME',
+            'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP
+        ],
+        'updated_at' => [
+            'type' => 'DATETIME',
+            'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP
         ]
     ];
 
