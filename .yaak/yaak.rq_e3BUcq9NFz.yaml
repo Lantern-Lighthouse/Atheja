@@ -1,0 +1,29 @@
+type: http_request
+model: http_request
+id: rq_e3BUcq9NFz
+createdAt: 2025-08-13T15:16:06.151575300
+updatedAt: 2025-08-17T22:10:26.955359500
+workspaceId: wk_iRyJisk9Us
+folderId: fl_qvkdgnGKf3
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: tagname
+    value: google.com
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: 7GIp0JYTxH
+method: POST
+name: Edit tag
+sortPriority: 2000.001
+url: http://localhost/Atheja/api/search/tag/seznam.cz/edit
+urlParameters: []

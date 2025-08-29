@@ -1,0 +1,29 @@
+type: http_request
+model: http_request
+id: rq_zgYGjgvmNB
+createdAt: 2025-08-27T23:11:11.565430
+updatedAt: 2025-08-29T14:30:08.160975800
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ZkQzZTQj53
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: vote_type
+    value: '1'
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: sHkZdtgajx
+method: POST
+name: Rate Entry
+sortPriority: 4000.0
+url: http://localhost/Atheja/api/search/entry/1/rate
+urlParameters: []

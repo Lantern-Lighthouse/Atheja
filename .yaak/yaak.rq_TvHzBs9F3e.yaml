@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_TvHzBs9F3e
+createdAt: 2025-07-30T20:55:47.236705700
+updatedAt: 2025-08-13T15:04:26.558591900
+workspaceId: wk_iRyJisk9Us
+folderId: fl_qvkdgnGKf3
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Get tags
+sortPriority: 0.0
+url: http://localhost/Atheja/api/search/tag
+urlParameters: []

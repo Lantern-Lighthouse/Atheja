@@ -1,0 +1,35 @@
+type: http_request
+model: http_request
+id: rq_Zk58tRkNNN
+createdAt: 2025-07-30T19:45:56.878971400
+updatedAt: 2025-08-17T22:10:09.950161300
+workspaceId: wk_iRyJisk9Us
+folderId: fl_RTwMpetqQ4
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: name
+    value: Videos
+  - enabled: false
+    name: type
+    value: gallery
+  - enabled: false
+    name: icon
+    value: videocam
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: QjSEyezXet
+method: POST
+name: Edit Category
+sortPriority: 2000.0
+url: http://localhost/Atheja/api/search/category/Videos/edit
+urlParameters: []

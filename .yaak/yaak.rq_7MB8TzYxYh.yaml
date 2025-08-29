@@ -1,0 +1,41 @@
+type: http_request
+model: http_request
+id: rq_7MB8TzYxYh
+createdAt: 2025-08-14T21:33:52.991832300
+updatedAt: 2025-08-27T23:11:17.310419600
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ZkQzZTQj53
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: page-name
+    value: Seznam.cz
+  - enabled: true
+    name: page-desc
+    value: '...najdu tam, co neznám'
+  - enabled: true
+    name: page-url
+    value: https://seznam.cz/
+  - enabled: true
+    name: view-category
+    value: '2'
+  - enabled: true
+    name: favicon
+    value: ''
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: Iux9Ue95Fe
+method: POST
+name: Edit entry
+sortPriority: 2000.0
+url: http://localhost/Atheja/api/search/entry/1/edit
+urlParameters: []

@@ -1,0 +1,44 @@
+type: http_request
+model: http_request
+id: rq_XYE4dKeVwi
+createdAt: 2025-08-13T19:23:49.075480100
+updatedAt: 2025-08-27T23:11:17.301132400
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ZkQzZTQj53
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: fetch-name-from-site
+    value: 'true'
+  - enabled: true
+    name: page-name
+    value: Seznam.cz
+  - enabled: true
+    name: page-desc
+    value: '...najdu tam co neznám.'
+  - enabled: true
+    name: page-url
+    value: https://www.seznam.cz/
+  - enabled: true
+    name: author-username
+    value: krmeni
+  - enabled: true
+    name: tags
+    value: search engine
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: Iux9Ue95Fe
+method: POST
+name: Create entry
+sortPriority: 1000.0
+url: http://localhost/Atheja/api/search/entry/create
+urlParameters: []

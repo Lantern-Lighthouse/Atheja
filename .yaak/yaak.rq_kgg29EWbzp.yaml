@@ -1,0 +1,31 @@
+type: http_request
+model: http_request
+id: rq_kgg29EWbzp
+createdAt: 2025-07-28T20:37:39.969081400
+updatedAt: 2025-08-17T22:10:04.116434400
+workspaceId: wk_iRyJisk9Us
+folderId: fl_RTwMpetqQ4
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: name
+    value: Videos
+  - enabled: true
+    name: type
+    value: gallery
+  - enabled: true
+    name: icon
+    value: videocam
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Get Category
+sortPriority: 0.0
+url: http://localhost/Atheja/api/search/category
+urlParameters: []

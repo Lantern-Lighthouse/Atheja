@@ -1,0 +1,37 @@
+type: http_request
+model: http_request
+id: rq_Quo8Cmv9qC
+createdAt: 2025-08-27T14:22:33.934608200
+updatedAt: 2025-08-27T23:11:17.296014500
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ZkQzZTQj53
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: page-name
+    value: Seznam.cz
+  - enabled: true
+    name: page-desc
+    value: '...najdu tam, co neznám'
+  - enabled: true
+    name: page-url
+    value: https://seznam.cz/
+  - enabled: true
+    name: view-category
+    value: '2'
+  - enabled: true
+    name: favicon
+    value: ''
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: Delete entry
+sortPriority: 3000.0
+url: http://localhost/Atheja/api/search/entry/1/delete
+urlParameters: []

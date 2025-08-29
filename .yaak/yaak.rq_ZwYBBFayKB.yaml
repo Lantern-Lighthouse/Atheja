@@ -1,0 +1,29 @@
+type: http_request
+model: http_request
+id: rq_ZwYBBFayKB
+createdAt: 2025-08-13T15:04:24.605733300
+updatedAt: 2025-08-17T22:10:23.150733100
+workspaceId: wk_iRyJisk9Us
+folderId: fl_qvkdgnGKf3
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: tagname
+    value: seznam.cz
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: 7GIp0JYTxH
+method: POST
+name: Add tag
+sortPriority: 2000.0
+url: http://localhost/Atheja/api/search/tag/add
+urlParameters: []

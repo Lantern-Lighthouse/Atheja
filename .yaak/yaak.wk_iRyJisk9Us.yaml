@@ -2,13 +2,14 @@ type: workspace
 model: workspace
 id: wk_iRyJisk9Us
 createdAt: 2025-06-18T22:50:10.326427200
-updatedAt: 2025-08-17T22:09:32.460905400
+updatedAt: 2025-08-27T13:50:28.807737200
 authentication:
-  token: ${[ secure(value=b64'WUVOQ19lVUUwYXpOdVF3SGN0UFo1WkJhQyttMG84SFBydzErNEpRNTl4RWVqcG8wSU5wcUJKMllaTU1NVzJkUHhCcHFpN2NFbHVWcnc5UndoT1RCUmFRPT0') ]}
+  token: ${[ token ]}
 authenticationType: bearer
 description: ''
 headers: []
 name: Lantern
+encryptionKeyChallenge: null
 settingValidateCertificates: true
 settingFollowRedirects: true
 settingRequestTimeout: 0

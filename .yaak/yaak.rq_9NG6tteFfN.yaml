@@ -1,0 +1,35 @@
+type: http_request
+model: http_request
+id: rq_9NG6tteFfN
+createdAt: 2025-07-28T19:54:57.512900100
+updatedAt: 2025-08-17T22:10:07.668958500
+workspaceId: wk_iRyJisk9Us
+folderId: fl_RTwMpetqQ4
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: name
+    value: Videos
+  - enabled: true
+    name: type
+    value: gallery
+  - enabled: true
+    name: icon
+    value: videocam
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: QjSEyezXet
+method: POST
+name: Create Category
+sortPriority: 1000.0
+url: http://localhost/Atheja/api/search/category/create
+urlParameters: []

@@ -1,0 +1,22 @@
+type: http_request
+model: http_request
+id: rq_Uoi5TfiYbo
+createdAt: 2025-07-30T19:55:23.561860900
+updatedAt: 2025-08-17T22:10:12.688850500
+workspaceId: wk_iRyJisk9Us
+folderId: fl_RTwMpetqQ4
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: Delete Category
+sortPriority: 2000.001
+url: http://localhost/Atheja/api/search/category/Videos/delete
+urlParameters: []

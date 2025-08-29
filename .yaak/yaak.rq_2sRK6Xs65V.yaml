@@ -1,0 +1,25 @@
+type: http_request
+model: http_request
+id: rq_2sRK6Xs65V
+createdAt: 2025-08-13T15:21:06.172265
+updatedAt: 2025-08-17T22:10:36.032739200
+workspaceId: wk_iRyJisk9Us
+folderId: fl_qvkdgnGKf3
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: tagname
+    value: google.com
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: Delete tag
+sortPriority: 2000.002
+url: http://localhost/Atheja/api/search/tag/ google/delete
+urlParameters: []

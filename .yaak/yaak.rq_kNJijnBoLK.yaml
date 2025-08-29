@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_kNJijnBoLK
+createdAt: 2025-08-01T18:50:12.924288500
+updatedAt: 2025-08-13T15:04:26.564495600
+workspaceId: wk_iRyJisk9Us
+folderId: fl_qvkdgnGKf3
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Get tag
+sortPriority: 1000.0
+url: http://localhost/Atheja/api/search/tag/wiki.gg
+urlParameters: []
