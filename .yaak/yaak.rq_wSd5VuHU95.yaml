@@ -13,6 +13,6 @@ description: ''
 headers: []
 method: GET
 name: Get entry
-sortPriority: 500.0
+sortPriority: 0.0
 url: http://localhost/Atheja/api/search/entry/1
 urlParameters: []

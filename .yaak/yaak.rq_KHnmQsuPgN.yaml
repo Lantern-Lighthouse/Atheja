@@ -1,8 +1,8 @@
 type: http_request
 model: http_request
-id: rq_zgYGjgvmNB
-createdAt: 2025-08-27T23:11:11.565430
-updatedAt: 2025-08-29T14:30:08.160975800
+id: rq_KHnmQsuPgN
+createdAt: 2025-08-29T22:46:27.028147300
+updatedAt: 2025-08-29T23:00:58.512101200
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ZkQzZTQj53
 authentication: {}
@@ -10,8 +10,8 @@ authenticationType: null
 body:
   form:
   - enabled: true
-    name: vote_type
-    value: '-1'
+    name: tags
+    value: seznam;
   - enabled: true
     name: ''
     value: ''
@@ -21,9 +21,9 @@ headers:
 - enabled: true
   name: Content-Type
   value: application/x-www-form-urlencoded
-  id: sHkZdtgajx
+  id: Iux9Ue95Fe
 method: POST
-name: Rate Entry
-sortPriority: 4000.0
-url: http://localhost/Atheja/api/search/entry/1/rate
+name: Pop tags from entry
+sortPriority: 5000.001
+url: http://localhost/Atheja/api/search/entry/1/tag/pop
 urlParameters: []

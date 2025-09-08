@@ -14,16 +14,13 @@ body:
     value: 'true'
   - enabled: true
     name: page-name
-    value: Seznam.cz
+    value: FrogFind
   - enabled: true
     name: page-desc
-    value: '...najdu tam co neznám.'
+    value: for vintage computers.
   - enabled: true
     name: page-url
-    value: https://www.seznam.cz/
-  - enabled: true
-    name: author-username
-    value: krmeni
+    value: http://frogfind.com/
   - enabled: true
     name: tags
     value: search engine
