@@ -1,4 +1,7 @@
 <?php
+
+namespace lib;
+
 class Identicon
 {
     public static function generate_from_string(String $string, int $size = 200, int $gridSize = 5)

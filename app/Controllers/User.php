@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Exception;
+use lib\Identicon;
 
 class User
 {
@@ -122,6 +123,20 @@ class User
             $user->erase();
         } catch (Exception $e) {
             return JSON_response('Unable to delete user', 500);
+        }
+    }
+
+    public function getUserAvatar(\Base $base)
+    {
+        $model = new \Models\User();
+        $user = $model->findone(['username=? OR email=?', $base->get('PARAMS.user') ?? $base->get('POST.username'), $base->get('POST.email')]);
+        if (!$user)
+            return JSON_response("User not found", 404);
+
+        try {
+            Identicon::output_image($user->username);
+        } catch (Exception $e) {
+            return JSON_response("Unable to display avatar: " . $e->getMessage(), 500);
         }
     }
 }
