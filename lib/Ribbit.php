@@ -29,7 +29,7 @@ class RibbitPerms
     }
 
     /**
-     * Chech if user has specific permisson
+     * Check if user has specific permission
      * @param mixed $uID User ID
      * @param mixed $permission
      * @return bool
@@ -163,7 +163,7 @@ class RibbitPerms
         try {
             $this->db->begin();
 
-            //Create role
+            // Create role
             $sql = "INSERT INTO roles (name, description, created_at) VALUES (?, ?, NOW())";
             $this->db->exec($sql, [$name, $description]);
             $roleId = $this->db->lastinsertid();
@@ -179,5 +179,95 @@ class RibbitPerms
             $this->f3->error(500, 'Failed to create role: ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Update role permissions
+     * @param mixed $rID Role ID
+     * @param array $permissions
+     * @return bool
+     */
+    public function update_role_permissions($rID, array $permissions)
+    {
+        try {
+            $this->db->begin();
+
+            $this->db->exec("DELETE FROM role_permissions WHERE role_id = ?", [$rID]);
+
+            foreach ($permissions as $permissionName)
+                $this->assign_permission_to_role($rID, $permissionName);
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollback();
+            $this->f3->error(500, "Failed to update role permissions: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get all available permissions
+     */
+    public function get_all_permissions()
+    {
+        $sql = "SELECT * FROM permissions ORDER BY category, name";
+        return $this->db->exec($sql);
+    }
+
+    /**
+     * Get all roles
+     */
+    public function get_all_roles()
+    {
+        $sql = "SELECT * FROM roles WHERE active = 1 ORDER BY name";
+        return $this->db->exec($sql);
+    }
+
+    /**
+     * Get role with permissions
+     * @param mixed $rID Role ID
+     */
+    public function get_role_with_permissions($rID)
+    {
+        $role = $this->db->exec("SELECT * FROM roles WHERE id = ?" . [$rID]);
+        if (empty($role)) return null;
+
+        $permissions = $this->db->exec(
+            "SELECT p.* FROM role_permissions rp
+            JOIN permissions p ON rp.permission_id = p.id
+            WHERE rp.role_id = ?",
+            [$rID]
+        );
+
+        $role[0]['permissions'] = $permissions;
+        return $role[0];
+    }
+
+    /**
+     * Assign permission to role (private helper)
+     * @param mixed $rID Role ID
+     * @param mixed $permissionName
+     */
+    private function assign_permission_to_role($rID, $permissionName)
+    {
+        $sql = "INSERT INTO role_permissions (role_id, permission_id, created_at)
+                SELECT ?, id, NOW() FROM permissions WHERE name = ?";
+        return $this->db->exec($sql, [$rID, $permissionName]);
+    }
+
+    /**
+     * Log permission changes for audit trail
+     * @param mixed $uID User ID
+     * @param mixed $action
+     * @param mixed $rID Role ID
+     * @param mixed $performedBy
+     * @param mixed $reason
+     */
+    private function log_permission_change($uID, $action, $rID, $performedBy, $reason = null)
+    {
+        $sql = "INSERT INTO permission_audit (user_id, action, role_id, performed_by, reason, created_at)
+                VALUES (?, ?, ?, ?, ?, NOW())";
+        $this->db->exec($sql, [$uID, $action, $rID, $performedBy, $reason]);
     }
 }
