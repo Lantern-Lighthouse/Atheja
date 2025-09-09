@@ -2,6 +2,7 @@
 
 namespace lib;
 
+use \DB\SQL;
 use Exception;
 
 /**
@@ -269,5 +270,138 @@ class RibbitPerms
         $sql = "INSERT INTO permission_audit (user_id, action, role_id, performed_by, reason, created_at)
                 VALUES (?, ?, ?, ?, ?, NOW())";
         $this->db->exec($sql, [$uID, $action, $rID, $performedBy, $reason]);
+    }
+}
+
+/**
+ * Permission Middleware for F3
+ */
+class RibbitMid
+{
+    private $f3;
+    private $permission;
+
+    public function __construct()
+    {
+        $this->f3 = \Base::instance();
+        $this->permission = new RibbitPerms();
+    }
+
+    /**
+     * Check permission middleware
+     * @param mixed $f3
+     * @param mixed $params
+     * @return void
+     */
+    public function check($f3, $params)
+    {
+        $requiredPermission = $f3->get('PARAMS.permission') ?? $params['permission'] ?? null;
+        if (!$requiredPermission) {
+            $f3->error(500, 'Permission not specified in route');
+            return;
+        }
+
+        $userID = $this->get_user_id_from_request($f3);
+        if (!$userID) {
+            $f3->error(401, 'Authentication required');
+            return;
+        }
+
+        if (!$this->permission->has_permission($userID, $requiredPermission)) {
+            $f3->error(403, 'Insufficient permissions');
+            return;
+        }
+
+        $f3->set('CONTEXT.user_id', $userID);
+    }
+
+    /**
+     * Admin-only middleware
+     * @param mixed $f3
+     * @param mixed $params
+     * @return void
+     */
+    public function admin_only($f3, $params)
+    {
+        $userID = $this->get_user_id_from_request($f3);
+        if (!$userID) {
+            $f3->error(401, 'Authentication required');
+            return;
+        }
+
+        if (!$this->permission->has_permission($userID, RibbitPerms::SYSTEM_ADMIN)) {
+            $f3->error(403, 'System administrator access required');
+            return;
+        }
+
+        $f3->set('CONTEXT.user_id', $userID);
+    }
+
+    /**
+     * Check multiple permissions (user needs ANY of them)
+     * @param mixed $f3
+     * @param mixed $params
+     * @return void
+     */
+    public function check_any($f3, $params)
+    {
+        $requiredPermissions = $params['permissions'] ?? [];
+
+        if (empty($requiredPermissions)) {
+            $f3->error(500, 'No permissions specified');
+            return;
+        }
+
+        $userID = $this->get_user_id_from_request($f3);
+        if (!$userID) {
+            $f3->error(401, 'Authentication required');
+            return;
+        }
+
+        if (!$this->permission->has_any_permissions($userID, $requiredPermissions)) {
+            $f3->error(403, 'Insufficient permissions');
+            return;
+        }
+
+        $f3->set('CONTEXT.user_id', $userID);
+    }
+
+    /**
+     * Authenticated user middleware (any logged in user)
+     * @param mixed $f3
+     * @param mixed $params
+     * @return void
+     */
+    public function auth($f3, $params)
+    {
+        $userID = $this->get_user_id_from_request($f3);
+        if (!$userID) {
+            $f3->error(401, 'Authentication required');
+            return;
+        }
+
+        $f3->set('CONTEXT.user_id', $userID);
+    }
+
+    /**
+     * Get user ID from request (API key, JWT, custom header, etc.)
+     * @param mixed $f3
+     */
+    private function get_user_id_from_request($f3)
+    {
+        // Check API key in headers
+        $apiKey = $f3->get('HEADERS.X-API-Key') ?: $f3->get('GET.api_key');
+        if ($apiKey) return $this->get_user_id_from_api_key($apiKey);
+
+        $bearerToken = $f3->get('HEADERS.Authorization');
+        if ($bearerToken && strpos($bearerToken, 'Bearer ') === 0) {
+            $token = substr($bearerToken, 7);
+            return $this->get_user_id_from_jwt($token);
+        }
+
+        $userIdHeader = $f3->get('HEADERS.X-User-ID');
+        if ($userIdHeader) return (int)$userIdHeader;
+
+        return null;
     }
 }
