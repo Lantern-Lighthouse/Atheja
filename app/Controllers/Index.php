@@ -16,8 +16,12 @@ class Index
                 'Atheja codename' => $base->get('ATH.CODENAME')
             ],
             'stats' => [
-                'users' => (new \Models\User())->count(),
                 'categories' => (new \Models\Category())->count(),
+                'entries' => (new \Models\Entry())->count(),
+                'sessions' => (new \Models\Sessions())->count(),
+                'tags' => (new \Models\Tag())->count(),
+                'users' => (new \Models\User())->count(),
+                'votes' => (new \Models\Vote())->count(),
             ]
         ]);
     }
