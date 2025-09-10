@@ -1,8 +1,8 @@
 type: http_request
 model: http_request
-id: rq_Ds5rt3dpYU
-createdAt: 2025-08-29T15:01:48.047295300
-updatedAt: 2025-09-08T19:30:24.261552800
+id: rq_nYmTRkdGAF
+createdAt: 2025-09-08T19:30:18.074869400
+updatedAt: 2025-09-08T19:45:03.791723300
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ghAVc4Zzxq
 authentication: {}
@@ -26,6 +26,6 @@ description: ''
 headers: []
 method: GET
 name: Get user
-sortPriority: 2000.0
-url: http://localhost/Atheja/api/user/krmeni
+sortPriority: 5000.0
+url: http://localhost/Atheja/api/user/krmeni/avatar
 urlParameters: []
