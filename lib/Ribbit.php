@@ -232,7 +232,8 @@ class RibbitPerms
     public function get_role_with_permissions($rID)
     {
         $role = $this->db->exec("SELECT * FROM roles WHERE id = ?" . [$rID]);
-        if (empty($role)) return null;
+        if (empty($role))
+            return null;
 
         $permissions = $this->db->exec(
             "SELECT p.* FROM role_permissions rp
@@ -391,7 +392,8 @@ class RibbitMid
     {
         // Check API key in headers
         $apiKey = $f3->get('HEADERS.X-API-Key') ?: $f3->get('GET.api_key');
-        if ($apiKey) return $this->get_user_id_from_api_key($apiKey);
+        if ($apiKey)
+            return $this->get_user_id_from_api_key($apiKey);
 
         $bearerToken = $f3->get('HEADERS.Authorization');
         if ($bearerToken && strpos($bearerToken, 'Bearer ') === 0) {
@@ -400,8 +402,29 @@ class RibbitMid
         }
 
         $userIdHeader = $f3->get('HEADERS.X-User-ID');
-        if ($userIdHeader) return (int)$userIdHeader;
+        if ($userIdHeader)
+            return (int) $userIdHeader;
 
+        return null;
+    }
+
+    /**
+     * Get user ID from API key
+     * @param mixed $apiKey
+     */
+    private function get_user_id_from_api_key($apiKey)
+    {
+        $db = $this->f3->get('DB');
+        $result = $db->exec(
+            'SELECT user_id FROM api_keys WHERE key_hash = ? AND active = 1
+             AND (expires_at IS NULL OR expires_at > NOW()',
+            [hash('sha256', $apiKey)]
+        );
+
+        if (!empty($result)) {
+            $db->exec('UPDATE api_keys SET last_used = NOW() WHERE key_hash = ?', [hash('sha256', $apiKey)]);
+            return $result[0]['user_id'];
+        }
         return null;
     }
 }
