@@ -273,6 +273,179 @@ class RibbitPerms
         $this->db->exec($sql, [$uID, $action, $rID, $performedBy, $reason]);
     }
 }
+/**
+ * Self-hosted JWT Helper for Atheja
+ * No external dependencies - pure PHP implementation
+ */
+class RibbitJWT
+{
+    private $f3;
+
+    public function __construct()
+    {
+        $this->f3 = \Base::instance();
+    }
+
+    /**
+     * Generate JWT token for user
+     * @param mixed $uID
+     * @param mixed $expiresInSeconds
+     * @param mixed $additionalClaims
+     * @throws \Exception
+     * @return string
+     */
+    public function generate_token($uID, $expiresInSeconds = 3600, $additionalClaims = [])
+    {
+        $secret = $this->f3->get('JWT_SECRET');
+        if (!$secret)
+            throw new Exception('JWT_SECRET not configured');
+
+        $now = time();
+
+        // JWT Header
+        $header = [
+            'typ' => 'JWT',
+            'alg' => 'HS256'
+        ];
+
+        // JWT Payload
+        $payload = array_merge([
+            'iss' => $this->f3->get('JWT_ISSUER') ?? 'atheja-search', // Issuer
+            'aud' => $this->f3->get('JWT_AUDIENCE') ?? 'atheja-api', // Audience
+            'iat' => $now, // Issued at
+            'nbf' => $now, // Not before
+            'exp' => $now + $expiresInSeconds, // Expires
+            'user_id' => $uID
+        ], $additionalClaims);
+
+        // Encode header and payload
+        $headerEncoded = $this->base64_url_encode(json_encode($header));
+        $payloadEncoded = $this->base64_url_encode(json_encode($payload));
+
+        // Create signature
+        $signature = hash_hmac('sha256', $headerEncoded . '.' . $payloadEncoded, $secret, true);
+        $signatureEncoded = $this->base64_url_encode(json_encode($signature));
+
+        // Return complete JWT
+        return $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
+    }
+
+    /**
+     * Validate JWT token and return payload
+     * @param mixed $token
+     */
+    public function validate_token($token)
+    {
+        try {
+            $secret = $this->f3->get('JWT_SECRET');
+            if (!$secret)
+                return false;
+
+            // Split JWT into parts
+            $parts = explode('.', $token);
+            if (count($parts) !== 3)
+                return false;
+
+            list($headerEncoded, $payloadEncoded, $signatureEncoded) = $parts;
+
+            // Verify signature
+            $expectedSignature = $this->base64_url_decode(
+                hash_hmac('sha256', $headerEncoded . '.' . $payloadEncoded, $secret, true)
+            );
+
+            if (!hash_equals($expectedSignature, $signatureEncoded))
+                return false; // Invalid signature
+
+            // Decode payload
+            $payload = json_decode($this->base64_url_decode($payloadEncoded), true);
+            if (!$payload)
+                return false;
+
+            $now = time();
+
+            // Check expiration
+            if (isset($payload['exp']) && $payload['exp'] < $now)
+                return false; // Token expired
+
+            // Check not before
+            if (isset($payload['nbf']) && $payload['nbf'] > $now)
+                return false; // Token not yet valid
+
+            // Check issued at (prevent future tokens)
+            if (isset($payload['iat']) && $payload['iat'] > $now + 60) // 1 minute tolerance
+                return false;
+
+            return $payload;
+        } catch (Exception $e) {
+            error_log('JWT validation error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Refresh token if it's close to expiring
+     * @param mixed $token
+     * @param mixed $refreshThresholdSeconds
+     */
+    public function refresh_token_if_needed($token, $refreshThresholdSeconds = 300)
+    {
+        $payload = $this->validate_token($token);
+        if (!$payload)
+            return false;
+
+        // Check if token expires within treshold
+        $now = time();
+        if (isset($payload['exp']) && ($payload['exp'] - $now) < $refreshThresholdSeconds) {
+            // Generate new token with same claims but fresh expiration
+            $userID = $payload['user_id'];
+            $additionalClaims = $payload;
+            unset($additionalClaims['iss'], $additionalClaims['aud'], $additionalClaims['iat'], $additionalClaims['nbf'], $additionalClaims['exp'], $additionalClaims['user_id']);
+            return $this->generate_token($userID, 3600, $additionalClaims);
+        }
+        return $token;
+    }
+
+    /**
+     * Extract user ID from token without full validation (for caching)
+     * @param mixed $token
+     * @return int|null
+     */
+    public function get_user_id_from_token($token)
+    {
+        $parts = explode('.', $token);
+        if (count($parts) !== 3)
+            return null;
+        $payload = json_decode($this->base64_url_decode($parts[1]), true);
+        return isset($payload['user_id']) ? (int)$payload['user_id']: null;
+    }
+
+    /**
+     * Base64 URL-safe encode
+     * @param mixed $data
+     * @return string
+     */
+    private function base64_url_encode ($data) {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    /**
+     * Base64 URL-safe decode
+     * @param mixed $data
+     * @return bool|string
+     */
+    private function base64_url_decode ($data) {
+        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+    }
+
+    /**
+     * Generate a secure random secret for JWT signing
+     * @param mixed $length
+     * @return string
+     */
+    public static function generate_secret($length = 64){
+        return bin2hex(random_bytes($length / 2 ));
+    }
+}
 
 /**
  * Permission Middleware for F3
