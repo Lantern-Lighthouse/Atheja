@@ -51,7 +51,71 @@ class User extends \DB\Cortex
             'type' => 'BOOLEAN',
             'default' => 0,
             'required' => true
+        ],
+        'roles' => [
+            'has-many' => [
+                'Models\RbacRole',
+                'relTable' => 'rbac_user_roles',
+                'localKey' => '_id',
+                'foreignKey' => 'role_id',
+                'relLocalKey' => 'user_id',
+                'relForeignKey' => 'role_id',
+            ]
         ]
     ];
+
+    /**
+     * Get all permissions for this user through their roles
+     * @return array
+     */
+    public function getPermissions()
+    {
+        $permissions = [];
+        if ($this->is_admin) {
+            $permModel = new RbacPermission();
+            $allPerms = $permModel->find();
+            return array_map(function ($perm) {
+                return $perm->name;
+            }, $allPerms ?: []);
+        }
+
+        if ($this->roles) {
+            foreach ($this->roles as $role) {
+                if ($role->permissions) {
+                    foreach ($role->permissions as $permission) {
+                        $permissions[] = $permission->name;
+                    }
+                }
+            }
+        }
+
+        return array_unique($permissions);
+    }
+
+    /**
+     * Check if user has specific permission
+     * @param string $permission
+     * @return bool
+     */
+    public function hasPermission(string $permission)
+    {
+        if ($this->is_admin)
+            return true;
+
+        $permissions = $this->getPermissions();
+        return in_array($permission, $permissions);
+    }
+
+    public function hasRole(string $roleName)
+    {
+        if ($this->roles) {
+            foreach ($this->roles as $role) {
+                if ($role->name === $roleName) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 
