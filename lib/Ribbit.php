@@ -80,7 +80,7 @@ class RibbitCore
      * @param string $roleName
      * @return bool
      */
-    public function har_role(string $roleName)
+    public function has_role(string $roleName)
     {
         if (!$this->currentUser)
             return false;
@@ -242,7 +242,7 @@ class RibbitCore
 
     public function require_role(string $role, callable $callback = null)
     {
-        if (!$this->har_role($role)) {
+        if (!$this->has_role($role)) {
             if ($callback)
                 return $callback();
 
