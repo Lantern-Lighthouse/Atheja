@@ -252,3 +252,283 @@ class RibbitCore
         return true;
     }
 }
+
+/**
+ * RBAC Management utilities
+ * Handles creation, deletion, and management of roles and permissions
+ */
+class RibbitManager
+{
+    private $base;
+
+    public function __construct(\Base $base)
+    {
+        $this->base = $base;
+    }
+
+    /**
+     * Create a new role
+     * @param string $name
+     * @param string $displayName
+     * @param string $description
+     * @param bool $isSystemRole
+     * @throws \Exception
+     * @return bool
+     */
+    public function create_role(string $name, string $displayName, string $description = '', bool $isSystemRole = false)
+    {
+        try {
+            $roleModel = new \Models\RbacRole();
+
+            // Check if role already exists
+            if ($roleModel->findone(['name=?', $name])) {
+                throw new Exception("Role '$name' already exists");
+            }
+
+            $roleModel->name = $name;
+            $roleModel->display_name = $displayName;
+            $roleModel->description = $description;
+            $roleModel->is_system_role = $isSystemRole;
+            $roleModel->save();
+
+            return true;
+        } catch (Exception $e) {
+            error_log("Error creating role: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Create a new permission
+     * @param string $name
+     * @param string $displayName
+     * @param string $resource
+     * @param string $action
+     * @param string $description
+     * @param bool $isSystemPermission
+     * @throws \Exception
+     * @return bool
+     */
+    public function create_permission(string $name, string $displayName, string $resource, string $action, string $description = '', bool $isSystemPermission = false)
+    {
+        try {
+            $permModel = new \Models\RbacPermission();
+
+            // Check if permission already exists
+            if ($permModel->findone(['name=?', $name]))
+                throw new Exception("Permission '$name' already exists");
+
+            $permModel->name = $name;
+            $permModel->display_name = $displayName;
+            $permModel->resource = $resource;
+            $permModel->action = $action;
+            $permModel->is_system_permission = $isSystemPermission;
+
+            $permModel->save();
+            return true;
+        } catch (Exception $e) {
+            error_log("Error creating permission: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Assign permission to role
+     * @param string $roleName
+     * @param string $permissionName
+     * @throws \Exception
+     * @return bool
+     */
+    public function assign_permission_to_role(string $roleName, string $permissionName)
+    {
+        try {
+            $roleModel = new \Models\RbacRole();
+            $role = $roleModel->findone(['name=?', $roleName]);
+            if (!$role)
+                throw new Exception("Role '$roleName' not found");
+
+            $permModel = new \Models\RbacPermission();
+            $permission = $permModel->find(['name=?', $permissionName]);
+            if (!$permission)
+                throw new Exception("Permission '$permissionName' not found");
+
+            // Get current permissions
+            $currentPerms = [];
+            if ($role->permissions)
+                foreach ($role->permissions as $existingPerm)
+                    $currentPerms[] = $existingPerm->_id;
+
+            // Add new permission if not already assigned
+            if (!in_array($permission->_id, $currentPerms)) {
+                $currentPerms[] = $permission->_id;
+                $role->permissions = $currentPerms;
+                $role->save();
+            }
+
+            return true;
+        } catch (Exception $e) {
+            error_log("Error assigning permission to role: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Remove permission from role
+     * @param string $roleName
+     * @param string $permissionName
+     * @throws \Exception
+     * @return bool
+     */
+    public function remove_permission_from_role(string $roleName, string $permissionName)
+    {
+        try {
+            $roleModel = new \Models\RbacRole();
+            $role = $roleModel->findone(['name=?', $roleName]);
+            if (!$role)
+                throw new Exception("Role '$roleName' not found");
+
+            $permModel = new \Models\RbacPermission();
+            $permission = $permModel->findone(['name=?', $permissionName]);
+            if (!$permission)
+                throw new Exception("Permission '$permissionName' not found");
+
+            // Get current permissions
+            $currentPerms = [];
+            if ($role->permissons)
+                foreach ($role->permissions as $existingPerm)
+                    if ($existingPerm->_id !== $permission->_id)
+                        $currentPerms[] = $existingPerm->_id;
+
+            $role->permissions = $currentPerms;
+            $role->save();
+            return true;
+        } catch (Exception $e) {
+            error_log("Error remmoving permisson from role: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Delete a role only if not system role and no users assigned
+     * @param string $roleName
+     * @throws \Exception
+     * @return bool
+     */
+    public function delete_role(string $roleName)
+    {
+        try {
+            $roleModel = new \Models\RbacRole();
+            $role = $roleModel->findone(['name=?', $roleName]);
+            if (!$role)
+                throw new Exception("Role '$roleName' not found");
+
+            if ($role->is_system_role)
+                throw new Exception("Cannot delete system role");
+
+            // Check if any users have this role
+            $userModel = new \Models\User();
+            $usersWithRole = $userModel->find(['roles LIKE ?', '%' . $role->_id . '%']);
+            if ($usersWithRole && count($usersWithRole) > 0)
+                throw new Exception("Cannot delete role - users are still assigned to it");
+
+            $role->erase();
+            return true;
+        } catch (Exception $e) {
+            error_log("Error deleting role: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Delete a permission only if not system permission
+     * @param string $permissionName
+     * @throws \Exception
+     * @return bool
+     */
+    public function delete_permission(string $permissionName)
+    {
+        try {
+            $permModel = new \Models\RbacPermission();
+            $permission = $permModel->findone(['name=?', $permissionName]);
+            if (!$permission)
+                throw new Exception("Permission '$permissionName' not found");
+
+            if ($permission->is_system_permission)
+                throw new Exception("Cannot delete system permission");
+
+            $permission->erase();
+            return true;
+        } catch (Exception $e) {
+            error_log("Error deleting permission: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get all roles
+     * @return array<array|array{created_at: mixed, description: mixed, display_name: mixed, id: mixed, is_system_role: mixed, name: mixed, permissions: array>}
+     */
+    public function get_all_roles()
+    {
+        $roleModel = new \Models\RbacRole();
+        $roles = $roleModel->find();
+        if (!$roles)
+            return [];
+
+        $result = [];
+        foreach ($roles as $role) {
+            $permissions = [];
+            if ($role->permissions)
+                foreach ($role->permissions as $perm)
+                    $permissions[] = [
+                        'id' => $perm->_id,
+                        'name' => $perm->name,
+                        'display_name' => $perm->display_name,
+                        'resource' => $perm->resource,
+                        'action' => $perm->action
+                    ];
+
+
+
+            $result[] = [
+                'id' => $role->_id,
+                'name' => $role->name,
+                'display_name' => $role->display_name,
+                'description' => $role->description,
+                'is_system_role' => $role->is_system_role,
+                'permissions' => $permissions,
+                'created_at' => $role->created_at
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get all permissions
+     * @return array{action: mixed, created_at: mixed, description: mixed, display_name: mixed, id: mixed, is_system_permission: mixed, name: mixed, resource: mixed[]}
+     */
+    public function get_all_permissions()
+    {
+        $permModel = new \Models\RbacPermission();
+        $permissions = $permModel->find();
+        if (!$permissions)
+            return [];
+
+        $result = [];
+        foreach ($permissions as $perm) {
+            $result[] = [
+                'id' => $perm->_id,
+                'name' => $perm->name,
+                'display_name' => $perm->display_name,
+                'description' => $perm->description,
+                'resource' => $perm->resource,
+                'action' => $perm->action,
+                'is_system_permission' => $perm->is_system_permission,
+                'created_at' => $perm->created_at
+            ];
+        }
+
+        return $result;
+    }
+}
