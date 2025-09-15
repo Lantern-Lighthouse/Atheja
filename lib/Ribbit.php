@@ -531,4 +531,105 @@ class RibbitManager
 
         return $result;
     }
+
+    /**
+     * Setup default system roles and permissions
+     * @return bool
+     */
+    public function setup_default_roles_and_permissions()
+    {
+        try {
+            // Create default permissions
+            $defaultPermissions = [
+                ['user.create', 'Create User', 'user', 'create', 'Create new user accounts'],
+                ['user.read', 'Read User', 'user', 'read', 'View user information'],
+                ['user.update', 'Update User', 'user', 'update', 'Update user information'],
+                ['user.delete', 'Delete User', 'user', 'delete', 'Delete user accounts'],
+
+                ['entry.create', 'Create Entries', 'entry', 'create', 'Create new entries'],
+                ['entry.read', 'Read Entries', 'entry', 'read', 'View entries'],
+                ['entry.update', 'Update Entries', 'entry', 'update', 'Update entries'],
+                ['entry.delete', 'Create Entries', 'entry', 'delete', 'Delete entries'],
+                ['entry.rate', 'Rate Entries', 'entry', 'rate', 'Vote on entries'],
+
+                ['category.create', 'Create Categories', 'category', 'create', 'Create new categories'],
+                ['category.read', 'Read Categories', 'category', 'read', 'View categories'],
+                ['category.update', 'Update Categories', 'category', 'update', 'Update categories'],
+                ['category.delete', 'Delete Categories', 'category', 'delete', 'Delete categories'],
+
+                ['tag.create', 'Create Tags', 'tag', 'create', 'Create tags'],
+                ['tag.read', 'Read Tags', 'tag', 'read', 'View tags'],
+                ['tag.update', 'Update Tags', 'tag', 'update', 'Update tags'],
+                ['tag.delete', 'Delete Tags', 'tag', 'delete', 'Delete tags'],
+
+                ['system.admin', 'System Administration', 'system', 'admin', 'Full system administration'],
+                ['system.rbac', 'Manage RBAC', 'system', 'rbac', 'Manage roles and permissions']
+            ];
+
+            foreach ($defaultPermissions as $perm)
+                $this->create_permission($perm[0], $perm[1], $perm[2], $perm[3], $perm[4], true);
+
+            // Create default roles
+            $this->create_role('admin', 'Administrator', 'Full system administrator', true);
+            $this->create_role('moderator', 'Moderator', 'Content moderator', true);
+            $this->create_role('user', 'User', 'User', true);
+            $this->create_role('guest', 'Guest', 'Limited access user', true);
+
+            // Assign permissions to roles
+            // Admin gets all permissions
+            $adminPerms = array_column($defaultPermissions, 0);
+            foreach ($adminPerms as $perm)
+                $this->assign_permission_to_role('admin', $perm);
+
+            // Moderator gets content management permissions
+            $moderatorPerms = [
+                'user.read',
+                'user.update',
+                'entry.create',
+                'entry.read',
+                'entry.update',
+                'entry.delete',
+                'entry.rate',
+                'category.read',
+                'category.update',
+                'tag.create',
+                'tag.read',
+                'tag.update',
+                'tag.delete'
+            ];
+            foreach ($moderatorPerms as $perm)
+                $this->assign_permission_to_role('moderator', $perm);
+
+            // User gets basic permissions
+            $userPerms = [
+                'user.read',
+                'entry.create',
+                'entry.read',
+                'entry.update',
+                'entry.rate',
+                'category.read',
+                'tag.create',
+                'tag.read',
+                'tag.update',
+                'tag.delete'
+            ];
+            foreach ($userPerms as $perm)
+                $this->assign_permission_to_role('user', $perm);
+
+            // Guest gets read-only permissions
+            $guestPerms = [
+                'user.read',
+                'entry.read',
+                'category.read',
+                'tag.read'
+            ];
+            foreach ($guestPerms as $perm)
+                $this->assign_permission_to_role('guest', $perm);
+
+            return true;
+        } catch (Exception $e){
+            error_log("Error setting up default roles and permissions: " . $e->getMessage());
+            return false;
+        }
+    }
 }
