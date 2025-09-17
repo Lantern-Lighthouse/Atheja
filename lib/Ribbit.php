@@ -780,5 +780,106 @@ class RibbitGuard
             return false;
         };
     }
+
+    public static function protect_controllers(\Base $base)
+    {
+        self::init($base);
+
+        // Override existing routes with RBAC protection
+        $originalRun = $base->get('run');
+
+        $base->route('POST /api/search/category/create', function ($base) {
+            $guard = self::require_permission('category.create');
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchCategoryCreate($base);
+        });
+
+        $base->route('POST /api/search/category/@category/edit', function ($base) {
+            $guard = self::require_permission('category.update');
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchCategoryEdit($base);
+        });
+
+        $base->route('POST /api/search/category/@category/delete', function ($base) {
+            $guard = self::require_permission('category.delete');
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchCategoryDelete($base);
+        });
+
+        $base->route('POST /api/search/tag/add', function ($base) {
+            $guard = self::require_permission('tag.create');
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchTagAdd($base);
+        });
+
+        $base->route('POST /api/search/tag/@tag/edit', function ($base) {
+            $guard = self::require_permission('tag.update');
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchTagEdit($base);
+        });
+
+        $base->route('POST /api/search/tag/@tag/delete', function ($base) {
+            $guard = self::require_permission('tag.delete');
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchTagDelete($base);
+        });
+
+        $base->route('POST /api/search/entry/create', function ($base) {
+            $guard = self::require_permission('entry.create');
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchEntryCreate($base);
+        });
+
+        $base->route('POST /api/search/entry/@entry/edit', function ($base) {
+            $guard = self::require_ownership_or_admin(function ($base) {
+                $entryModel = new \Models\Entry();
+                $entry = $entryModel->findone(['id=?', $base->get('PARAMS.entry')]);
+                return $entry ? $entry->author->id : null;
+            });
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchEntryEdit($base);
+        });
+
+        $base->route('POST /api/search/entry/@entry/delete', function ($base) {
+            $guard = self::require_ownership_or_admin(function ($base) {
+                $entryModel = new \Models\Entry();
+                $entry = $entryModel->findone(['id=?', $base->get('PARAMS.entry')]);
+                return $entry ? $entry->author->id : null;
+            });
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchEntryDelete($base);
+        });
+
+        $base->route('POST /api/search/entry/@entry/rate', function ($base) {
+            $guard = self::require_permission('entry.rate');
+            if ($guard($base))
+                (new \Controllers\Search())->postSearchEntryRate($base);
+        });
+
+        $base->route('POST /api/user/create', function ($base) {
+            // Allow public user creation if enabled, otherwise require permission
+            if (!$base->get('ATH.PUBLIC_USER_CREATION')) {
+                $guard = self::require_permission('user.create');
+                if (!$guard($base))
+                    return;
+            }
+            (new \Controllers\User())->postUserCreate($base);
+        });
+
+        $base->route('POST /api/user/@user/edit', function ($base) {
+            $guard = self::require_ownership_or_admin(function ($base) {
+                $model = new \Models\User();
+                $user = $model->findone(['username=?', $base->get('PARAMS.user')]);
+                return $user ? $user->author->id : null;
+            });
+            if ($guard($base))
+                (new \Controllers\User())->postUserEdit($base);
+        });
+
+        $base->route('POST /api/user/@user/delete', function ($base) {
+            $guard = self::require_any_permission(['user.delete', 'system.admin']);
+            if ($guard($base))
+                (new \Controllers\User())->postUserDelete($base);
+        });
+    }
 }
--
