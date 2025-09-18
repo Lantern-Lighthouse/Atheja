@@ -53,14 +53,7 @@ class User extends \DB\Cortex
             'required' => true
         ],
         'roles' => [
-            'has-many' => [
-                'Models\RbacRole',
-                'relTable' => 'rbac_user_roles',
-                'localKey' => '_id',
-                'foreignKey' => 'role_id',
-                'relLocalKey' => 'user_id',
-                'relForeignKey' => 'role_id',
-            ]
+            'has-many' => '\Models\RbacRole,rbac_user_roles,user_id,role_id'
         ]
     ];
 

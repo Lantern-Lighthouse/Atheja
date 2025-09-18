@@ -29,14 +29,14 @@ class RbacPermission extends \DB\Cortex
             'index' => false
         ],
         'resource' => [
-            'type' => 'VARCHAT64',
+            'type' => 'VARCHAR128',
             'required' => true,
             'unique' => false,
             'nullable' => false,
             'index' => true
         ],
         'action' => [
-            'type' => 'VARCHAT64',
+            'type' => 'VARCHAR128',
             'required' => true,
             'unique' => false,
             'nullable' => false,
