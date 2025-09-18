@@ -34,7 +34,7 @@ class RbacRole extends \DB\Cortex
             'required' => true
         ],
         'permissions' => [
-            'has-many' => '\Models\RbacPermission,rbac_role_permissions,role_i'
+            'belongs-to-many' => '\Models\RbacPermission,rbac_role_permissions,role_id,permission_id'
         ],
         'created_at' => [
             'type' => 'DATETIME',
