@@ -65,6 +65,48 @@ class Index
         } catch (Exception $e) {
             JSON_response($e->getMessage(), 500);
         }
+
+        try {
+            \Models\RbacRole::setdown();
+            \Models\RbacPermission::setdown();
+
+            $db = $base->get('DB');
+            $db->exec('DROP TABLE IF EXISTS rbac_role_permissions');
+            $db->exec('DROP TABLE IF EXISTS rbac_user_roles');
+        } catch (Exception $€) {
+            error_log("Error dropping RBAC tables: " . $€->getMessage());
+        }
+
+        try {
+            \Models\RbacRole::setup();
+            \Models\RbacPermission::setup();
+
+            $db = $base->get('DB');
+            $db->exec('CREATE TABLE IF NOT EXISTS rbac_role_permissions(
+                role_id INTEGER NOT NULL,
+                permission_id INTEGER NOT NULL,
+                PRIMARY KEY (role_id, permission_id)
+                )');
+            $db->exec('CREATE TABLE IF NOT EXISTS rbac_user_roles(
+                user_id INTEGER NOT NULL,
+                role_id INTEGER NOT NULL,
+                PRIMARY KEY (user_id, role_id)
+            )');
+
+            $manager = new \lib\RibbitManager($base);
+            $manager->setup_default_roles_and_permissions();
+
+            $userModel = new \Models\User();
+            $users = $userModel->find();
+            if ($users) {
+                $rbacCore = \lib\RibbitCore::get_instance($base);
+                foreach ($users as $user)
+                    if (!$user->is_admin)
+                        $rbacCore->asign_role_to_user($user->id, 'user');
+            }
+        } catch (Exception $e) {
+            error_log("Error setting up Ribbit: " . $e->getMessage());
+        }
         JSON_response(true);
     }
 
