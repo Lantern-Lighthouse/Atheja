@@ -74,7 +74,7 @@ class Index
             $db->exec('DROP TABLE IF EXISTS rbac_role_permissions');
             $db->exec('DROP TABLE IF EXISTS rbac_user_roles');
         } catch (Exception $€) {
-            error_log("Error dropping RBAC tables: " . $€->getMessage());
+            JSON_response("Error dropping RBAC tables: " . $€->getMessage(), 500);
         }
 
         try {
@@ -105,7 +105,7 @@ class Index
                         $rbacCore->asign_role_to_user($user->id, 'user');
             }
         } catch (Exception $e) {
-            error_log("Error setting up Ribbit: " . $e->getMessage());
+            JSON_response("Error setting up Ribbit: " . $e->getMessage(), 500);
         }
         JSON_response(true);
     }

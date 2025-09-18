@@ -107,7 +107,7 @@ try {
     if ($base->get('ATH.ENABLE_RIBBIT_GUARD') !== 0)
         \lib\RibbitGuard::protect_controllers($base);
 } catch (Exception $e) {
-    error_log("Ribbit initialization failed: " . $e->getMessage());
+    JSON_response("Ribbit initialization failed: " . $e->getMessage(), 500);
 }
 
 $base->run();
