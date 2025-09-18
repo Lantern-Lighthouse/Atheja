@@ -99,7 +99,7 @@ class RibbitManager
                 throw new Exception("Role '$roleName' not found");
 
             $permModel = new \Models\RbacPermission();
-            $permission = $permModel->find(['name=?', $permissionName]);
+            $permission = $permModel->findone(['name=?', $permissionName]);
             if (!$permission)
                 throw new Exception("Permission '$permissionName' not found");
 
