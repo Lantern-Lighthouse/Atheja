@@ -24,6 +24,12 @@ class Index
 
     public function getDBsetup(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('system.admin') == false && (new \Models\User())->count() != 0)
+            return JSON_response('Unauthorized', 401);
+
         try {
             \Models\User::setdown();
             \Models\Sessions::setdown();
@@ -112,12 +118,16 @@ class Index
 
     public function getDBCleanSessions(\Base $base)
     {
-        if (!VerifySessionToken($base))
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('system.admin') == false)
             return JSON_response('Unauthorized', 401);
 
         $model = new \Models\Sessions();
-
         $expiredSessions = $model->find(['expires_at < ?', date('Y-m-d H:i:s')]);
+        if (!$expiredSessions)
+            return JSON_response('No expired sessions found', 404);
         foreach ($expiredSessions as $session) {
             $session->erase();
         }
