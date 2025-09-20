@@ -145,7 +145,7 @@ class RibbitManager
 
             // Get current permissions
             $currentPerms = [];
-            if ($role->permissons)
+            if ($role->permissions)
                 foreach ($role->permissions as $existingPerm)
                     if ($existingPerm->_id !== $permission->_id)
                         $currentPerms[] = $existingPerm->_id;
