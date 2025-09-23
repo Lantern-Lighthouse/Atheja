@@ -1,0 +1,41 @@
+type: http_request
+model: http_request
+id: rq_9vHzRagPpQ
+createdAt: 2025-09-23T17:19:19.228121100
+updatedAt: 2025-09-23T17:21:44.684709500
+workspaceId: wk_iRyJisk9Us
+folderId: fl_d6SS9wqvSg
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: name
+    value: testing
+  - enabled: true
+    name: display_name
+    value: Testing permission
+  - enabled: true
+    name: resource
+    value: system
+  - enabled: true
+    name: action
+    value: test
+  - enabled: true
+    name: description
+    value: Permission to test F3 routes
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: W90pBWHKs9
+method: POST
+name: Create Permissions
+sortPriority: 0.0019
+url: http://localhost/Atheja/api/ribbit/permission/create
+urlParameters: []

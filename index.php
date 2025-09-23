@@ -87,7 +87,8 @@ function VerifySessionToken(\Base $base)
 
     $sessionModel = new \Models\Sessions();
     $sessions = $sessionModel->find(['expires_at > ?', date('Y-m-d H:i:s')]);
-    if ($sessions == false) return false;
+    if ($sessions == false)
+        return false;
 
     foreach ($sessions as $session) {
         if (password_verify($token, $session->key)) {
@@ -99,6 +100,14 @@ function VerifySessionToken(\Base $base)
     }
 
     return false;
+}
+
+try {
+    $rbac = \lib\RibbitCore::get_instance($base);
+    if ($base->get('ATH.ENABLE_RIBBIT_GUARD') !== 0)
+        \lib\RibbitGuard::protect_controllers($base);
+} catch (Exception $e) {
+    JSON_response("Ribbit initialization failed: " . $e->getMessage(), 500);
 }
 
 $base->run();

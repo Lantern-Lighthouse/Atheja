@@ -1,0 +1,32 @@
+type: http_request
+model: http_request
+id: rq_W26TtFcyfj
+createdAt: 2025-09-23T17:16:49.481572900
+updatedAt: 2025-09-23T17:18:50.928709800
+workspaceId: wk_iRyJisk9Us
+folderId: fl_UrsZfY2rat
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: display_name
+    value: Test editing role
+  - enabled: true
+    name: description
+    value: Role tested for editing
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: W90pBWHKs9
+method: POST
+name: Edit Role
+sortPriority: 0.0029
+url: http://localhost/Atheja/api/ribbit/role/testing/edit
+urlParameters: []

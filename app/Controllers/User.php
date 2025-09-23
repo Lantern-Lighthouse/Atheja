@@ -30,6 +30,7 @@ class User
 
         try {
             $model->save();
+            $model->count() <= 1 ? (\lib\RibbitCore::get_instance($base))->asign_role_to_user($model->get("id"), 'admin') : (\lib\RibbitCore::get_instance($base))->asign_role_to_user($model->get("id"), 'user');
         } catch (Exception $e) {
             JSON_response($e->getMessage(), intval($e->getCode()));
             return;

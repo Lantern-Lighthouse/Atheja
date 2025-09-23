@@ -1,0 +1,35 @@
+type: http_request
+model: http_request
+id: rq_djfPNW4PoD
+createdAt: 2025-09-23T17:12:24.669396400
+updatedAt: 2025-09-23T17:17:45.527134500
+workspaceId: wk_iRyJisk9Us
+folderId: fl_UrsZfY2rat
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: name
+    value: testing
+  - enabled: true
+    name: display_name
+    value: Testing role
+  - enabled: true
+    name: description
+    value: Role to test F3 routes
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: W90pBWHKs9
+method: POST
+name: Create Role
+sortPriority: 0.0019
+url: http://localhost/Atheja/api/ribbit/role/create
+urlParameters: []

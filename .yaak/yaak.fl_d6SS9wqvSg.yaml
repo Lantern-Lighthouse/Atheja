@@ -1,0 +1,13 @@
+type: folder
+model: folder
+id: fl_d6SS9wqvSg
+createdAt: 2025-09-23T17:19:19.226461100
+updatedAt: 2025-09-23T17:26:12.508602200
+workspaceId: wk_iRyJisk9Us
+folderId: fl_u4KxrXVsFr
+authentication: {}
+authenticationType: null
+description: ''
+headers: []
+name: Permissions
+sortPriority: 500.0
