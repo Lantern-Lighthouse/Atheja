@@ -1,0 +1,29 @@
+type: http_request
+model: http_request
+id: rq_XSxn9dks5W
+createdAt: 2025-09-23T17:22:11.561495600
+updatedAt: 2025-09-23T17:23:40.032576500
+workspaceId: wk_iRyJisk9Us
+folderId: fl_bSQZ8z683E
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: permission
+    value: testing
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: W90pBWHKs9
+method: POST
+name: Assign Permission
+sortPriority: 0.0019
+url: http://localhost/Atheja/api/ribbit/role/testing/permission/assign
+urlParameters: []

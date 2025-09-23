@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_Zv5TpqQrDq
+createdAt: 2025-09-23T17:24:31.559160900
+updatedAt: 2025-09-23T17:27:06.007978300
+workspaceId: wk_iRyJisk9Us
+folderId: fl_u4KxrXVsFr
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: User Info
+sortPriority: 1000.0
+url: http://localhost/Atheja/api/ribbit/user/krmeni/info
+urlParameters: []

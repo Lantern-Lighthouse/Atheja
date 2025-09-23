@@ -1,0 +1,28 @@
+type: http_request
+model: http_request
+id: rq_YCHCvjaxef
+createdAt: 2025-09-23T17:18:53.319939400
+updatedAt: 2025-09-23T17:19:37.998346800
+workspaceId: wk_iRyJisk9Us
+folderId: fl_UrsZfY2rat
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: display_name
+    value: Test editing role
+  - enabled: true
+    name: description
+    value: Role tested for editing
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: Delete Role
+sortPriority: 0.0039
+url: http://localhost/Atheja/api/ribbit/role/testing/delete
+urlParameters: []
