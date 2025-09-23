@@ -205,7 +205,7 @@ class Rbac
     //endregion
 
     //region User-Role Assigment
-    public function postUserRoleAssigment(\Base $base)
+    public function postUserRoleAssign(\Base $base)
     {
         $user = VerifySessionToken($base);
         if (!$user)
@@ -259,15 +259,15 @@ class Rbac
             return JSON_response("Unauthorized", 401);
 
         $this->rbac->set_current_user($user);
-        $targetUserID = $base->get('PARAMS.user');
-        if ($user->id != $targetUserID && !$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return JSON_response('Insufficient permissions', 403);
-
         $model = new \Models\User();
-        $targetUser = $model->findone(['id=?', $targetUserID]);
-        if ($targetUser)
+        $targetUser = $model->findone(['username=?', $base->get('PARAMS.user')]);
+        if (!$targetUser)
             JSON_response('User not found', 404);
 
+        $targetUserID = $targetUser->id;
+        if ($user->id != $targetUserID && !$this->rbac->has_permission('system.rbac') && !$user->is_admin)
+            return JSON_response('Insufficient permissions', 403);
+        
         $roles = [];
         if ($targetUser->roles) {
             foreach ($targetUser->roles as $role) {

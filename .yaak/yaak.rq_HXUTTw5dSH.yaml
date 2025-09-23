@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_HXUTTw5dSH
 createdAt: 2025-09-23T17:24:49.207573500
-updatedAt: 2025-09-23T17:30:28.785334400
+updatedAt: 2025-09-23T19:30:04.254232100
 workspaceId: wk_iRyJisk9Us
 folderId: fl_3wDgfNk4GE
 authentication: {}
@@ -22,7 +22,7 @@ headers:
   name: Content-Type
   value: application/x-www-form-urlencoded
   id: W90pBWHKs9
-method: GET
+method: POST
 name: Assign Role
 sortPriority: 0.0
 url: http://localhost/Atheja/api/ribbit/user/krmeni/role/assign

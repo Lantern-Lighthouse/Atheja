@@ -67,9 +67,12 @@ class User extends \DB\Cortex
         if ($this->is_admin) {
             $permModel = new RbacPermission();
             $allPerms = $permModel->find();
-            return array_map(function ($perm) {
-                return $perm->name;
-            }, $allPerms ?: []);
+            if ($allPerms) {
+                foreach ($allPerms as $perm)
+                    $permissions[] = $perm->name;
+                return array_unique($permissions);
+            }
+            return [];
         }
 
         if ($this->roles) {
