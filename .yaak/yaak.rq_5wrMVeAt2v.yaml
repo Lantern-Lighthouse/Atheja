@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_5wrMVeAt2v
+createdAt: 2025-09-23T17:35:39.607654800
+updatedAt: 2025-09-23T17:41:56.339386700
+workspaceId: wk_iRyJisk9Us
+folderId: fl_u4KxrXVsFr
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: Setup RBAC
+sortPriority: 1000.001
+url: http://localhost/Atheja/api/ribbit/setup
+urlParameters: []
