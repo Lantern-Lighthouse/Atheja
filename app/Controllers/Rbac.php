@@ -237,9 +237,9 @@ class Rbac
             return JSON_response('Insufficient permissions', 403);
 
         $userID = (new \Models\User())->findone(['username=?', $base->get('PARAMS.user')])->id;
-        if(!$userID)
+        if (!$userID) 
             return JSON_response('User not found', 404);
-        
+
         $roleName = $base->get('POST.role');
         if (!$roleName)
             JSON_response('Role name is required', 400);
@@ -267,7 +267,7 @@ class Rbac
         $targetUserID = $targetUser->id;
         if ($user->id != $targetUserID && !$this->rbac->has_permission('system.rbac') && !$user->is_admin)
             return JSON_response('Insufficient permissions', 403);
-        
+
         $roles = [];
         if ($targetUser->roles) {
             foreach ($targetUser->roles as $role) {

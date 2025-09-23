@@ -27,7 +27,7 @@ class User
         $model->email = $base->get('POST.email');
         $model->password = password_hash($base->get('POST.password'), PASSWORD_DEFAULT);
         $model->is_admin = $model->count() ? 0 : 1;
-        
+
         try {
             $model->save();
             $model->count() <= 1 ? (\lib\RibbitCore::get_instance($base))->asign_role_to_user($model->get("id"), 'admin') : (\lib\RibbitCore::get_instance($base))->asign_role_to_user($model->get("id"), 'user');
