@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_XYE4dKeVwi
 createdAt: 2025-08-13T19:23:49.075480100
-updatedAt: 2025-08-27T23:11:17.301132400
+updatedAt: 2025-09-24T17:37:37.644920300
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ZkQzZTQj53
 authentication: {}
@@ -24,6 +24,9 @@ body:
   - enabled: true
     name: tags
     value: search engine
+  - enabled: true
+    name: is-nsfw
+    value: '0'
   - enabled: true
     name: ''
     value: ''

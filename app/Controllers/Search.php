@@ -304,6 +304,10 @@ class Search
 
         $model->tags = array_unique($tagsOut);
 
+        // Rating setting
+        $model->is_nsfw = $base->get('POST.is-nsfw') ?? $base->get('ATH.ASSUME_UNKNOWN_AS_NSFW');
+
+        // Saving and feedback
         try {
             $model->save();
 
