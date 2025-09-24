@@ -70,6 +70,11 @@ class Entry extends \DB\Cortex
             'unique' => false,
             'index' => true
         ],
+        'is_nsfw' => [
+            'type' => 'BOOLEAN',
+            'default' => 0,
+            'required' => true
+        ],
         'created_at' => [
             'type' => 'DATETIME',
             'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP

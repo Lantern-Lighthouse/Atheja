@@ -217,7 +217,7 @@ class Search
                 'karma' => $entry->author->karma,
                 'account_created' => $entry->author->account_created,
             ],
-            // 'tags' => $tags,
+            'nsfw' => $entry->is_nsfw,
             'tags' => $tags,
             'id' => $entry->_id,
         ];
@@ -268,8 +268,12 @@ class Search
         // Favicon setting
         $model->favicon = FavFet::get_favicon_as_base64($base->get('POST.page-url'));
 
+        // Rating setting
+        $model->is_nsfw = $base->get('POST.is-nsfw') ?? $base->get('ATH.ASSUME_UNKNOWN_AS_NSFW');
+
         // Karma setting
-        $model->karma = 1;
+        $model->upvotes = intval(!$model->get('is_nsfw'));
+        $model->downvotes = 0;
 
         // Author setting
         $model->author = $author;
@@ -304,10 +308,12 @@ class Search
 
         $model->tags = array_unique($tagsOut);
 
+        // Saving and feedback
         try {
             $model->save();
 
-            $this->createAuthorUpvote($author, $model);
+            if (!$model->get('is_nsfw'))
+                $this->createAuthorUpvote($author, $model);
             JSON_response('Entry added', 201);
         } catch (Exception $e) {
             return JSON_response($e->getMessage(), 500);
