@@ -79,10 +79,6 @@ class Index
         try {
             \Models\RbacRole::setdown();
             \Models\RbacPermission::setdown();
-
-            $db = $base->get('DB');
-            $db->exec('DROP TABLE IF EXISTS rbac_role_permissions');
-            $db->exec('DROP TABLE IF EXISTS rbac_user_roles');
         } catch (Exception $€) {
             JSON_response("Error dropping RBAC tables: " . $€->getMessage(), 500);
         }
@@ -90,18 +86,6 @@ class Index
         try {
             \Models\RbacRole::setup();
             \Models\RbacPermission::setup();
-
-            $db = $base->get('DB');
-            $db->exec('CREATE TABLE IF NOT EXISTS rbac_role_permissions(
-                role_id INTEGER NOT NULL,
-                permission_id INTEGER NOT NULL,
-                PRIMARY KEY (role_id, permission_id)
-                )');
-            $db->exec('CREATE TABLE IF NOT EXISTS rbac_user_roles(
-                user_id INTEGER NOT NULL,
-                role_id INTEGER NOT NULL,
-                PRIMARY KEY (user_id, role_id)
-            )');
 
             $manager = new \lib\RibbitManager($base);
             $manager->setup_default_roles_and_permissions();
