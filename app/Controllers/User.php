@@ -32,7 +32,7 @@ class User
             $model->save();
             $model->count() <= 1 ? (\lib\RibbitCore::get_instance($base))->asign_role_to_user($model->get("id"), 'admin') : (\lib\RibbitCore::get_instance($base))->asign_role_to_user($model->get("id"), 'user');
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), intval($e->getCode()));
+            JSON_response($e->getMessage(), 500);
             return;
         }
         JSON_response(true, 201);
@@ -103,7 +103,7 @@ class User
         try {
             $entry->save();
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), intval($e->getCode()));
+            JSON_response($e->getMessage(), 500);
             return;
         }
         JSON_response(true, 200);

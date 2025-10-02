@@ -42,7 +42,7 @@ class Index
             \Models\Tag::setdown();
             \Models\Vote::setdown();
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), $e->getMessage());
+            JSON_response($e->getMessage(), 500);
         }
 
         try {
@@ -53,7 +53,7 @@ class Index
             \Models\Tag::setup();
             \Models\Vote::setup();
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), $e->getMessage());
+            JSON_response($e->getMessage(), 500);
         }
 
         try {
