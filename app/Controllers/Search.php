@@ -11,6 +11,12 @@ class Search
     //region Categories
     public function getSearchCategory(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('category.read') == false)
+            return JSON_response('Unauthorized', 401);
+
         $model = new \Models\Category();
         $entries = $model->afind();
         $cast = array();
@@ -26,7 +32,10 @@ class Search
 
     public function postSearchCategoryCreate(\Base $base)
     {
-        if (!VerifySessionToken($base))
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('category.create') == false)
             return JSON_response('Unauthorized', 401);
 
         $model = new \Models\Category();
@@ -45,7 +54,10 @@ class Search
 
     public function postSearchCategoryEdit(\Base $base)
     {
-        if (!VerifySessionToken($base))
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('category.update') == false)
             return JSON_response('Unauthorized', 401);
 
         $model = new \Models\Category();
@@ -68,7 +80,10 @@ class Search
 
     public function postSearchCategoryDelete(\Base $base)
     {
-        if (!VerifySessionToken($base))
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('category.delete') == false)
             return JSON_response('Unauthorized', 401);
 
         $model = new \Models\Category();
@@ -89,6 +104,12 @@ class Search
     //region Tags
     public function getSearchTags(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('tag.read') == false)
+            return JSON_response('Unauthorized', 401);
+
         $model = new \Models\Tag();
         $entries = $model->find();
         if (!$entries)
@@ -106,6 +127,12 @@ class Search
 
     public function getSearchTag(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('tag.read') == false)
+            return JSON_response('Unauthorized', 401);
+
         $model = new \Models\Tag();
         $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
         if (!$entry) {
@@ -136,7 +163,10 @@ class Search
 
     public function postSearchTagAdd(\Base $base)
     {
-        if (!VerifySessionToken($base))
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('tag.create') == false)
             return JSON_response('Unauthorized', 401);
 
         if (self::CreateTag($base->get('POST.tagname')))
@@ -147,7 +177,10 @@ class Search
 
     public function postSearchTagEdit(\Base $base)
     {
-        if (!VerifySessionToken($base))
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('tag.update') == false)
             return JSON_response('Unauthorized', 401);
 
         $model = new \Models\Tag();
@@ -168,7 +201,10 @@ class Search
 
     public function postSearchTagDelete(\Base $base)
     {
-        if (!VerifySessionToken($base))
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('tag.delete') == false)
             return JSON_response('Unauthorized', 401);
 
         $model = new \Models\Tag();
@@ -189,6 +225,12 @@ class Search
     //region Entries
     public function getSearchEntry(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('entry.read') == false)
+            return JSON_response('Unauthorized', 401);
+
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
@@ -227,8 +269,10 @@ class Search
 
     public function postSearchEntryCreate(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
         $author = VerifySessionToken($base);
-        if (!$author)
+        $rbac->set_current_user($author);
+        if ($rbac->has_permission('entry.create') == false)
             return JSON_response('Unauthorized', 401);
 
         $model = new \Models\Entry();
@@ -323,13 +367,16 @@ class Search
 
     public function postSearchEntryEdit(\Base $base)
     {
-        if (!VerifySessionToken($base))
-            return JSON_response('Unauthorized', 401);
-
         $model = new \Models\Entry();
         $entry = $model->findone('id=?', $base->get('PARAMS.entry'));
         if (!$entry)
             return JSON_response('Entry not found', 404);
+
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry->author)
+            return JSON_response('Unauthorized', 401);
 
         $entry->name = $base->get('POST.site-name') ?? $entry->name;
         $entry->description = $base->get('POST.site-desc') ?? $entry->description;
@@ -340,13 +387,16 @@ class Search
 
     public function postSearchEntryDelete(\Base $base)
     {
-        if (!VerifySessionToken($base))
-            return JSON_response('Unauthorized', 401);
-
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
             return JSON_response('Entry not found', 404);
+
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry->author)
+            return JSON_response('Unauthorized', 401);
 
         if ($entry->erase())
             JSON_response(null, 204);
@@ -354,8 +404,10 @@ class Search
 
     public function postSearchEntryRate(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
-        if (!$user)
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('entry.rate') == false)
             return JSON_response('Unauthorized', 401);
 
         $entryId = $base->get('PARAMS.entry');
@@ -468,13 +520,16 @@ class Search
 
     public function postSearchEntryTagPush(\Base $base)
     {
-        if (!VerifySessionToken($base))
-            return JSON_response('Unauthorized', 401);
-
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
             return JSON_response('Entry not found', 404);
+
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry->author)
+            return JSON_response('Unauthorized', 401);
 
         // loading current tags to a stack
         $tagStack = [];
@@ -506,15 +561,18 @@ class Search
 
     public function postSearchEntryTagPop(\Base $base)
     {
-        if (!VerifySessionToken($base))
-            return JSON_response('Unauthorized', 401);
-
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
             return JSON_response('Entry not found', 404);
 
         unset($model);
+
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry->author)
+            return JSON_response('Unauthorized', 401);
 
         // loading current tags to a stack
         $tagStack = [];
