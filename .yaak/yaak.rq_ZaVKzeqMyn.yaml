@@ -2,11 +2,11 @@ type: http_request
 model: http_request
 id: rq_ZaVKzeqMyn
 createdAt: 2025-06-20T17:53:13.232065300
-updatedAt: 2025-08-29T15:01:49.793247100
+updatedAt: 2025-10-04T19:30:55.001699900
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ghAVc4Zzxq
 authentication: {}
-authenticationType: null
+authenticationType: none
 body:
   form:
   - enabled: true
