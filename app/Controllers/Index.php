@@ -28,11 +28,13 @@ class Index
 
     public function getDBsetup(\Base $base)
     {
-        $rbac = \lib\RibbitCore::get_instance($base);
-        $user = VerifySessionToken($base);
-        $rbac->set_current_user($user);
-        if ($rbac->has_permission('system.admin') == false && (new \Models\User())->count() != 0)
-            return JSON_response('Unauthorized', 401);
+        if ($base->get('ATH.SETUP_FINISHED') == 1) {
+            $rbac = \lib\RibbitCore::get_instance($base);
+            $user = VerifySessionToken($base);
+            $rbac->set_current_user($user);
+            if ($rbac->has_permission('system.admin') == false && (new \Models\User())->count() != 0)
+                return JSON_response('Unauthorized', 401);
+        }
 
         try {
             \Models\User::setdown();
@@ -101,6 +103,8 @@ class Index
         } catch (Exception $e) {
             JSON_response("Error setting up Ribbit: " . $e->getMessage(), 500);
         }
+
+        updateConfigValue($base, 'ATH.SETUP_FINISHED', 1);
         JSON_response(true);
     }
 
