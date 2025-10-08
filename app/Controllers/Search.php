@@ -641,12 +641,12 @@ class Search
             foreach ($keywords as $keyword)
                 if (strpos($nameLower, $keyword) !== false)
                     $nameMatchCount++;
-            if($nameMatchCount > 0)
+            if ($nameMatchCount > 0)
                 $score += $nameMatchCount * 0.5;
 
             // Prepare entry data
             $tags = [];
-            foreach($entry->tags as $tag)
+            foreach ($entry->tags as $tag)
                 $tags[] = [
                     'name' => $tag->name,
                     'id' => $tag->_id,
@@ -679,11 +679,65 @@ class Search
         }
 
         // Sort by score descending
-        usort($scoredResults, function($a, $b){
+        usort($scoredResults, function ($a, $b) {
             return $b['score'] <> $a['score'];
         });
 
         return array_slice($scoredResults, 0, $limit); // Limit results
+    }
+
+    public function postSearchEntriesAdvanced(\Base $base)
+    {
+        $query = $base->get('POST.query');
+        if (!$query)
+            return JSON_response('Query required', 400);
+
+        $keywords = array_map('trim', array_map('strtolower', preg_split('/[\s,;]+/', $query)));
+        $keywords = array_filter($keywords);
+        if (empty($keywords))
+            return JSON_response('No valid keywords provided', 400);
+
+        // Optional filters
+        $categoryFilter = $base->get('POST.category');
+        $nsfwFilter = $base->get('POST.nsfw'); // null => all; 0 => SFW only; 1 => NSFW only
+        $minKarma = intval($base->get('POST.min_karma') ?? 0);
+        $limit = intval($base->get('POST.limit') ?? 20);
+        $limit = min($limit, 100);
+
+        // Scoring weights
+        $connectionWeight = floatval($base->get('POST.connection_weight') ?? 2.0);
+        $karmaWeight = floatval($base->get('POST.karma_weight') ?? 0.1);
+
+        $results = $this->searchEntriesByKeywords($keywords, $limit * 3, $connectionWeight, $karmaWeight);
+
+        // Apply filters
+        $filteredResults = array_filter($results, function ($entry) use ($categoryFilter, $nsfwFilter, $minKarma) {
+            if ($categoryFilter && $entry['category']['name'] !== $categoryFilter)
+                return false;
+
+            if ($nsfwFilter !== null && $entry['nsfw'] != $nsfwFilter)
+                return false;
+
+            if ($entry['karma'] < $minKarma)
+                return false;
+
+            return true;
+        });
+
+        $filteredResults = array_values($filteredResults);
+        $filteredResults = array_slice($filteredResults, 0, $limit);
+
+        JSON_response([
+            'query' => $query,
+            'keywords' => $keywords,
+            'filters' => [
+                'category' => $categoryFilter,
+                'nsfw' => $nsfwFilter,
+                'min_karma' => $minKarma,
+            ],
+            'total_results' => count($filteredResults),
+            'results' => $filteredResults,
+        ]);
     }
     //endregion
 }

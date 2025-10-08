@@ -1,0 +1,38 @@
+type: http_request
+model: http_request
+id: rq_w8osDpJHpe
+createdAt: 2025-10-08T19:39:41.501298900
+updatedAt: 2025-10-08T19:42:52.289968900
+workspaceId: wk_iRyJisk9Us
+folderId: fl_PaSwWW8Wtd
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: query
+    value: search
+  - enabled: true
+    name: category
+    value: Images
+  - enabled: true
+    name: nsfw
+    value: ''
+  - enabled: true
+    name: min_karma
+    value: ''
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: CT4mTYNs7h
+method: POST
+name: Searching
+sortPriority: 1000.0
+url: http://localhost/Atheja/api/search
+urlParameters: []
