@@ -9,14 +9,13 @@ class User
 {
     public function postUserCreate(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0 || $rbac->has_permission('user.create') == false)
+            return JSON_response("User creation is disabled or unauthorized", 503);
+
         $model = new \Models\User();
-        $authHeader = $base->get('HEADERS.Authorization');
-
-        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0 && !VerifySessionToken($base)) {
-            JSON_response("User creation is disabled", 503);
-            return;
-        }
-
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
             JSON_response("User already exists", 409);
             return;
@@ -60,6 +59,12 @@ class User
 
     public function getUser(\Base $base)
     {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('user.read') == false)
+            return JSON_response('Unauthorized', 401);
+
         $model = new \Models\User();
 
         $entry = $model->findone(['username=? OR email=?', $base->get('PARAMS.user') ?? $base->get('POST.username'), $base->get('POST.email')]);
@@ -81,13 +86,19 @@ class User
 
     public function postUserEdit(\Base $base)
     {
-        $model = new \Models\User();
 
+        $model = new \Models\User();
         $entry = $model->findone(['username=?', $base->get('PARAMS.user')]);
         if (!$entry) {
             JSON_response("User not found", 404);
             return;
         }
+
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if (!\lib\RibbitGuard::require_ownership_or_admin($entry->_id))
+            return JSON_response('Unauthorized', 401);
 
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
             JSON_response("User already exists", 409);
@@ -111,17 +122,19 @@ class User
 
     public function postUserDelete(\Base $base)
     {
-        if (!VerifySessionToken($base))
-            return JSON_response('Unauthorized', 401);
-
         $model = new \Models\User();
-
-        $user = $model->findone(['username=? OR email=?', $base->get('PARAMS.user') ?? $base->get('POST.username'), $base->get('POST.email')]);
-        if (!$user)
+        $entry = $model->findone(['username=? OR email=?', $base->get('PARAMS.user') ?? $base->get('POST.username'), $base->get('POST.email')]);
+        if (!$entry)
             return JSON_response('User not found', 404);
 
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if (!\lib\RibbitGuard::require_ownership_or_admin($entry->_id))
+            return JSON_response('Unauthorized', 401);
+
         try {
-            $user->erase();
+            $entry->erase();
         } catch (Exception $e) {
             return JSON_response('Unable to delete user', 500);
         }
