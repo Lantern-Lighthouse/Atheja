@@ -247,6 +247,7 @@ class Search
         $cast = [
             'name' => $entry->name,
             'description' => $entry->description,
+            'url' => $entry->url,
             'category' => [
                 'name' => $entry->category->name,
                 'id' => $entry->category->_id,
@@ -261,6 +262,8 @@ class Search
             ],
             'nsfw' => $entry->is_nsfw,
             'tags' => $tags,
+            'post_created' => $entry->created_at,
+            'post_updated' => $entry->updated_at,
             'id' => $entry->_id,
         ];
 
@@ -368,21 +371,31 @@ class Search
     public function postSearchEntryEdit(\Base $base)
     {
         $model = new \Models\Entry();
-        $entry = $model->findone('id=?', $base->get('PARAMS.entry'));
+        $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
             return JSON_response('Entry not found', 404);
 
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
-        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry->author)
+        if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
             return JSON_response('Unauthorized', 401);
 
-        $entry->name = $base->get('POST.site-name') ?? $entry->name;
-        $entry->description = $base->get('POST.site-desc') ?? $entry->description;
-        $entry->url = $base->get('POST.site-url') ?? $entry->url;
+        $entry->name = $base->get('POST.page-name') ?? $entry->name;
+        $entry->description = $base->get('POST.page-desc') ?? $entry->description;
+        $entry->url = $base->get('POST.page-url') ?? $entry->url;
         $entry->category = $base->get('POST.view-category') ?? $entry->category;
-        $entry->favicon = $base->get('POST.site-favicon') ?? $entry->favicon;
+        $entry->favicon = $base->get('POST.favicon') ?? $entry->favicon;
+
+        $entry->updated_at = date('Y-m-d H:i:s');
+
+        // Saving and feedback
+        try {
+            $entry->save();
+            JSON_response('Entry edited');
+        } catch (Exception $e) {
+            return JSON_response($e->getMessage(), 500);
+        }
     }
 
     public function postSearchEntryDelete(\Base $base)
@@ -395,7 +408,7 @@ class Search
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
-        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry->author)
+        if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
             return JSON_response('Unauthorized', 401);
 
         if ($entry->erase())
@@ -528,7 +541,7 @@ class Search
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
-        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry->author)
+        if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
             return JSON_response('Unauthorized', 401);
 
         // loading current tags to a stack
@@ -571,7 +584,7 @@ class Search
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
-        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry->author)
+        if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
             return JSON_response('Unauthorized', 401);
 
         // loading current tags to a stack
