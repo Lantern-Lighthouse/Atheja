@@ -102,12 +102,4 @@ function VerifySessionToken(\Base $base)
     return false;
 }
 
-try {
-    $rbac = \lib\RibbitCore::get_instance($base);
-    if ($base->get('ATH.ENABLE_RIBBIT_GUARD') !== 0)
-        ;
-} catch (Exception $e) {
-    JSON_response("Ribbit initialization failed: " . $e->getMessage(), 500);
-}
-
 $base->run();
