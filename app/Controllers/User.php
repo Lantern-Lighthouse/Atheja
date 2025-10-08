@@ -9,14 +9,11 @@ class User
 {
     public function postUserCreate(\Base $base)
     {
-        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0)
-            return JSON_response("User creation is disabled", 503);
-
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
-        if ($rbac->has_permission('user.create') == false)
-            return JSON_response('Unauthorized', 401);
+        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0 || ($rbac->has_permission('user.create') == false && $user !== false))
+            return JSON_response("User creation is disabled", 503);
 
         $model = new \Models\User();
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
@@ -100,7 +97,7 @@ class User
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
-        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') == false || $user != $entry)
+        if (!\lib\RibbitGuard::require_ownership_or_admin($entry->_id))
             return JSON_response('Unauthorized', 401);
 
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {
@@ -133,7 +130,7 @@ class User
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
-        if ($rbac->has_role('admin') == false || $rbac->has_role('moderator') || $user != $entry)
+        if (!\lib\RibbitGuard::require_ownership_or_admin($entry->_id))
             return JSON_response('Unauthorized', 401);
 
         try {
