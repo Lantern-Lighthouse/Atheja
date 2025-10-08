@@ -12,8 +12,8 @@ class User
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
-        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0 || ($rbac->has_permission('user.create') == false && $user !== false))
-            return JSON_response("User creation is disabled", 503);
+        if ($base->get('ATH.PUBLIC_USER_CREATION') == 0 || $rbac->has_permission('user.create') == false)
+            return JSON_response("User creation is disabled or unauthorized", 503);
 
         $model = new \Models\User();
         if ($model->findone(['username=? OR email=?', $base->get('POST.username'), $base->get('POST.email')])) {

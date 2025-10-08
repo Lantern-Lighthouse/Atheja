@@ -54,8 +54,10 @@ class RibbitCore
      */
     public function has_permission(string $permission)
     {
-        if (!$this->currentUser)
-            return false;
+        if (!$this->currentUser){
+            $guestPermissions = ['entry.read', 'category.read', 'tag.read', 'user.read', 'user.create'];
+            return in_array($permission, $guestPermissions);
+        }
 
         // Admin users have all permissions
         if ($this->currentUser->is_admin)
