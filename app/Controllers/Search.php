@@ -559,6 +559,8 @@ class Search
         if (empty($keywords))
             return JSON_response('No valid keywords provided', 400);
 
+        $nsfwFilter = intval($base->get('GET.safe') ?? 0); // Safe search
+
         $limit = intval($base->get('GET.limit') ?? 20);
         $limit = min($limit, 100);
 
@@ -567,12 +569,19 @@ class Search
         $karmaWeight = floatval($base->get('GET.karma_weight') ?? 0.1);
 
         $results = $this->searchEntriesByKeywords($keywords, $limit, $connectionWeight, $karmaWeight);
+        $filteredResults = array_filter($results, function ($entry) use ($nsfwFilter) {
+            if ($nsfwFilter == 1 && $entry['nsfw'] == $nsfwFilter)
+                return false;
+
+            return true;
+        });
+
 
         JSON_response([
             'querry' => $query,
             'keywords' => $keywords,
-            'total_results' => count($results),
-            'results' => $results
+            'total_results' => count($filteredResults),
+            'results' => $filteredResults
         ]);
     }
 
