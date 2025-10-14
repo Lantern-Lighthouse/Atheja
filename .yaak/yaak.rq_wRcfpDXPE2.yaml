@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_wRcfpDXPE2
 createdAt: 2025-08-29T21:53:18.520536200
-updatedAt: 2025-08-29T22:25:32.214366600
+updatedAt: 2025-10-14T14:06:07.678804800
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ZkQzZTQj53
 authentication: {}
@@ -25,5 +25,5 @@ headers:
 method: POST
 name: Push tags to entry
 sortPriority: 5000.0
-url: http://localhost/Atheja/api/search/entry/1/tag/push
+url: ${[ server_url ]}/api/search/entry/1/tag/push
 urlParameters: []

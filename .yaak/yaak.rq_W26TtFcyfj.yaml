@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_W26TtFcyfj
 createdAt: 2025-09-23T17:16:49.481572900
-updatedAt: 2025-09-23T17:18:50.928709800
+updatedAt: 2025-10-14T14:06:40.060783600
 workspaceId: wk_iRyJisk9Us
 folderId: fl_UrsZfY2rat
 authentication: {}
@@ -28,5 +28,5 @@ headers:
 method: POST
 name: Edit Role
 sortPriority: 0.0029
-url: http://localhost/Atheja/api/ribbit/role/testing/edit
+url: ${[ server_url ]}/api/ribbit/role/testing/edit
 urlParameters: []

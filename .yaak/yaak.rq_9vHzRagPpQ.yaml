@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_9vHzRagPpQ
 createdAt: 2025-09-23T17:19:19.228121100
-updatedAt: 2025-09-23T17:21:44.684709500
+updatedAt: 2025-10-14T14:06:54.320984400
 workspaceId: wk_iRyJisk9Us
 folderId: fl_d6SS9wqvSg
 authentication: {}
@@ -37,5 +37,5 @@ headers:
 method: POST
 name: Create Permissions
 sortPriority: 0.0019
-url: http://localhost/Atheja/api/ribbit/permission/create
+url: ${[ server_url ]}/api/ribbit/permission/create
 urlParameters: []

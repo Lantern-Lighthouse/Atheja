@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_vPWvAiJzWK
 createdAt: 2025-07-26T19:08:00.633337400
-updatedAt: 2025-10-04T19:51:27.871172400
+updatedAt: 2025-10-14T14:03:04.465236100
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ghAVc4Zzxq
 authentication: {}
@@ -39,5 +39,5 @@ headers:
 method: POST
 name: Login user
 sortPriority: 1000.0
-url: http://localhost/Atheja/api/user/login
+url: ${[ server_url ]}/api/user/login
 urlParameters: []

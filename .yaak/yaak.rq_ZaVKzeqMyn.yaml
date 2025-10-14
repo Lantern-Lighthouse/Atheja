@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_ZaVKzeqMyn
 createdAt: 2025-06-20T17:53:13.232065300
-updatedAt: 2025-10-04T19:30:55.001699900
+updatedAt: 2025-10-14T14:02:58.642740800
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ghAVc4Zzxq
 authentication: {}
@@ -42,5 +42,5 @@ headers:
 method: POST
 name: Create user
 sortPriority: 0.0
-url: http://localhost/Atheja/api/user/create
+url: ${[ server_url ]}/api/user/create
 urlParameters: []

@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_kgg29EWbzp
 createdAt: 2025-07-28T20:37:39.969081400
-updatedAt: 2025-08-17T22:10:04.116434400
+updatedAt: 2025-10-14T14:03:37.199920800
 workspaceId: wk_iRyJisk9Us
 folderId: fl_RTwMpetqQ4
 authentication: {}
@@ -27,5 +27,5 @@ headers: []
 method: GET
 name: Get Category
 sortPriority: 0.0
-url: http://localhost/Atheja/api/search/category
+url: ${[ server_url ]}/api/search/category
 urlParameters: []

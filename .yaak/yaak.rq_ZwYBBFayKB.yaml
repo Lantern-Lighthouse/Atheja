@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_ZwYBBFayKB
 createdAt: 2025-08-13T15:04:24.605733300
-updatedAt: 2025-08-17T22:10:23.150733100
+updatedAt: 2025-10-14T14:04:21.229493100
 workspaceId: wk_iRyJisk9Us
 folderId: fl_qvkdgnGKf3
 authentication: {}
@@ -25,5 +25,5 @@ headers:
 method: POST
 name: Add tag
 sortPriority: 2000.0
-url: http://localhost/Atheja/api/search/tag/add
+url: ${[ server_url ]}/api/search/tag/add
 urlParameters: []

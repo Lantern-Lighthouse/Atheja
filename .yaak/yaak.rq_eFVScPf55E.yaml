@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_eFVScPf55E
 createdAt: 2025-09-23T17:24:57.617678400
-updatedAt: 2025-09-23T17:27:37.528997
+updatedAt: 2025-10-14T14:07:15.918510600
 workspaceId: wk_iRyJisk9Us
 folderId: fl_3wDgfNk4GE
 authentication: {}
@@ -25,5 +25,5 @@ headers:
 method: POST
 name: Revoke Role
 sortPriority: 1000.0
-url: http://localhost/Atheja/api/ribbit/user/krmeni/role/revoke
+url: ${[ server_url ]}/api/ribbit/user/krmeni/role/revoke
 urlParameters: []

@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_djfPNW4PoD
 createdAt: 2025-09-23T17:12:24.669396400
-updatedAt: 2025-09-23T17:17:45.527134500
+updatedAt: 2025-10-14T14:06:28.170446
 workspaceId: wk_iRyJisk9Us
 folderId: fl_UrsZfY2rat
 authentication: {}
@@ -31,5 +31,5 @@ headers:
 method: POST
 name: Create Role
 sortPriority: 0.0019
-url: http://localhost/Atheja/api/ribbit/role/create
+url: ${[ server_url ]}/api/ribbit/role/create
 urlParameters: []

@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_9sBstSrtWF
 createdAt: 2025-09-23T17:23:54.973979900
-updatedAt: 2025-09-23T17:24:15.546258900
+updatedAt: 2025-10-14T14:07:07.409406300
 workspaceId: wk_iRyJisk9Us
 folderId: fl_bSQZ8z683E
 authentication: {}
@@ -25,5 +25,5 @@ headers:
 method: POST
 name: Revoke Permission
 sortPriority: 0.0029
-url: http://localhost/Atheja/api/ribbit/role/testing/permission/revoke
+url: ${[ server_url ]}/api/ribbit/role/testing/permission/revoke
 urlParameters: []

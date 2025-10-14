@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_8UrM2nZmPQ
 createdAt: 2025-07-26T20:28:00.227458500
-updatedAt: 2025-08-29T15:01:49.815804500
+updatedAt: 2025-10-14T14:03:20.088435200
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ghAVc4Zzxq
 authentication: {}
@@ -36,5 +36,5 @@ headers:
 method: POST
 name: Delete user
 sortPriority: 4000.0
-url: http://localhost/Atheja/api/user/krmeni/delete
+url: ${[ server_url ]}/api/user/krmeni/delete
 urlParameters: []

@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_zgYGjgvmNB
 createdAt: 2025-08-27T23:11:11.565430
-updatedAt: 2025-08-29T14:30:08.160975800
+updatedAt: 2025-10-14T14:06:03.296093200
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ZkQzZTQj53
 authentication: {}
@@ -25,5 +25,5 @@ headers:
 method: POST
 name: Rate Entry
 sortPriority: 4000.0
-url: http://localhost/Atheja/api/search/entry/1/rate
+url: ${[ server_url ]}/api/search/entry/1/rate
 urlParameters: []

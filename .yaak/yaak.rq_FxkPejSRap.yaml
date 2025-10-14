@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_FxkPejSRap
 createdAt: 2025-06-18T22:50:59.740681300
-updatedAt: 2025-08-17T22:09:47.173637500
+updatedAt: 2025-10-14T14:02:43.517498500
 workspaceId: wk_iRyJisk9Us
 folderId: fl_xgVb974Mri
 authentication: {}
@@ -14,5 +14,5 @@ headers: []
 method: GET
 name: DB Setup
 sortPriority: 0.0
-url: http://localhost/Atheja/api/db/setup
+url: ${[ server_url ]}/api/db/setup
 urlParameters: []

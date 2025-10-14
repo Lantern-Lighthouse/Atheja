@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_9NG6tteFfN
 createdAt: 2025-07-28T19:54:57.512900100
-updatedAt: 2025-08-17T22:10:07.668958500
+updatedAt: 2025-10-14T14:03:42.297639200
 workspaceId: wk_iRyJisk9Us
 folderId: fl_RTwMpetqQ4
 authentication: {}
@@ -31,5 +31,5 @@ headers:
 method: POST
 name: Create Category
 sortPriority: 1000.0
-url: http://localhost/Atheja/api/search/category/create
+url: ${[ server_url ]}/api/search/category/create
 urlParameters: []

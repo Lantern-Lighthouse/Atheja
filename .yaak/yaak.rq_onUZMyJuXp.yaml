@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_onUZMyJuXp
 createdAt: 2025-07-28T19:48:19.100413400
-updatedAt: 2025-08-17T22:09:49.707496400
+updatedAt: 2025-10-14T14:02:48.308759900
 workspaceId: wk_iRyJisk9Us
 folderId: fl_xgVb974Mri
 authentication: {}
@@ -14,5 +14,5 @@ headers: []
 method: GET
 name: DB Clean Sessions
 sortPriority: 0.001
-url: http://localhost/Atheja/api/db/clean/sessions
+url: ${[ server_url ]}/api/db/clean/sessions
 urlParameters: []

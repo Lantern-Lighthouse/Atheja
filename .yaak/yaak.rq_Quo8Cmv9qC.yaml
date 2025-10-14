@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_Quo8Cmv9qC
 createdAt: 2025-08-27T14:22:33.934608200
-updatedAt: 2025-08-27T23:11:17.296014500
+updatedAt: 2025-10-14T14:05:55.973434100
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ZkQzZTQj53
 authentication: {}
@@ -33,5 +33,5 @@ headers: []
 method: POST
 name: Delete entry
 sortPriority: 3000.0
-url: http://localhost/Atheja/api/search/entry/1/delete
+url: ${[ server_url ]}/api/search/entry/1/delete
 urlParameters: []

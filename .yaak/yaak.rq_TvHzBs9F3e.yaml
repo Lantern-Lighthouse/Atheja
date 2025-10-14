@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_TvHzBs9F3e
 createdAt: 2025-07-30T20:55:47.236705700
-updatedAt: 2025-08-13T15:04:26.558591900
+updatedAt: 2025-10-14T14:04:05.431710600
 workspaceId: wk_iRyJisk9Us
 folderId: fl_qvkdgnGKf3
 authentication: {}
@@ -14,5 +14,5 @@ headers: []
 method: GET
 name: Get tags
 sortPriority: 0.0
-url: http://localhost/Atheja/api/search/tag
+url: ${[ server_url ]}/api/search/tag
 urlParameters: []
