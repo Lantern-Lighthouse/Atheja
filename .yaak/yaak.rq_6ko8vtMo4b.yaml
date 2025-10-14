@@ -1,8 +1,8 @@
 type: http_request
 model: http_request
-id: rq_onUZMyJuXp
-createdAt: 2025-07-28T19:48:19.100413400
-updatedAt: 2025-10-14T14:14:12.502776300
+id: rq_6ko8vtMo4b
+createdAt: 2025-10-14T14:14:10.218538700
+updatedAt: 2025-10-14T14:14:12.497031300
 workspaceId: wk_iRyJisk9Us
 folderId: fl_xgVb974Mri
 authentication: {}
@@ -12,7 +12,7 @@ bodyType: null
 description: ''
 headers: []
 method: GET
-name: DB Clean Sessions
-sortPriority: 2000.0
-url: ${[ server_url ]}/api/db/clean/sessions
+name: DB Setup
+sortPriority: 1000.0
+url: ${[ server_url ]}/api/db/setup
 urlParameters: []

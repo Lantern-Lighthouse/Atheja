@@ -26,7 +26,7 @@ class Index
         ]);
     }
 
-    public function getDBsetup(\Base $base)
+    public function getDBInit(\Base $base)
     {
         if ($base->get('ATH.SETUP_FINISHED') == 1) {
             $rbac = \lib\RibbitCore::get_instance($base);
@@ -105,6 +105,67 @@ class Index
         }
 
         updateConfigValue($base, 'ATH.SETUP_FINISHED', 1);
+        JSON_response(true);
+    }
+    
+    public function getDBSetup(\Base $base)
+    {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('system.admin') == false)
+            return JSON_response('Unauthorized', 401);
+
+        try {
+            \Models\User::setup();
+            \Models\Sessions::setup();
+            \Models\Category::setup();
+            \Models\Entry::setup();
+            \Models\Tag::setup();
+            \Models\Vote::setup();
+        } catch (Exception $e) {
+            JSON_response($e->getMessage(), 500);
+        }
+
+        try {
+            \Models\RbacRole::setup();
+            \Models\RbacPermission::setup();
+
+            $manager = new \lib\RibbitManager($base);
+            $manager->setup_default_roles_and_permissions();
+        } catch (Exception $e) {
+            JSON_response("Error setting up Ribbit: " . $e->getMessage(), 500);
+        }
+
+        JSON_response(true);
+    }
+
+    public function getDBSetdown(\Base $base)
+    {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('system.admin') == false)
+            return JSON_response('Unauthorized', 401);
+
+        try {
+            \Models\User::setdown();
+            \Models\Sessions::setdown();
+            \Models\Category::setdown();
+            \Models\Entry::setdown();
+            \Models\Tag::setdown();
+            \Models\Vote::setdown();
+        } catch (Exception $e) {
+            JSON_response($e->getMessage(), 500);
+        }
+
+        try {
+            \Models\RbacRole::setdown();
+            \Models\RbacPermission::setdown();
+        } catch (Exception $€) {
+            JSON_response("Error dropping RBAC tables: " . $€->getMessage(), 500);
+        }
+
         JSON_response(true);
     }
 

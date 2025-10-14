@@ -22,7 +22,7 @@ switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
         }
         $base->set('DB', new DB\SQL($base->get('db.dsn'), null, null, [PDO::ATTR_STRINGIFY_FETCHES => false]));
         if (filesize(substr($base->get('db.dsn'), 7)) == 0)
-            (new \Controllers\Index)->getDBsetup($base);
+            (new \Controllers\Index)->getDBInit($base);
         break;
     default:
     case "mysql":
