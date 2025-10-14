@@ -369,6 +369,7 @@ class RibbitManager
 
             // Guest gets read-only permissions
             $guestPerms = [
+                'user.create',
                 'user.read',
                 'entry.read',
                 'category.read',
