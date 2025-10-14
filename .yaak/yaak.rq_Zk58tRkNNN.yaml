@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_Zk58tRkNNN
 createdAt: 2025-07-30T19:45:56.878971400
-updatedAt: 2025-08-17T22:10:09.950161300
+updatedAt: 2025-10-14T14:03:50.192705400
 workspaceId: wk_iRyJisk9Us
 folderId: fl_RTwMpetqQ4
 authentication: {}
@@ -31,5 +31,5 @@ headers:
 method: POST
 name: Edit Category
 sortPriority: 2000.0
-url: http://localhost/Atheja/api/search/category/Videos/edit
+url: ${[ server_url ]}/api/search/category/Videos/edit
 urlParameters: []

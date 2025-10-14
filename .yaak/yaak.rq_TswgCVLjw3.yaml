@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_TswgCVLjw3
 createdAt: 2025-06-20T19:07:11.600107400
-updatedAt: 2025-08-29T15:01:49.805269400
+updatedAt: 2025-10-14T14:03:15.759218100
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ghAVc4Zzxq
 authentication: {}
@@ -42,5 +42,5 @@ headers:
 method: POST
 name: Edit user
 sortPriority: 2000.0
-url: http://localhost/Atheja/api/user/krmeni/edit
+url: ${[ server_url ]}/api/user/krmeni/edit
 urlParameters: []

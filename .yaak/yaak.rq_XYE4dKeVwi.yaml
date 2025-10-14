@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_XYE4dKeVwi
 createdAt: 2025-08-13T19:23:49.075480100
-updatedAt: 2025-09-24T17:37:37.644920300
+updatedAt: 2025-10-14T14:05:48.100366
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ZkQzZTQj53
 authentication: {}
@@ -40,5 +40,5 @@ headers:
 method: POST
 name: Create entry
 sortPriority: 1000.0
-url: http://localhost/Atheja/api/search/entry/create
+url: ${[ server_url ]}/api/search/entry/create
 urlParameters: []

@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_7MB8TzYxYh
 createdAt: 2025-08-14T21:33:52.991832300
-updatedAt: 2025-08-27T23:11:17.310419600
+updatedAt: 2025-10-14T14:05:52.131019100
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ZkQzZTQj53
 authentication: {}
@@ -37,5 +37,5 @@ headers:
 method: POST
 name: Edit entry
 sortPriority: 2000.0
-url: http://localhost/Atheja/api/search/entry/1/edit
+url: ${[ server_url ]}/api/search/entry/1/edit
 urlParameters: []

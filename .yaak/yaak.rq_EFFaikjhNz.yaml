@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_EFFaikjhNz
 createdAt: 2025-10-02T14:50:26.093768
-updatedAt: 2025-10-08T19:39:43.716531800
+updatedAt: 2025-10-14T14:03:27.766019300
 workspaceId: wk_iRyJisk9Us
 folderId: fl_PaSwWW8Wtd
 authentication: {}
@@ -14,5 +14,5 @@ headers: []
 method: GET
 name: Searching
 sortPriority: 0.0
-url: http://localhost/Atheja/api/search?q=search
+url: ${[ server_url ]}/api/search?q=search
 urlParameters: []

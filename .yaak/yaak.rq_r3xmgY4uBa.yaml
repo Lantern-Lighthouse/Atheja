@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_r3xmgY4uBa
 createdAt: 2025-07-28T19:50:34.305035800
-updatedAt: 2025-10-08T15:52:45.084237
+updatedAt: 2025-10-14T14:02:35.942401500
 workspaceId: wk_iRyJisk9Us
 folderId: null
 authentication: {}
@@ -14,5 +14,5 @@ headers: []
 method: GET
 name: Status
 sortPriority: 0.0
-url: http://localhost/Atheja/api/
+url: ${[ server_url ]}/api
 urlParameters: []

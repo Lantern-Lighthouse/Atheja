@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_KHnmQsuPgN
 createdAt: 2025-08-29T22:46:27.028147300
-updatedAt: 2025-08-29T23:00:58.512101200
+updatedAt: 2025-10-14T14:06:13.960589400
 workspaceId: wk_iRyJisk9Us
 folderId: fl_ZkQzZTQj53
 authentication: {}
@@ -25,5 +25,5 @@ headers:
 method: POST
 name: Pop tags from entry
 sortPriority: 5000.001
-url: http://localhost/Atheja/api/search/entry/1/tag/pop
+url: ${[ server_url ]}/api/search/entry/1/tag/pop
 urlParameters: []

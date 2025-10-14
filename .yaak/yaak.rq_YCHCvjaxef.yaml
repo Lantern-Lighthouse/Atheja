@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_YCHCvjaxef
 createdAt: 2025-09-23T17:18:53.319939400
-updatedAt: 2025-09-23T17:19:37.998346800
+updatedAt: 2025-10-14T14:06:43.741497700
 workspaceId: wk_iRyJisk9Us
 folderId: fl_UrsZfY2rat
 authentication: {}
@@ -24,5 +24,5 @@ headers: []
 method: POST
 name: Delete Role
 sortPriority: 0.0039
-url: http://localhost/Atheja/api/ribbit/role/testing/delete
+url: ${[ server_url ]}/api/ribbit/role/testing/delete
 urlParameters: []
