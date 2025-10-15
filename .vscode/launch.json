@@ -10,7 +10,7 @@
             "request": "launch",
             "runtimeArgs": [
                 "-S",
-                "localhost:8000",
+                "localhost:8001",
                 "-t",
                 "."
             ],
@@ -23,7 +23,7 @@
             "noDebug": false,
             "runtimeArgs": [
                 "-S",
-                "localhost:8000",
+                "localhost:8001",
                 "-t",
                 "."
             ],
@@ -36,7 +36,7 @@
             "noDebug": true,
             "runtimeArgs": [
                 "-S",
-                "localhost:8000",
+                "localhost:8001",
                 "-t",
                 "."
             ],
