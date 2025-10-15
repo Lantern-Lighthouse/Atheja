@@ -649,7 +649,7 @@ class Search
 
 
         JSON_response([
-            'querry' => $query,
+            'query' => $query,
             'keywords' => $keywords,
             'total_results' => count($filteredResults),
             'results' => $filteredResults
