@@ -37,14 +37,13 @@ class Responsivity
     /**
      * The function `response` sends a JSON-encoded message with an optional HTTP status code.
      * 
-     * @param string message The `message` parameter in the `response` function can accept either a
-     * string or an array. This parameter is used to provide the data that will be encoded into JSON
-     * format and sent as the response. It can be a simple string message or an array of data to be
+     * @param string message The `message` parameter can accept either a string or an array.
+     * This parameter is used to provide the data that will be encoded into JSON format
+     * and sent as the response. It can be a simple string message or an array of data to be
      * returned to the client.
-     * @param int code The `` parameter in the `response` function is used to specify the HTTP
-     * status code that will be sent in the response header. By default, it is set to `HTTP_OK`, which
-     * typically corresponds to the status code `200 OK` indicating a successful response. However, you
-     * can override
+     * @param int code The `code` parameter is used to specify the HTTP status code that will
+     * be sent in the response header. By default, it is set to `HTTP_OK`, which typically corresponds
+     * to the status code `200 OK` indicating a successful response. However, you can override
      */
     public static function response(string|array $message, int $code = HTTP_OK)
     {
