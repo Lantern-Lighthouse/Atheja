@@ -4,47 +4,52 @@ namespace lib;
 
 class Responsivity
 {
+
+    /* These lines of code are defining constants within the `Responsivity` class in PHP. Each constant
+    represents an HTTP status code along with its corresponding numeric value. These constants are
+    used to provide a more readable and maintainable way to refer to HTTP status codes throughout
+    the class and its methods. */
+    const HTTP_OK = 200;
+    const HTTP_Created = 201;
+    const HTTP_Accepted = 202;
+    const HTTP_No_Content = 204;
+    
+    const HTTP_Moved_Permanently = 301;
+    const HTTP_Found = 302;
+    const HTTP_See_Other = 303;
+    const HTTP_Not_Modified = 304;
+    const HTTP_Temporary_Redirect = 307;
+    
+    const HTTP_Bad_Request = 400;
+    const HTTP_Unauthorized = 401;
+    const HTTP_Forbidden = 403;
+    const HTTP_Not_Found = 404;
+    const HTTP_Method_Not_Allowed = 405;
+    const HTTP_Not_Acceptable = 406;
+    const HTTP_Precondition_Failed = 412;
+    const HTTP_Unsupported_Media = 415;
+    const HTTP_Teapot = 418;
+    const HTTP_Unavailable_Legal_Reasons = 451;
+    
+    const HTTP_Internal_Error = 500;
+    const HTTP_Not_Implemented = 501;
+
     /**
-     * Legacy response system
-     * @param mixed $message
-     * @param int $code
-     * @return void
+     * The function `response` sends a JSON-encoded message with an optional HTTP status code.
+     * 
+     * @param string message The `message` parameter in the `response` function can accept either a
+     * string or an array. This parameter is used to provide the data that will be encoded into JSON
+     * format and sent as the response. It can be a simple string message or an array of data to be
+     * returned to the client.
+     * @param int code The `` parameter in the `response` function is used to specify the HTTP
+     * status code that will be sent in the response header. By default, it is set to `HTTP_OK`, which
+     * typically corresponds to the status code `200 OK` indicating a successful response. However, you
+     * can override
      */
-    public static function JSON_response($message, int $code = 200)
+    public static function response(string|array $message, int $code = HTTP_OK)
     {
         header("Content-Type: application/json");
         http_response_code($code);
-        echo json_encode($message);
-    }
-
-    /**
-     * `200 OK` -> Indicates that the request has succeeded.
-     * 
-     * `201 Created` -> Indicates that the request has succeeded and a new resource has been created as a result.
-     * 
-     * `202 Accepted` -> Indicates that the request has been received but not completed yet. It is typically used in log running requests and batch processing.
-     * 
-     * `203 Non-Authoritative Information` -> Indicates that the returned metainformation in the entity header is not the definitive set as available from the origin server but is gathered from a local or third-party copy. The set presented MAY be a subset or superset of the original version.
-     * 
-     * `204 No Content` -> The server has fulfilled the request but does not need to return a response body. The server may return the updated meta information.
-     * 
-     * `205 Reset Content` -> Indicates the client to reset the document that sent this request.
-     * 
-     * `206 Partial Content` -> It is used when the Range header is sent from the client to request only part of a resource.
-     * 
-     * `207 Multi-Status (WebDAV)` -> An indicator to a client that multiple operations happened, and that the status for each operation can be found in the body of the response.
-     * 
-     * `208 Already Reported (WebDAV)` -> Allows a client to tell the server that the same resource (with the same binding) was mentioned earlier. It never appears as a true HTTP response code in the status line, and only appears in bodies.
-     * 
-     * `226 IM Used` -> The server has fulfilled a GET request for the resource, and the response is a representation of the result of one or more instance-manipulations applied to the current instance.
-     * @param mixed $message
-     * @param int $add
-     * @return never
-     */
-    public static function response_success($message, int $add = 0)
-    {
-        header("Content-Type: application/json");
-        http_response_code(200 + $add);
         echo json_encode($message);
         die;
     }
