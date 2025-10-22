@@ -37,9 +37,7 @@ switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
 
 function JSON_response($message, int $code = 200)
 {
-    header("Content-Type: application/json");
-    http_response_code($code);
-    echo json_encode($message);
+    \lib\Responsivity::JSON_response($message, $code);
 }
 
 function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.ini')
