@@ -45,11 +45,34 @@ class Responsivity
      * be sent in the response header. By default, it is set to `HTTP_OK`, which typically corresponds
      * to the status code `200 OK` indicating a successful response. However, you can override
      */
-    public static function response(string|array $message, int $code = HTTP_OK)
+    public static function respond(string|array $message, int $code = HTTP_OK)
     {
         header("Content-Type: application/json");
         http_response_code($code);
         echo json_encode($message);
+        die;
+    }
+
+    /**
+     * The render function sets a page variable in a base object, renders a template using the Template
+     * class, and then terminates the script execution.
+     * 
+     * @param \Base base The `` parameter is an instance of the `\Base` class.
+     * It is used to set a variable in the base object with the value of the `page` parameter.
+     * @param string page The `page` parameter represents the content or data that you want to
+     * display on the webpage. It could be the actual HTML content, text, or any other
+     * information that you want to render within the specified template.
+     * @param string pageVariable The `pageVariable` parameter is a string that represents the variable
+     * name under which the page content will be stored in the base object.
+     * By default, it is set to "content", but you can provide a different variable name if needed.
+     * @param string template The `template` parameter is a string that specifies the template file
+     * to be used for rendering the page. By default, it is set to "index.html", but
+     * you can provide a different template file name if needed. This template file typically contains
+     * the layout structure and placeholders.
+     */
+    public function render (\Base $base, string $page, string $pageVariable = "content", string $template = "index.html") {
+        $base->set($pageVariable, $page);
+        echo \Template::instance()->render($template);
         die;
     }
 }
