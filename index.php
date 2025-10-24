@@ -42,34 +42,7 @@ function JSON_response($message, int $code = 200)
 
 function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.ini')
 {
-    $base->set($key, $value);
-    $config = [];
-    if (file_exists($iniFile))
-        $config = parse_ini_file($iniFile, true);
-    $parts = explode('.', $key);
-
-    if (count($parts) == 1)
-        $config[$key] = $value;
-    else if (count($parts) == 2) {
-        $section = $parts[0];
-        $option = $parts[1];
-        if (!isset($config[$section]))
-            $config[$section] = [];
-        $config[$section][$option] = $value;
-    }
-
-    $content = '';
-    foreach ($config as $section => $values) {
-        if (is_array($values)) {
-            $content .= "[$section]\n";
-            foreach ($values as $key => $val)
-                $content .= "$key = " . (is_numeric($val) ? $val : "\"$val\"") . "\n";
-            $content .= "\n";
-        } else
-            $content .= "$section = " . (is_numeric($values) ? $values : "\"$values\"") . "\n";
-    }
-
-    return file_put_contents($iniFile, $content);
+    \lib\Responsivity::update_config_value($base, $key, $value, $iniFile);
 }
 
 if ($base->get('DEBUG') <= 3) {

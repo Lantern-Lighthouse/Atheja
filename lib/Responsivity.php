@@ -13,13 +13,13 @@ class Responsivity
     const HTTP_Created = 201;
     const HTTP_Accepted = 202;
     const HTTP_No_Content = 204;
-    
+
     const HTTP_Moved_Permanently = 301;
     const HTTP_Found = 302;
     const HTTP_See_Other = 303;
     const HTTP_Not_Modified = 304;
     const HTTP_Temporary_Redirect = 307;
-    
+
     const HTTP_Bad_Request = 400;
     const HTTP_Unauthorized = 401;
     const HTTP_Forbidden = 403;
@@ -30,7 +30,7 @@ class Responsivity
     const HTTP_Unsupported_Media = 415;
     const HTTP_Teapot = 418;
     const HTTP_Unavailable_Legal_Reasons = 451;
-    
+
     const HTTP_Internal_Error = 500;
     const HTTP_Not_Implemented = 501;
 
@@ -57,7 +57,7 @@ class Responsivity
      * The render function sets a page variable in a base object, renders a template using the Template
      * class, and then terminates the script execution.
      * 
-     * @param \Base base The `` parameter is an instance of the `\Base` class.
+     * @param \Base base The `base` parameter is an instance of the `\Base` class.
      * It is used to set a variable in the base object with the value of the `page` parameter.
      * @param string page The `page` parameter represents the content or data that you want to
      * display on the webpage. It could be the actual HTML content, text, or any other
@@ -70,9 +70,65 @@ class Responsivity
      * you can provide a different template file name if needed. This template file typically contains
      * the layout structure and placeholders.
      */
-    public function render (\Base $base, string $page, string $pageVariable = "content", string $template = "index.html") {
+    public static function render(\Base $base, string $page, string $pageVariable = "content", string $template = "index.html")
+    {
         $base->set($pageVariable, $page);
         echo \Template::instance()->render($template);
         die;
+    }
+
+    /**
+     * The function `updateConfigValue` updates a configuration value in an INI file based on the
+     * provided key and value.
+     * 
+     * @param \Base base The `base` parameter in the `updateConfigValue` function is an instance of the
+     * `\Base` class. It is used to set a key-value pair in the configuration and update the
+     * configuration file with the new value.
+     * @param string key The `key` parameter in the `updateConfigValue` function is used to specify the
+     * configuration key that you want to update in the configuration file. It can be a simple key like
+     * `'database.host'` or just `'timezone'`, or it can be a nested key like
+     * `'database.connection.username
+     * @param mixed value The `value` parameter in the `updateConfigValue` function represents the new
+     * value that you want to set for a specific configuration key in the configuration file. This
+     * function updates the configuration value in both the application's memory (using the `set`
+     * method of the `` object) and in
+     * @param string iniFile The `iniFile` parameter in the `updateConfigValue` function is a string
+     * that represents the path to the INI configuration file where the configuration values will be
+     * updated. By default, it is set to `'app/Configs/config.ini'`. This parameter allows you to
+     * specify a custom path to
+     * 
+     * @return bool|int The result of the `file_put_contents` function, which is the number of bytes
+     * written to the file `config.ini` after updating its content with the new configuration values.
+     */
+    public static function update_config_value(\Base $base, string $key, mixed $value, string $iniFile = 'app/Configs/config.ini')
+    {
+        $base->set($key, $value);
+        $config = [];
+        if (file_exists($iniFile))
+            $config = parse_ini_file($iniFile, true);
+        $parts = explode('.', $key);
+
+        if (count($parts) == 1)
+            $config[$key] = $value;
+        else if (count($parts) == 2) {
+            $section = $parts[0];
+            $option = $parts[1];
+            if (!isset($config[$section]))
+                $config[$section] = [];
+            $config[$section][$option] = $value;
+        }
+
+        $content = '';
+        foreach ($config as $section => $values) {
+            if (is_array($values)) {
+                $content .= "[$section]\n";
+                foreach ($values as $key => $val)
+                    $content .= "$key = " . (is_numeric($val) ? $val : "\"$val\"") . "\n";
+                $content .= "\n";
+            } else
+                $content .= "$section = " . (is_numeric($values) ? $values : "\"$values\"") . "\n";
+        }
+
+        return file_put_contents($iniFile, $content);
     }
 }
