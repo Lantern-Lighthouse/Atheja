@@ -17,8 +17,7 @@ $base->config('./app/Configs/config.ini');
 switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
     case "sqlite":
         if (!file_exists(substr($base->get('db.dsn'), 7))) {
-            JSON_response('[CONFIG] Error: Database file not found', 500);
-            die;
+            \lib\Responsivity::respond('Database file not found', \lib\Responsivity::HTTP_Internal_Error);
         }
         $base->set('DB', new DB\SQL($base->get('db.dsn'), null, null, [PDO::ATTR_STRINGIFY_FETCHES => false]));
         if (filesize(substr($base->get('db.dsn'), 7)) == 0)
@@ -35,11 +34,6 @@ switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
         break;
 }
 
-function JSON_response($message, int $code = 200)
-{
-    \lib\Responsivity::JSON_response($message, $code);
-}
-
 function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.ini')
 {
     \lib\Responsivity::update_config_value($base, $key, $value, $iniFile);
@@ -47,7 +41,7 @@ function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.i
 
 if ($base->get('DEBUG') <= 3) {
     $base->set('ONERROR', function ($base) {
-        JSON_response(['status' => $base->get('ERROR.status'), 'text' => $base->get('ERROR.text')], $base->get('ERROR.code'));
+        \lib\Responsivity::respond(['status' => $base->get('ERROR.status'), 'text' => $base->get('ERROR.text')], $base->get('ERROR.code'));
     });
 }
 
