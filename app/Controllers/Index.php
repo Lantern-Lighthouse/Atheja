@@ -8,7 +8,7 @@ class Index
 {
     public function getStatus(\Base $base)
     {
-        JSON_response([
+        \lib\Responsivity::respond([
             'message' => $base->get('ATH.GREETING_MESSAGE'),
             'version' => [
                 'API version' => $base->get('ATH.vAPI'),
@@ -33,7 +33,7 @@ class Index
             $user = VerifySessionToken($base);
             $rbac->set_current_user($user);
             if ($rbac->has_permission('system.admin') == false && (new \Models\User())->count() != 0)
-                return JSON_response('Unauthorized', 401);
+                return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
         }
 
         try {
@@ -44,7 +44,7 @@ class Index
             \Models\Tag::setdown();
             \Models\Vote::setdown();
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), 500);
+            \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
         try {
@@ -55,7 +55,7 @@ class Index
             \Models\Tag::setup();
             \Models\Vote::setup();
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), 500);
+            \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
         try {
@@ -75,14 +75,14 @@ class Index
             $model->save();
             unset($model);
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), 500);
+            \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
         try {
             \Models\RbacRole::setdown();
             \Models\RbacPermission::setdown();
         } catch (Exception $€) {
-            JSON_response("Error dropping RBAC tables: " . $€->getMessage(), 500);
+            \lib\Responsivity::respond("Error dropping RBAC tables: " . $€->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
         try {
@@ -101,11 +101,11 @@ class Index
                         $rbacCore->asign_role_to_user($user->id, 'user');
             }
         } catch (Exception $e) {
-            JSON_response("Error setting up Ribbit: " . $e->getMessage(), 500);
+            \lib\Responsivity::respond("Error setting up Ribbit: " . $e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
         updateConfigValue($base, 'ATH.SETUP_FINISHED', 1);
-        JSON_response(true);
+        \lib\Responsivity::respond("Database initialised");
     }
     
     public function getDBSetup(\Base $base)
@@ -114,7 +114,7 @@ class Index
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('system.admin') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         try {
             \Models\User::setup();
@@ -124,7 +124,7 @@ class Index
             \Models\Tag::setup();
             \Models\Vote::setup();
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), 500);
+            \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
         try {
@@ -134,10 +134,10 @@ class Index
             $manager = new \lib\RibbitManager($base);
             $manager->setup_default_roles_and_permissions();
         } catch (Exception $e) {
-            JSON_response("Error setting up Ribbit: " . $e->getMessage(), 500);
+            \lib\Responsivity::respond("Error setting up Ribbit: " . $e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
-        JSON_response(true);
+        \lib\Responsivity::respond("Database set up");
     }
 
     public function getDBSetdown(\Base $base)
@@ -146,7 +146,7 @@ class Index
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('system.admin') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         try {
             \Models\User::setdown();
@@ -156,17 +156,17 @@ class Index
             \Models\Tag::setdown();
             \Models\Vote::setdown();
         } catch (Exception $e) {
-            JSON_response($e->getMessage(), 500);
+            \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
         try {
             \Models\RbacRole::setdown();
             \Models\RbacPermission::setdown();
         } catch (Exception $€) {
-            JSON_response("Error dropping RBAC tables: " . $€->getMessage(), 500);
+            \lib\Responsivity::respond("Error dropping RBAC tables: " . $€->getMessage(), 500);
         }
 
-        JSON_response(true);
+        \lib\Responsivity::respond("Database set down");
     }
 
     public function getDBCleanSessions(\Base $base)
@@ -175,12 +175,12 @@ class Index
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('system.admin') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Sessions();
         $expiredSessions = $model->find(['expires_at < ?', date('Y-m-d H:i:s')]);
         if (!$expiredSessions)
-            return JSON_response('No expired sessions found', 404);
+            return \lib\Responsivity::respond('No expired sessions found', \lib\Responsivity::HTTP_Not_Found);
         foreach ($expiredSessions as $session) {
             $session->erase();
         }

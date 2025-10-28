@@ -15,7 +15,7 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('category.read') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Category();
         $entries = $model->afind();
@@ -27,7 +27,7 @@ class Search
                 'icon' => $entry['icon'],
             );
         }
-        JSON_response($cast);
+        \lib\Responsivity::respond($cast);
     }
 
     public function postSearchCategoryCreate(\Base $base)
@@ -36,7 +36,7 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('category.create') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Category();
         $model->name = $base->get('POST.name');
@@ -46,10 +46,10 @@ class Search
         try {
             $model->save();
         } catch (Exception $e) {
-            return JSON_response($e->getMessage(), 500);
+            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
-        JSON_response(true);
+        \lib\Responsivity::respond("Category created", \lib\Responsivity::HTTP_Created);
     }
 
     public function postSearchCategoryEdit(\Base $base)
@@ -58,12 +58,12 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('category.update') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Category();
         $entry = $model->findone(['name=?', $base->get('PARAMS.category')]);
         if (!$entry)
-            return JSON_response('Category not found', 404);
+            return \lib\Responsivity::respond('Category not found', \lib\Responsivity::HTTP_Not_Found);
 
         $entry->name = $base->get('POST.name') ?? $entry->name;
         $entry->type = $base->get('POST.type') ?? $entry->type;
@@ -72,10 +72,10 @@ class Search
         try {
             $entry->save();
         } catch (Exception $e) {
-            return JSON_response($e->getMessage(), 500);
+            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
-        JSON_response(true);
+        \lib\Responsivity::respond("Category edited");
     }
 
     public function postSearchCategoryDelete(\Base $base)
@@ -84,20 +84,20 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('category.delete') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Category();
         $entry = $model->findone(['name=?', $base->get('PARAMS.category')]);
         if (!$entry)
-            return JSON_response('Category not found', 404);
+            return \lib\Responsivity::respond('Category not found', \lib\Responsivity::HTTP_Not_Found);
 
         try {
             $entry->erase();
         } catch (Exception $e) {
-            return JSON_response('Unable to delete category', 500);
+            return \lib\Responsivity::respond('Unable to delete category', \lib\Responsivity::HTTP_Internal_Error);
         }
 
-        JSON_response(true);
+        \lib\Responsivity::respond("Category deleted", \lib\Responsivity::HTTP_OK);
     }
     //endregion
 
@@ -108,21 +108,21 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.read') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Tag();
         $entries = $model->find();
         if (!$entries)
-            return JSON_response('Tag not found', 404);
+            return \lib\Responsivity::respond('Tag not found', \lib\Responsivity::HTTP_Not_Found);
 
         $cast = array();
         foreach ($entries as $entry) {
             array_push($cast, $entry->name);
         }
         if (sizeof($cast) != 0)
-            JSON_response($cast);
+            \lib\Responsivity::respond($cast);
         else
-            JSON_response(false, 404);
+            \lib\Responsivity::respond("Tags not found", 404);
     }
 
     public function getSearchTag(\Base $base)
@@ -131,12 +131,12 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.read') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Tag();
         $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
         if (!$entry) {
-            return JSON_response('Tag not found', 404);
+            return \lib\Responsivity::respond('Tag not found', \lib\Responsivity::HTTP_Not_Found);
         }
         unset($model);
         $model = new \Models\Entry();
@@ -147,7 +147,7 @@ class Search
             'count' => $entries ? count($entries) : 0
         ];
 
-        JSON_response($cast);
+        \lib\Responsivity::respond($cast);
     }
 
     public static function CreateTag(string $tagName)
@@ -167,12 +167,12 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.create') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         if (self::CreateTag($base->get('POST.tagname')))
-            return JSON_response('Tag added', 201);
+            return \lib\Responsivity::respond('Tag added', \lib\Responsivity::HTTP_Created);
         else
-            return JSON_response('Tag already exists', 409);
+            return \lib\Responsivity::respond('Tag already exists', \lib\Responsivity::HTTP_Bad_Request);
     }
 
     public function postSearchTagEdit(\Base $base)
@@ -181,22 +181,22 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.update') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Tag();
         $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
         if (!$entry)
-            return JSON_response('Tag not found', 404);
+            return \lib\Responsivity::respond('Tag not found', \lib\Responsivity::HTTP_Not_Found);
 
         $entry->name = $base->get('POST.tagname') ?? $entry->name;
 
         try {
             $entry->save();
         } catch (Exception $e) {
-            JSON_response('Changes not saved', 500);
+            \lib\Responsivity::respond('Changes not saved', \lib\Responsivity::HTTP_Internal_Error);
             return;
         }
-        JSON_response(true);
+        \lib\Responsivity::respond("Tag edited");
     }
 
     public function postSearchTagDelete(\Base $base)
@@ -205,20 +205,20 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.delete') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Tag();
         $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
         if (!$entry)
-            return JSON_response('Tag not found', 404);
+            return \lib\Responsivity::respond('Tag not found', \lib\Responsivity::HTTP_Not_Found);
 
         try {
             $entry->erase();
         } catch (Exception $e) {
-            JSON_response('Tag not deleted', 500);
+            \lib\Responsivity::respond('Tag not deleted', \lib\Responsivity::HTTP_Internal_Error);
             return;
         }
-        JSON_response(null, 204);
+        \lib\Responsivity::respond("Tag deleted");
     }
     //endregion
 
@@ -229,12 +229,12 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('entry.read') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return JSON_response('Entry not found', 404);
+            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
 
         $tags = [];
         foreach ($entry->tags as $tag) {
@@ -267,7 +267,7 @@ class Search
             'id' => $entry->_id,
         ];
 
-        JSON_response($cast);
+        \lib\Responsivity::respond($cast);
     }
 
     public function postSearchEntryCreate(\Base $base)
@@ -276,25 +276,25 @@ class Search
         $author = VerifySessionToken($base);
         $rbac->set_current_user($author);
         if ($rbac->has_permission('entry.create') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Entry();
 
         // Name setting
         if ($base->get('POST.fetch-name-from-site')) {
             if (!$base->get('POST.page-url'))
-                return JSON_response('URL not found', 404);
+                return \lib\Responsivity::respond('URL not found', \lib\Responsivity::HTTP_Not_Found);
             else if ($model->findone(['url=?', $base->get('POST.page-url')]))
-                return JSON_response('URL already found', 409);
+                return \lib\Responsivity::respond('URL already found', \lib\Responsivity::HTTP_Bad_Request);
 
             $pgName = URLser::get_page_name($base->get('POST.page-url'));
             if ($pgName == false && !$base->get('POST.page-name'))
-                return JSON_response("Error getting page title. Please insert the name manually.", 500);
+                return \lib\Responsivity::respond("Error getting page title. Please insert the name manually.", \lib\Responsivity::HTTP_Bad_Request);
             else
                 $pgName = $base->get('POST.page-name');
         } else {
             if (!$base->get('POST.page-name'))
-                return JSON_response('Page name not found', 404);
+                return \lib\Responsivity::respond('Page name not found', \lib\Responsivity::HTTP_Not_Found);
             $pgName = $base->get('POST.page-name');
         }
         $model->name = $pgName;
@@ -304,9 +304,9 @@ class Search
 
         // URL setting
         if (!$base->get('POST.page-url'))
-            return JSON_response('URL not found', 404);
+            return \lib\Responsivity::respond('URL not found', \lib\Responsivity::HTTP_Not_Found);
         else if ($model->findone(['url=?', $base->get('POST.page-url')]))
-            return JSON_response('URL already found', 409);
+            return \lib\Responsivity::respond('URL already found', \lib\Responsivity::HTTP_Bad_Request);
         $model->url = $base->get('POST.page-url');
 
         // Category setting
@@ -361,9 +361,9 @@ class Search
 
             if (!$model->get('is_nsfw'))
                 $this->createAuthorUpvote($author, $model);
-            JSON_response('Entry added', 201);
+            \lib\Responsivity::respond('Entry added', \lib\Responsivity::HTTP_Created);
         } catch (Exception $e) {
-            return JSON_response($e->getMessage(), 500);
+            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
     }
@@ -373,13 +373,13 @@ class Search
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return JSON_response('Entry not found', 404);
+            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
 
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $entry->name = $base->get('POST.page-name') ?? $entry->name;
         $entry->description = $base->get('POST.page-desc') ?? $entry->description;
@@ -392,9 +392,9 @@ class Search
         // Saving and feedback
         try {
             $entry->save();
-            JSON_response('Entry edited');
+            \lib\Responsivity::respond('Entry edited');
         } catch (Exception $e) {
-            return JSON_response($e->getMessage(), 500);
+            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -403,16 +403,16 @@ class Search
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return JSON_response('Entry not found', 404);
+            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
 
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         if ($entry->erase())
-            JSON_response(null, 204);
+            \lib\Responsivity::respond("Entry deleted");
     }
 
     public function postSearchEntryRate(\Base $base)
@@ -421,18 +421,18 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('entry.rate') == false)
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $entryId = $base->get('PARAMS.entry');
         $voteType = $base->get('POST.vote_type'); // 1 for upvote, -1 for downvote
 
         if (!in_array($voteType, [1, -1]))
-            return JSON_response('Invalid vote type', 400);
+            return \lib\Responsivity::respond('Invalid vote type', \lib\Responsivity::HTTP_Bad_Request);
 
         $entryModel = new \Models\Entry();
         $entry = $entryModel->findone(['id=?', $entryId]);
         if (!$entry)
-            return JSON_response('Entry not found', 404);
+            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
 
         $entryAuthor = $entry->author;
 
@@ -472,7 +472,7 @@ class Search
             $entry->save();
             $entryAuthor->save();
 
-            return JSON_response([
+            return \lib\Responsivity::respond([
                 'message' => $message,
                 'upvotes' => $entry->upvotes,
                 'downvotes' => $entry->downvotes,
@@ -480,7 +480,7 @@ class Search
                 'user_vote' => $existingVote ? ($existingVote->dry() ? null : $existingVote->vote_type) : $voteType
             ]);
         } catch (Exception $e) {
-            return JSON_response($e->getMessage(), 500);
+            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -536,13 +536,13 @@ class Search
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return JSON_response('Entry not found', 404);
+            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
 
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         // loading current tags to a stack
         $tagStack = [];
@@ -566,9 +566,9 @@ class Search
         try {
             $entry->updated_at = date('Y-m-d H:i:s');
             $entry->save();
-            return JSON_response('Tags pushed');
+            return \lib\Responsivity::respond('Tags pushed');
         } catch (Exception $e) {
-            return JSON_response($e->getMessage(), 500);
+            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -577,7 +577,7 @@ class Search
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return JSON_response('Entry not found', 404);
+            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
 
         unset($model);
 
@@ -585,7 +585,7 @@ class Search
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
-            return JSON_response('Unauthorized', 401);
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         // loading current tags to a stack
         $tagStack = [];
@@ -613,9 +613,9 @@ class Search
         try {
             $entry->updated_at = date('Y-m-d H:i:s');
             $entry->save();
-            return JSON_response('Tags popped');
+            return \lib\Responsivity::respond('Tags popped');
         } catch (Exception $e) {
-            return JSON_response($e->getMessage(), 500);
+            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -623,12 +623,12 @@ class Search
     {
         $query = $base->get('GET.q') ?? $base->get('GET.s');
         if (!$query)
-            return JSON_response('Query parameter required', 400);
+            return \lib\Responsivity::respond('Query parameter required', \lib\Responsivity::HTTP_Bad_Request);
 
         $keywords = array_map('trim', array_map('strtolower', preg_split('/[\s,;]+/', $query)));
         $keywords = array_filter($keywords);
         if (empty($keywords))
-            return JSON_response('No valid keywords provided', 400);
+            return \lib\Responsivity::respond('No valid keywords provided', \lib\Responsivity::HTTP_Bad_Request);
 
         $nsfwFilter = intval($base->get('GET.safe') ?? 0); // Safe search
 
@@ -648,7 +648,7 @@ class Search
         });
 
 
-        JSON_response([
+        \lib\Responsivity::respond([
             'query' => $query,
             'keywords' => $keywords,
             'total_results' => count($filteredResults),
@@ -770,12 +770,12 @@ class Search
     {
         $query = $base->get('POST.query');
         if (!$query)
-            return JSON_response('Query required', 400);
+            return \lib\Responsivity::respond('Query required', \lib\Responsivity::HTTP_Bad_Request);
 
         $keywords = array_map('trim', array_map('strtolower', preg_split('/[\s,;]+/', $query)));
         $keywords = array_filter($keywords);
         if (empty($keywords))
-            return JSON_response('No valid keywords provided', 400);
+            return \lib\Responsivity::respond('No valid keywords provided', \lib\Responsivity::HTTP_Bad_Request);
 
         // Optional filters
         $categoryFilter = $base->get('POST.category');
@@ -807,7 +807,7 @@ class Search
         $filteredResults = array_values($filteredResults);
         $filteredResults = array_slice($filteredResults, 0, $limit);
 
-        JSON_response([
+        \lib\Responsivity::respond([
             'query' => $query,
             'keywords' => $keywords,
             'filters' => [
