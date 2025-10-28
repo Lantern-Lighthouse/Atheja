@@ -19,7 +19,7 @@ class RibbitCore
         $this->base = $base;
     }
 
-    public static function get_instance(\Base $base = null): self
+    public static function get_instance(?\Base $base = null): self
     {
         if (self::$instance === null) {
             if ($base === null)
@@ -230,7 +230,7 @@ class RibbitCore
      * @param string $permission
      * @param callable $callback
      */
-    public function require_permission(string $permission, callable $callback = null)
+    public function require_permission(string $permission, ?callable $callback = null)
     {
         if (!$this->has_permission($permission)) {
             if ($callback)
@@ -242,7 +242,7 @@ class RibbitCore
         return true;
     }
 
-    public function require_role(string $role, callable $callback = null)
+    public function require_role(string $role, ?callable $callback = null)
     {
         if (!$this->has_role($role)) {
             if ($callback)
