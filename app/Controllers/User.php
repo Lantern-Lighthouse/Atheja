@@ -34,7 +34,7 @@ class User
             \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
             return;
         }
-        \lib\Responsivity::respond(true, \lib\Responsivity::HTTP_Created);
+        \lib\Responsivity::respond("User created", \lib\Responsivity::HTTP_Created);
     }
 
     public function postUserLogin(\Base $base)
