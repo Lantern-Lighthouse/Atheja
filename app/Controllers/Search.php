@@ -760,7 +760,7 @@ class Search
 
         // Sort by score descending
         usort($scoredResults, function ($a, $b) {
-            return $b['score'] <> $a['score'];
+            return $b['score'] <=> $a['score'];
         });
 
         return array_slice($scoredResults, 0, $limit); // Limit results
