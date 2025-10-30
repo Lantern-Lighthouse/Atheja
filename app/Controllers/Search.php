@@ -638,8 +638,9 @@ class Search
         // Get scoring weights from config or use defaults
         $connectionWeight = floatval($base->get('GET.connection_weight') ?? 2.0);
         $karmaWeight = floatval($base->get('GET.karma_weight') ?? 0.1);
+        $nameWeight = floatval($base->get('GET.name_weight') ?? 5.0);
 
-        $results = $this->searchEntriesByKeywords($keywords, $limit, $connectionWeight, $karmaWeight);
+        $results = $this->searchEntriesByKeywords($keywords, $limit, $connectionWeight, $karmaWeight, $nameWeight);
         $filteredResults = array_filter($results, function ($entry) use ($nsfwFilter) {
             if ($nsfwFilter == 1 && $entry['nsfw'] == $nsfwFilter)
                 return false;
@@ -656,7 +657,7 @@ class Search
         ]);
     }
 
-    private function searchEntriesByKeywords($keywords, $limit, $connectionWeight, $karmaWeight)
+    private function searchEntriesByKeywords($keywords, $limit, $connectionWeight, $karmaWeight, $nameWeight)
     {
         $tagModel = new \Models\Tag();
         $entryModel = new \Models\Entry();
@@ -722,7 +723,7 @@ class Search
                 if (strpos($nameLower, $keyword) !== false)
                     $nameMatchCount++;
             if ($nameMatchCount > 0)
-                $score += $nameMatchCount * 0.5;
+                $score += $nameMatchCount * $nameWeight;
 
             // Prepare entry data
             $tags = [];
@@ -787,8 +788,9 @@ class Search
         // Scoring weights
         $connectionWeight = floatval($base->get('POST.connection_weight') ?? 2.0);
         $karmaWeight = floatval($base->get('POST.karma_weight') ?? 0.1);
+        $nameWeight = floatval($base->get('POST.name_weight') ?? 5.0);
 
-        $results = $this->searchEntriesByKeywords($keywords, $limit * 3, $connectionWeight, $karmaWeight);
+        $results = $this->searchEntriesByKeywords($keywords, $limit * 3, $connectionWeight, $karmaWeight, $nameWeight);
 
         // Apply filters
         $filteredResults = array_filter($results, function ($entry) use ($categoryFilter, $nsfwFilter, $minKarma) {
