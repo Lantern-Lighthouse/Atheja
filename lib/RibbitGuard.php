@@ -30,13 +30,13 @@ class RibbitGuard
         return function (\Base $base) use ($permission) {
             $user = VerifySessionToken($base);
             if (!$user) {
-                JSON_response('Unauthorized', 401);
+                \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
                 return false;
             }
 
             self::$rbac->set_current_user($user);
             if (!self::$rbac->has_permission($permission)) {
-                JSON_response('Insufficient permission: ' . $permission . ' required', 403);
+                \lib\Responsivity::respond('Insufficient permission: ' . $permission . ' required', \lib\Responsivity::HTTP_Forbidden);
                 return false;
             }
 
@@ -54,13 +54,13 @@ class RibbitGuard
         return function (\Base $base) use ($role) {
             $user = VerifySessionToken($base);
             if (!$user) {
-                JSON_response('Unauthorized', 401);
+                \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
                 return false;
             }
 
             self::$rbac->set_current_user($user);
             if (!self::$rbac->has_role($role)) {
-                JSON_response('Insufficient role privileges: ' . $role . ' role required', 403);
+                \lib\Responsivity::respond('Insufficient role privileges: ' . $role . ' role required', \lib\Responsivity::HTTP_Forbidden);
                 return false;
             }
 
@@ -79,7 +79,7 @@ class RibbitGuard
         return function (\Base $base) use ($permissions) {
             $user = VerifySessionToken($base);
             if (!$user) {
-                JSON_response('Unauthorized', 401);
+                \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
                 return false;
             }
 
@@ -89,7 +89,7 @@ class RibbitGuard
                     return true;
             }
 
-            JSON_response('Insufficient permissions: one of [' . implode(', ', $permissions) . '] required', 403);
+            \lib\Responsivity::respond('Insufficient permissions: one of [' . implode(', ', $permissions) . '] required', \lib\Responsivity::HTTP_Forbidden);
             return false;
         };
     }
@@ -105,7 +105,7 @@ class RibbitGuard
         return function (\Base $base) use ($roles) {
             $user = VerifySessionToken($base);
             if (!$user) {
-                JSON_response('Unauthorized', 401);
+                \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
                 return false;
             }
 
@@ -114,7 +114,7 @@ class RibbitGuard
                 if (self::$rbac->has_role($role))
                     return true;
 
-            JSON_response('Insufficient role privileges: one of [' . implode(', ', $roles) . '] required', 403);
+            \lib\Responsivity::respond('Insufficient role privileges: one of [' . implode(', ', $roles) . '] required', \lib\Responsivity::HTTP_Forbidden);
             return false;
         };
     }
@@ -129,7 +129,7 @@ class RibbitGuard
         return function (\Base $base) use ($getResourceOwner) {
             $user = VerifySessionToken($base);
             if (!$user) {
-                JSON_response('Unauthorized', 401);
+                \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
                 return false;
             }
 
@@ -144,7 +144,7 @@ class RibbitGuard
             if ($user->id == $ownerID)
                 return true;
 
-            JSON_response('Access denied: resource ownership or admin privileges required', 403);
+            \lib\Responsivity::respond('Access denied: resource ownership or admin privileges required', \lib\Responsivity::HTTP_Forbidden);
             return false;
         };
     }
@@ -154,7 +154,7 @@ class RibbitGuard
         return function (\Base $base) use ($ownerID)  {
             $user = VerifySessionToken($base);
             if (!$user) {
-                JSON_response('Unauthorized', 401);
+                \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
                 return false;
             }
 
@@ -168,7 +168,7 @@ class RibbitGuard
             if ($user->id == $ownerID)
                 return true;
 
-            JSON_response('Access denied: resource ownership or admin privileges required', 403);
+            \lib\Responsivity::respond('Access denied: resource ownership or admin privileges required', \lib\Responsivity::HTTP_Forbidden);
             return false;
         };
     }

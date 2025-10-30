@@ -236,7 +236,7 @@ class RibbitCore
             if ($callback)
                 return $callback();
 
-            JSON_response('Insufficient permissions', 403);
+            \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
             return false;
         }
         return true;
@@ -248,7 +248,7 @@ class RibbitCore
             if ($callback)
                 return $callback();
 
-            JSON_response('Insufficient role privileges', 403);
+            \lib\Responsivity::respond('Insufficient role privileges', \lib\Responsivity::HTTP_Forbidden);
             return false;
         }
         return true;

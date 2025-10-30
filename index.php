@@ -17,8 +17,7 @@ $base->config('./app/Configs/config.ini');
 switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
     case "sqlite":
         if (!file_exists(substr($base->get('db.dsn'), 7))) {
-            JSON_response('[CONFIG] Error: Database file not found', 500);
-            die;
+            \lib\Responsivity::respond('Database file not found', \lib\Responsivity::HTTP_Internal_Error);
         }
         $base->set('DB', new DB\SQL($base->get('db.dsn'), null, null, [PDO::ATTR_STRINGIFY_FETCHES => false]));
         if (filesize(substr($base->get('db.dsn'), 7)) == 0)
@@ -35,48 +34,14 @@ switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
         break;
 }
 
-function JSON_response($message, int $code = 200)
-{
-    header("Content-Type: application/json");
-    http_response_code($code);
-    echo json_encode($message);
-}
-
 function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.ini')
 {
-    $base->set($key, $value);
-    $config = [];
-    if (file_exists($iniFile))
-        $config = parse_ini_file($iniFile, true);
-    $parts = explode('.', $key);
-
-    if (count($parts) == 1)
-        $config[$key] = $value;
-    else if (count($parts) == 2) {
-        $section = $parts[0];
-        $option = $parts[1];
-        if (!isset($config[$section]))
-            $config[$section] = [];
-        $config[$section][$option] = $value;
-    }
-
-    $content = '';
-    foreach ($config as $section => $values) {
-        if (is_array($values)) {
-            $content .= "[$section]\n";
-            foreach ($values as $key => $val)
-                $content .= "$key = " . (is_numeric($val) ? $val : "\"$val\"") . "\n";
-            $content .= "\n";
-        } else
-            $content .= "$section = " . (is_numeric($values) ? $values : "\"$values\"") . "\n";
-    }
-
-    return file_put_contents($iniFile, $content);
+    \lib\Responsivity::update_config_value($base, $key, $value, $iniFile);
 }
 
 if ($base->get('DEBUG') <= 3) {
     $base->set('ONERROR', function ($base) {
-        JSON_response(['status' => $base->get('ERROR.status'), 'text' => $base->get('ERROR.text')], $base->get('ERROR.code'));
+        \lib\Responsivity::respond(['status' => $base->get('ERROR.status'), 'text' => $base->get('ERROR.text')], $base->get('ERROR.code'));
     });
 }
 
