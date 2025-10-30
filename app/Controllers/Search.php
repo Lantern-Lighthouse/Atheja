@@ -699,7 +699,7 @@ class Search
             $matchedKeywords = [];
 
             foreach ($entryTags as $entryTag) {
-                $tagId = $entryTag->_id;
+                $tagID = $entryTag->_id;
                 if (in_array($tagID, $matchingTagIDs)) {
                     $connectionCount++;
                     // Track wich keywords were matched
