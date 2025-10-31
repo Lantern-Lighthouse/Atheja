@@ -638,7 +638,7 @@ class Search
         // Get scoring weights from config or use defaults
         $connectionWeight = floatval($base->get('GET.connection_weight') ?? 2.0);
         $karmaWeight = floatval($base->get('GET.karma_weight') ?? 0.1);
-        $nameWeight = floatval($base->get('GET.name_weight') ?? 5.0);
+        $nameWeight = floatval($base->get('GET.name_weight') ?? 0.5);
 
         $results = $this->searchEntriesByKeywords($keywords, $limit, $connectionWeight, $karmaWeight, $nameWeight);
         $filteredResults = array_filter($results, function ($entry) use ($nsfwFilter) {
@@ -788,7 +788,7 @@ class Search
         // Scoring weights
         $connectionWeight = floatval($base->get('POST.connection_weight') ?? 2.0);
         $karmaWeight = floatval($base->get('POST.karma_weight') ?? 0.1);
-        $nameWeight = floatval($base->get('POST.name_weight') ?? 5.0);
+        $nameWeight = floatval($base->get('POST.name_weight') ?? 0.5);
 
         $results = $this->searchEntriesByKeywords($keywords, $limit * 3, $connectionWeight, $karmaWeight, $nameWeight);
 
