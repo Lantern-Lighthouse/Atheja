@@ -17,16 +17,94 @@ class RibbitCore
     private function __construct(\Base $base)
     {
         $this->base = $base;
+        $this->initialize_database(); // Initialize DB connection for F3 ORM
     }
 
     public static function get_instance(?\Base $base = null): self
     {
         if (self::$instance === null) {
-            if ($base === null)
+            if ($base === null) {
                 throw new Exception("Base instance required for first initialization");
+            }
             self::$instance = new self($base);
         }
         return self::$instance;
+    }
+
+    /**
+     * Initializes the database connection based on configured driver.
+     * Integrates with Fat-Free Framework's DB object, making it available to models.
+     *
+     * Expected configuration variables (set in F3 registry, e.g., config.ini):
+     * - DB_DRIVER: 'mysql' or 'pgsql'
+     *
+     * For PostgreSQL (if DB_DRIVER='pgsql'):
+     * - DB_HOST_PG
+     * - DB_PORT_PG (optional, defaults to 5432)
+     * - DB_NAME_PG
+     * - DB_USER_PG
+     * - DB_PASS_PG
+     *
+     * For MySQL (if DB_DRIVER='mysql'):
+     * - DB_HOST_MYSQL
+     * - DB_PORT_MYSQL (optional, defaults to 3306)
+     * - DB_NAME_MYSQL
+     * - DB_USER_MYSQL
+     * - DB_PASS_MYSQL
+     * OR (for backward compatibility with older F3 setups):
+     * - DB_DSN
+     * - DB_USER
+     * - DB_PASS
+     *
+     * @throws Exception If an unsupported database driver is configured or connection details are missing.
+     * @return void
+     */
+    private function initialize_database(): void
+    {
+        $driver = $this->base->get('DB_DRIVER');
+        $db = null;
+
+        if ($driver === 'pgsql') {
+            $host = $this->base->get('DB_HOST_PG');
+            $port = $this->base->get('DB_PORT_PG') ?: 5432;
+            $name = $this->base->get('DB_NAME_PG');
+            $user = $this->base->get('DB_USER_PG');
+            $pass = $this->base->get('DB_PASS_PG');
+
+            if (!$host || !$name || !$user) {
+                throw new Exception("PostgreSQL connection details (DB_HOST_PG, DB_NAME_PG, DB_USER_PG) are required for DB_DRIVER='{$driver}'.");
+            }
+
+            $dsn = "pgsql:host={$host};port={$port};dbname={$name}";
+            $db = new \DB\SQL($dsn, $user, $pass);
+        } elseif ($driver === 'mysql') {
+            $host = $this->base->get('DB_HOST_MYSQL');
+            $port = $this->base->get('DB_PORT_MYSQL') ?: 3306;
+            $name = $this->base->get('DB_NAME_MYSQL');
+            $user = $this->base->get('DB_USER_MYSQL');
+            $pass = $this->base->get('DB_PASS_MYSQL');
+            $dsn = '';
+
+            if (!$host || !$name || !$user) {
+                // Fallback to older F3-style DB_DSN if specific keys are not set,
+                // for backward compatibility.
+                if ($this->base->exists('DB_DSN') && $this->base->exists('DB_USER')) {
+                    $dsn = $this->base->get('DB_DSN');
+                    $user = $this->base->get('DB_USER');
+                    $pass = $this->base->get('DB_PASS');
+                } else {
+                    throw new Exception("MySQL connection details (DB_HOST_MYSQL, DB_NAME_MYSQL, DB_USER_MYSQL) or legacy (DB_DSN, DB_USER) are required for DB_DRIVER='{$driver}'.");
+                }
+            } else {
+                $dsn = "mysql:host={$host};port={$port};dbname={$name}";
+            }
+            $db = new \DB\SQL($dsn, $user, $pass);
+        } else {
+            throw new Exception("Unsupported or missing database driver configuration: DB_DRIVER='{$driver}'. Expected 'mysql' or 'pgsql'.");
+        }
+
+        // Assign the DB object to F3's global scope, making it available to models
+        $this->base->set('DB', $db);
     }
 
     /**
@@ -105,7 +183,7 @@ class RibbitCore
      * @param string $roleName
      * @return bool
      */
-    public function asign_role_to_user(int $userId, string $roleName)
+    public function assign_role_to_user(int $userId, string $roleName)
     {
         try {
             $userModel = new \Models\User();
@@ -222,35 +300,6 @@ class RibbitCore
             foreach ($user->roles as $role)
                 $roles[] = $role->name;
 
-        return $roles;
-    }
-
-    /**
-     * Middleware function to check permissions
-     * @param string $permission
-     * @param callable $callback
-     */
-    public function require_permission(string $permission, ?callable $callback = null)
-    {
-        if (!$this->has_permission($permission)) {
-            if ($callback)
-                return $callback();
-
-            \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
-            return false;
-        }
-        return true;
-    }
-
-    public function require_role(string $role, ?callable $callback = null)
-    {
-        if (!$this->has_role($role)) {
-            if ($callback)
-                return $callback();
-
-            \lib\Responsivity::respond('Insufficient role privileges', \lib\Responsivity::HTTP_Forbidden);
-            return false;
-        }
-        return true;
+        return array_unique($roles);
     }
 }
