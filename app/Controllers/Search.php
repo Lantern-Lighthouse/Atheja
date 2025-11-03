@@ -244,6 +244,11 @@ class Search
             ];
         }
 
+        if ($user != false) {
+            $model = new \Models\Vote();
+            $userRating = $model->findone(["user=? AND entry=?", $user->id, $base->get('PARAMS.entry')])->vote_type ?? 0;
+        }
+
         $cast = [
             'name' => $entry->name,
             'description' => $entry->description,
@@ -254,6 +259,7 @@ class Search
             ],
             ...($base->get('GET.show_favicon') ? ['favicon' => $entry->favicon] : []),
             'karma' => $entry->getKarma(),
+            ...($user != false ? ['user_rating' => $userRating] : []),
             'author' => [
                 'username' => $entry->author->username,
                 'displayname' => $entry->author->displayname,
@@ -733,6 +739,13 @@ class Search
                     'id' => $tag->_id,
                 ];
 
+            $base = \Base::instance();
+            $user = VerifySessionToken($base);
+            if ($user != false) {
+                $model = new \Models\Vote();
+                $userRating = $model->findone(["user=? AND entry=?", $user->id, $entry->_id])->vote_type ?? 0;
+            }
+
             $scoredResults[] = [
                 'id' => $entry->_id,
                 'name' => $entry->name,
@@ -745,6 +758,7 @@ class Search
                 'karma' => $karma,
                 'karma-upvotes' => $entry->upvotes,
                 'karma-downvotes' => $entry->downvotes,
+                ...($user != false ? ['user_rating' => $userRating] : []),
                 'author' => [
                     'username' => $entry->author->username,
                     'displayname' => $entry->author->displayname,
