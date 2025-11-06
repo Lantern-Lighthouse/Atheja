@@ -1,10 +1,10 @@
 <div align="center">
   <h1>Atheja</h1>
-  
+
   <p>
     <strong>A community-driven web search engine backend.</strong>
   </p>
-  
+
   <p>
     <a href="https://github.com/Lantern-Lighthouse/Atheja/blob/main/LICENSE">
       <img src="https://img.shields.io/github/license/Lantern-Lighthouse/Atheja?style=for-the-badge" alt="License" />
@@ -17,56 +17,60 @@
 
 ---
 
-Atheja is the open-source backend system for a community-driven web search engine. Built with PHP and the lightweight Fat-Free Framework, it provides the core API and logic for crawling, indexing, and retrieving search results.
+## 📖 About The Project
 
-This project is part of the Lantern-Lighthouse initiative to create transparent and community-powered web tools.
+**Atheja** is the open-source backend system for a **community-powered web search engine**.  
+Unlike traditional search engines that use automated crawlers, **Atheja lets users submit and manage websites themselves**, building a transparent, privacy-respecting, and community-driven search index.
 
-## 📖 Table of Contents
+This approach ensures that:
+- Content is added **intentionally** by contributors, not automatically scraped.
+- Search results remain **transparent** and **user-curated**.
+- The community—not advertisers—guides the web discovery process.
 
-* [About The Project](#about-the-project)
-* [✨ Features](#-features)
-* [🛠️ Built With](#️-built-with)
-* [🚀 Getting Started](#-getting-started)
-    * [Prerequisites](#prerequisites)
-    * [Installation](#installation)
-* [👋 Contributing](#-contributing)
-* [📜 License](#-license)
+Atheja is part of the **Lantern-Lighthouse initiative**, focused on developing open, collaborative, and ethical internet tools.
 
-## About The Project
-
-The goal of Atheja is to provide a scalable and open-source alternative to traditional search engine backends. By being community-driven, we aim to build a search index that is transparent, privacy-respecting, and guided by its users, not by advertisers.
+---
 
 ## ✨ Features
 
-* **Lightweight & Fast:** Built on the [Fat-Free Framework](https://fatfreeframework.com/3/) for high performance.
-* **API-Driven:** Designed as a JSON-based API backend, perfect for any modern web frontend.
-* **Database Agnostic:** Easily configurable to work with MySQL, PostgreSQL, SQLite, and more.
-* **Open Source:** Fully transparent and open to community contributions.
+- 🔍 **User-Driven Indexing** – Websites are added and described by users, not crawlers.    
+- 🧩 **Powered by F3 Cortex** – Uses [F3 Cortex](https://github.com/ikkez/f3-cortex) for database abstraction (ORM/ODM).  
+- 🧠 **API-Based Architecture** – Provides REST-style JSON APIs for integration with frontends and tools.  
+- 🗄️ **Database-Agnostic** – Works with MySQL, MariaDB, PostgreSQL, and SQLite.  
+- 🌍 **Open Source & Transparent** – Licensed under GPL-3.0 and open for everyone to contribute.
+
+---
 
 ## 🛠️ Built With
 
-* [PHP](https://www.php.net/) (v8.0 or newer)
-* [Fat-Free Framework](https://fatfreeframework.com/3/)
-* [Composer](https://getcomposer.org/)
+- [PHP 8.0+](https://www.php.net/)
+- [F3 Cortex](https://github.com/ikkez/f3-cortex)
+- [Composer](https://getcomposer.org/)
+
+
+---
 
 ## 🚀 Getting Started
 
-To get a local copy up and running for development, follow these simple steps.
+Follow these steps to set up Atheja locally for development or testing.
 
-### Prerequisites
+### ✅ Prerequisites
 
-Make sure you have the following software installed on your system:
-* [PHP](https://www.php.net/manual/en/install.php) (v8.0+)
-* [Composer](https://getcomposer.org/doc/00-intro.md)
-* A local database server (e.g., MySQL, MariaDB, PostgreSQL)
+You’ll need the following installed:
+- PHP ≥ 8.0  
+- Composer  
+- A local database server (MySQL, MariaDB, PostgreSQL, or SQLite)  
+- Git
 
-### Installation
+---
 
-1.  **Clone the repository:**
-    ```sh
-    git clone [https://github.com/Lantern-Lighthouse/Atheja.git](https://github.com/Lantern-Lighthouse/Atheja.git)
-    cd Atheja
-    ```
+### ⚙️ Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Lantern-Lighthouse/Atheja.git
+   cd Atheja
+   ```
 
 2.  **Configure your database:**
     Copy the example configuration file. This file stores your database credentials and is ignored by Git.
@@ -103,6 +107,7 @@ Make sure you have the following software installed on your system:
 
 You're all set! The backend is running and connected to your database.
 
+
 ## 👋 Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -115,6 +120,7 @@ If you'd like to contribute, please:
 5.  Open a Pull Request
 
 Don't forget to open an issue first to discuss any major changes!
+
 
 ## 📜 License
 
