@@ -33,7 +33,8 @@ Atheja is part of the **Lantern-Lighthouse initiative**, focused on developing o
 
 ## ✨ Features
 
-- 🔍 **User-Driven Indexing** – Websites are added and described by users, not crawlers.    
+- 🔍 **User-Driven Indexing** – Websites are added and described by users, not crawlers.
+- ⚡ **Fast & Lightweight** – Built using the [Fat-Free Framework (F3)](https://fatfreeframework.com/3.9/home) for performance and simplicity.  
 - 🧩 **Powered by F3 Cortex** – Uses [F3 Cortex](https://github.com/ikkez/f3-cortex) for database abstraction (ORM/ODM).  
 - 🧠 **API-Based Architecture** – Provides REST-style JSON APIs for integration with frontends and tools.  
 - 🗄️ **Database-Agnostic** – Works with MySQL, MariaDB, PostgreSQL, and SQLite.  
@@ -44,6 +45,7 @@ Atheja is part of the **Lantern-Lighthouse initiative**, focused on developing o
 ## 🛠️ Built With
 
 - [PHP 8.0+](https://www.php.net/)
+- [Fat-Free Framework (F3)](https://fatfreeframework.com/3.9/home)
 - [F3 Cortex](https://github.com/ikkez/f3-cortex)
 - [Composer](https://getcomposer.org/)
 
