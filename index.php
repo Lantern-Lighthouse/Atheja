@@ -25,6 +25,7 @@ switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
         break;
     default:
     case "mysql":
+    case "pgsql":
         $base->set('DB', new \DB\SQL(
             $base->get('db.dsn'),
             $base->get('db.username'),

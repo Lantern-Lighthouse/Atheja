@@ -6,3 +6,8 @@ password = ""
 
 ; sqlite
 ; dsn = "sqlite:data/db.sqlite"
+
+; postgresql
+; dsn = "pgsql:host=localhost;dbname=lantern"
+; username = "root"
+; password = ""
