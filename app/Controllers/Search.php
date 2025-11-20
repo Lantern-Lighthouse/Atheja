@@ -793,7 +793,7 @@ class Search
             return \lib\Responsivity::respond('No valid keywords provided', \lib\Responsivity::HTTP_Bad_Request);
 
         // Optional filters
-        $categoryFilter = $base->get('POST.category');
+        $categoryFilter = strtolower($base->get('POST.category'));
         $nsfwFilter = $base->get('POST.nsfw'); // null => all; 0 => SFW only; 1 => NSFW only
         $minKarma = intval($base->get('POST.min_karma') ?? 0);
         $limit = intval($base->get('POST.limit') ?? 20);
@@ -808,7 +808,7 @@ class Search
 
         // Apply filters
         $filteredResults = array_filter($results, function ($entry) use ($categoryFilter, $nsfwFilter, $minKarma) {
-            if ($categoryFilter && $entry['category']['name'] !== $categoryFilter)
+            if ($categoryFilter && strtolower($entry['category']['name']) !== $categoryFilter)
                 return false;
 
             if ($nsfwFilter !== null && $entry['nsfw'] != $nsfwFilter)
