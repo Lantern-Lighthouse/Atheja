@@ -359,7 +359,7 @@ class Search
             array_push($tagsOut, $tagID);
         }
 
-        $model->tags = array_unique($tagsOut);
+        $model->tags = array_values(array_unique($tagsOut));
 
         // Saving and feedback
         try {
@@ -566,7 +566,7 @@ class Search
             array_push($tagStack, $tagID);
         }
 
-        $tagStack = array_unique($tagStack);
+        $tagStack = array_values(array_unique($tagStack));
         $entry->tags = $tagStack;
 
         try {
