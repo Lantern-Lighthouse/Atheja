@@ -760,7 +760,7 @@ class Search
                 'karma-downvotes' => $entry->downvotes,
                 ...($user != false ? ['user_rating' => $userRating] : []),
                 'author' => [
-                    ...(isset($entry->author->username) ? ['username' => $entry->author->username] : []),
+                    ...(isset($entry->author->username) ? ['username' => $entry->author->username] : ['username' => null]),
                     ...(isset($entry->author->displayname) ? ['displayname' => $entry->author->displayname] : ['displayname' => "Deleted User"]),
                 ],
                 'tags' => $tags,
