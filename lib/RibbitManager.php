@@ -303,6 +303,7 @@ class RibbitManager
                 ['entry.update', 'Update Entries', 'entry', 'update', 'Update entries'],
                 ['entry.delete', 'Create Entries', 'entry', 'delete', 'Delete entries'],
                 ['entry.rate', 'Rate Entries', 'entry', 'rate', 'Vote on entries'],
+                ['entry.report', 'Repúort Entries', 'entry', 'report', 'Report entries'],
 
                 ['category.create', 'Create Categories', 'category', 'create', 'Create new categories'],
                 ['category.read', 'Read Categories', 'category', 'read', 'View categories'],
@@ -360,6 +361,7 @@ class RibbitManager
                 'entry.read',
                 'entry.update',
                 'entry.rate',
+                'entry.report',
                 'category.read',
                 'tag.create',
                 'tag.read',
