@@ -1,0 +1,42 @@
+type: http_request
+model: http_request
+id: rq_VUsJbcs47x
+createdAt: 2025-12-01T19:43:22.629343900
+updatedAt: 2025-12-01T19:43:57.682263300
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ghAVc4Zzxq
+authentication: {}
+authenticationType: none
+body:
+  form:
+  - enabled: true
+    name: username
+    value: krmeni
+  - enabled: true
+    name: displayname
+    value: Krmení
+  - enabled: true
+    name: email
+    value: bozablazku@kuku.prd
+  - enabled: true
+    name: password
+    value: šneků
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: null
+description: ''
+headers:
+- enabled: true
+  name: ''
+  value: ''
+  id: PwFVtseXZ5
+- enabled: true
+  name: ''
+  value: ''
+  id: GeGZKUI0nA
+method: GET
+name: Report user
+sortPriority: 5000.0
+url: ${[ server_url ]}/api/user/krmeni/report
+urlParameters: []

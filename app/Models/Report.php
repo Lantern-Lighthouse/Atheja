@@ -12,25 +12,25 @@ class Report extends \DB\Cortex
             'required' => true,
             'index' => false
         ],
-        'user-reported' => [
+        'user_reported' => [
             'belongs-to-one' => 'Models\User',
             'required' => false,
             'unique' => false,
             'nullable' => false,
             'index' => true
         ],
-        'entry-reported' => [
+        'entry_reported' => [
             'belongs-to-one' => 'Models\Entry',
             'required' => false,
             'unique' => false,
             'nullable' => false,
             'index' => true
         ],
-        'report_created_at' => [
+        'created_at' => [
             'type' => 'DATETIME',
             'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP
         ],
-        'report_updated_at' => [
+        'updated_at' => [
             'type' => 'DATETIME',
             'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP
         ],
