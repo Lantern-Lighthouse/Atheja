@@ -43,6 +43,7 @@ class Index
             \Models\Entry::setdown();
             \Models\Tag::setdown();
             \Models\Vote::setdown();
+            \Models\Report::setdown();
         } catch (Exception $e) {
             \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
@@ -54,6 +55,7 @@ class Index
             \Models\Entry::setup();
             \Models\Tag::setup();
             \Models\Vote::setup();
+            \Models\Report::setup();
         } catch (Exception $e) {
             \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
@@ -123,6 +125,7 @@ class Index
             \Models\Entry::setup();
             \Models\Tag::setup();
             \Models\Vote::setup();
+            \Models\Report::setup();
         } catch (Exception $e) {
             \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
@@ -155,6 +158,7 @@ class Index
             \Models\Entry::setdown();
             \Models\Tag::setdown();
             \Models\Vote::setdown();
+            \Models\Report::setdown();
         } catch (Exception $e) {
             \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
