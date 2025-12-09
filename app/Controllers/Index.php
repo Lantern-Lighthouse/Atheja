@@ -22,6 +22,7 @@ class Index
                 'tags' => (new \Models\Tag())->count(),
                 'users' => (new \Models\User())->count(),
                 'votes' => (new \Models\Vote())->count(),
+                'reports' => (new \Models\Report())->count(),
             ]
         ]);
     }
