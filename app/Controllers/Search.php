@@ -835,5 +835,31 @@ class Search
             'results' => $filteredResults,
         ]);
     }
+
+    public function getEntryReport (\Base $base) {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('user.report') == false)
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+
+        $reportModel = new \Models\Report();
+        $entryModel = new \Models\Entry();
+        
+        $reported_entry = $entryModel->findone(['id=?', $base->get('PARAMS.entry')]);
+        if(!$reported_entry)
+            return \lib\Responsivity::respond("Entry not found", \lib\Responsivity::HTTP_Not_Found);
+
+        $reportModel->reporter = $user;
+        $reportModel->entry_reported = $reported_entry;
+        $reportModel->reason = $base->get('POST.reason');
+        
+        try {
+            $reportModel->save();
+            return \lib\Responsivity::respond('Report created', \lib\Responsivity::HTTP_Created);
+        } catch (Exception $e) {
+            return \lib\Responsivity::respond('Failed to report', \lib\Responsivity::HTTP_Internal_Error);
+        }
+    }
     //endregion
 }
