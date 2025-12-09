@@ -165,12 +165,13 @@ class User
         $reportModel = new \Models\Report();
         $userModel = new \Models\User();
         
-        $reported_user = $userModel->findone(['username=?', $base->get('GET.user')]);
+        $reported_user = $userModel->findone(['username=?', $base->get('PARAMS.user')]);
         if(!$reported_user)
             return \lib\Responsivity::respond("User not found", \lib\Responsivity::HTTP_Not_Found);
 
         $reportModel->reporter = $user;
         $reportModel->user_reported = $reported_user;
+        $reportModel->reason = $base->get('POST.reason');
         
         try {
             $reportModel->save();

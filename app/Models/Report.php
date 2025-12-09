@@ -26,13 +26,19 @@ class Report extends \DB\Cortex
             'nullable' => false,
             'index' => true
         ],
+        'reason' => [
+            'type' => 'VARCHAR256',
+            'required' => true,
+            'unique' => false,
+            'nullable' => false,
+            'index' => false
+        ],
         'created_at' => [
             'type' => 'DATETIME',
             'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP
         ],
         'updated_at' => [
-            'type' => 'DATETIME',
-            'default' => \DB\SQL\Schema::DF_CURRENT_TIMESTAMP
+            'type' => 'DATETIME'
         ],
         'resolver' => [
             'belongs-to-one' => 'Models\User',
