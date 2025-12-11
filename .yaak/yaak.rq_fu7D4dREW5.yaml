@@ -1,0 +1,29 @@
+type: http_request
+model: http_request
+id: rq_fu7D4dREW5
+createdAt: 2025-12-11T21:40:32.167548400
+updatedAt: 2025-12-11T21:49:59.667023400
+workspaceId: wk_iRyJisk9Us
+folderId: fl_Ekm4HJz9Cb
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: state
+    value: '1'
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: 2IMIGhIZBn
+method: POST
+name: Set resolution
+sortPriority: 0.003
+url: ${[ server_url ]}/api/report/1/resolve
+urlParameters: []
