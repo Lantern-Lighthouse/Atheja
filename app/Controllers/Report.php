@@ -36,7 +36,7 @@ class Report
             'reason' => $report->reason,
             'reported_at' => $report->created_at,
             'last_update_at' => $report->updated_at,
-            'assigned_to' => $report->resolver,
+            'assigned_to' => $report->resolver->username,
             'is_resolved' => $report->resolved,
         ];
 
@@ -91,7 +91,7 @@ class Report
                 'reason' => $report->reason,
                 'reported_at' => $report->created_at,
                 'last_update_at' => $report->updated_at,
-                'assigned_to' => $report->resolver,
+                'assigned_to' => $report->resolver->username,
                 'is_resolved' => $report->resolved,
             ];
         }
@@ -126,6 +126,7 @@ class Report
             return \lib\Responsivity::respond('Cannot assign this user', \lib\Responsivity::HTTP_Unauthorized);
 
         try {
+            $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
             return \lib\Responsivity::respond($resolver->username . " assigned to case " . $report->id);
         } catch (Exception $e) {
@@ -152,6 +153,7 @@ class Report
         $report->resolved = $resolved;
 
         try {
+            $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
             return \lib\Responsivity::respond($report->id . " changed to state " . $resolved);
         } catch (Exception $e) {
