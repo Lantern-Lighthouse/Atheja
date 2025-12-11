@@ -153,4 +153,31 @@ class User
             return \lib\Responsivity::respond("Unable to display avatar: " . $e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
     }
+
+    public function getUserReport(\Base $base)
+    {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if ($rbac->has_permission('user.report') == false)
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+
+        $reportModel = new \Models\Report();
+        $userModel = new \Models\User();
+        
+        $reported_user = $userModel->findone(['username=?', $base->get('PARAMS.user')]);
+        if(!$reported_user)
+            return \lib\Responsivity::respond("User not found", \lib\Responsivity::HTTP_Not_Found);
+
+        $reportModel->reporter = $user;
+        $reportModel->user_reported = $reported_user;
+        $reportModel->reason = $base->get('POST.reason');
+        
+        try {
+            $reportModel->save();
+            return \lib\Responsivity::respond('Report created', \lib\Responsivity::HTTP_Created);
+        } catch (Exception $e) {
+            return \lib\Responsivity::respond('Failed to report', \lib\Responsivity::HTTP_Internal_Error);
+        }
+    }
 }

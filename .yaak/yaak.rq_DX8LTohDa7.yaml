@@ -1,0 +1,29 @@
+type: http_request
+model: http_request
+id: rq_DX8LTohDa7
+createdAt: 2025-12-11T21:19:00.861578100
+updatedAt: 2025-12-11T21:38:02.597507
+workspaceId: wk_iRyJisk9Us
+folderId: fl_Ekm4HJz9Cb
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: username
+    value: krmeni
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: 2IMIGhIZBn
+method: POST
+name: Set resolver
+sortPriority: 0.002
+url: ${[ server_url ]}/api/report/1/assign
+urlParameters: []
