@@ -191,4 +191,42 @@ class Report
             return \lib\Responsivity::respond("Failed to assign resolver", \lib\Responsivity::HTTP_Internal_Error);
         }
     }
+
+    public function postReportBulkAssign(\Base $base)
+    {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if (!$rbac->has_role('moderator') && !$rbac->has_role('admin'))
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+
+        $model = new \Models\User();
+        $resolver = $model->findone(["username=?", $base->get('POST.username')]);
+        if (!$resolver)
+            return \lib\Responsivity::respond('User not found', \lib\Responsivity::HTTP_Not_Found);
+        unset($model);
+
+        $reportIDs = array_values(array_unique(array_filter(explode(';', $base->get('POST.reports')))));
+
+        foreach ($reportIDs as $reportID) {
+            $model = new \Models\Report();
+            $report = $model->findone(['id=?', intval($reportID)]);
+            if (!$report)
+                return \lib\Responsivity::respond('No report ' . $reportID . ' found', \lib\Responsivity::HTTP_Not_Found);
+            $rbac = \lib\RibbitCore::get_instance($base);
+            $rbac->set_current_user($resolver);
+            if ($rbac->has_role('moderator') || $rbac->has_role('admin'))
+                $report->resolver = $resolver;
+            else
+                return \lib\Responsivity::respond('Cannot assign this user', \lib\Responsivity::HTTP_Unauthorized);
+            try {
+                $report->updated_at = date('Y-m-d H:i:s');
+                $report->save();
+            } catch (Exception $e) {
+                return \lib\Responsivity::respond("Failed to assign resolver", \lib\Responsivity::HTTP_Internal_Error);
+            }
+        }
+
+        return \lib\Responsivity::respond($resolver->username . " assigned to cases " . implode(';',$reportIDs));
+    }
 }
