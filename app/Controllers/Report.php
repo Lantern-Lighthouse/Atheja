@@ -162,4 +162,33 @@ class Report
             return \lib\Responsivity::respond("Failed to change state", \lib\Responsivity::HTTP_Internal_Error);
         }
     }
+
+    public function postReportUnassign(\Base $base)
+    {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if (!$rbac->has_role('moderator') && !$rbac->has_role('admin'))
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+
+        $model = new \Models\Report();
+        $report = $model->findone(['id=?', $base->get('PARAMS.reportID')]);
+        if (!$report)
+            return \lib\Responsivity::respond('No report found', \lib\Responsivity::HTTP_Not_Found);
+        unset($model);
+
+        if (!$report->resolver)
+            return \lib\Responsivity::respond('Can\'t unassign unassignable', \lib\Responsivity::HTTP_Bad_Request);
+        $oldResolverUsername = $report->resolver->username;
+
+        $report->resolver = null;
+
+        try {
+            $report->updated_at = date('Y-m-d H:i:s');
+            $report->save();
+            return \lib\Responsivity::respond($oldResolverUsername . " unassigned from case " . $report->id);
+        } catch (Exception $e) {
+            return \lib\Responsivity::respond("Failed to assign resolver", \lib\Responsivity::HTTP_Internal_Error);
+        }
+    }
 }
