@@ -36,7 +36,7 @@ class Report
             'reason' => $report->reason,
             'reported_at' => $report->created_at,
             'last_update_at' => $report->updated_at,
-            'assigned_to' => $report->resolver->username,
+            'assigned_to' => $report->resolver ? $report->resolver->username : null,
             'is_resolved' => $report->resolved,
         ];
 
@@ -61,7 +61,7 @@ class Report
                 $filter = ["resolved=1"];
                 break;
             case "assigned":
-                $filter = ["resolved=1"];
+                $filter = ["resolver>0"];
                 break;
             case "unassigned":
                 $filter = ["resolver=?", NULL];
@@ -74,7 +74,6 @@ class Report
         $response = [];
 
         foreach ($reports as $report) {
-
             $response[$report->id] = [
                 'reporter' => $report->reporter->username,
                 ...(isset($report->user_reported) ? ['reported' => $report->user_reported->username] : []),
@@ -91,7 +90,7 @@ class Report
                 'reason' => $report->reason,
                 'reported_at' => $report->created_at,
                 'last_update_at' => $report->updated_at,
-                'assigned_to' => $report->resolver->username,
+                'assigned_to' => $report->resolver ? $report->resolver->username : null,
                 'is_resolved' => $report->resolved,
             ];
         }
@@ -115,6 +114,8 @@ class Report
 
         $model = new \Models\User();
         $resolver = $model->findone(["username=?", $base->get('POST.username')]);
+        if (!$resolver)
+            return \lib\Responsivity::respond('User not found', \lib\Responsivity::HTTP_Not_Found);
         unset($model);
 
         unset($rbac);
@@ -146,7 +147,7 @@ class Report
             return \lib\Responsivity::respond('No report found', \lib\Responsivity::HTTP_Not_Found);
         unset($model);
 
-        if ($report->resolver->id !== $user->id || !$rbac->has_role('admin'))
+        if ((!$report->resolver || $report->resolver->id !== $user->id) && !$rbac->has_role('admin'))
             return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $resolved = boolval($base->get('POST.state')) ?? 0;
