@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_fu7D4dREW5
 createdAt: 2025-12-11T21:40:32.167548400
-updatedAt: 2025-12-11T21:49:59.667023400
+updatedAt: 2025-12-13T18:20:21.861004200
 workspaceId: wk_iRyJisk9Us
 folderId: fl_Ekm4HJz9Cb
 authentication: {}
@@ -12,6 +12,9 @@ body:
   - enabled: true
     name: state
     value: '1'
+  - enabled: true
+    name: resolution
+    value: ''
   - enabled: true
     name: ''
     value: ''

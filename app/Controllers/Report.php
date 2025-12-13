@@ -151,6 +151,7 @@ class Report
 
         $resolved = boolval($base->get('POST.state')) ?? 0;
         $report->resolved = $resolved;
+        $report->resolution = $base->get('POST.resolution');
 
         try {
             $report->updated_at = date('Y-m-d H:i:s');

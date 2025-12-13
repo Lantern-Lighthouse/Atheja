@@ -16,14 +16,14 @@ class Report extends \DB\Cortex
             'belongs-to-one' => 'Models\User',
             'required' => false,
             'unique' => false,
-            'nullable' => false,
+            'nullable' => true,
             'index' => true
         ],
         'entry_reported' => [
             'belongs-to-one' => 'Models\Entry',
             'required' => false,
             'unique' => false,
-            'nullable' => false,
+            'nullable' => true,
             'index' => true
         ],
         'reason' => [
@@ -51,6 +51,13 @@ class Report extends \DB\Cortex
             'type' => 'BOOLEAN',
             'default' => 0,
             'required' => true
+        ],
+        'resolution' => [
+            'type' => 'VARCHAR256',
+            'required' => true,
+            'unique' => false,
+            'nullable' => true,
+            'index' => false
         ]
     ];
 }
