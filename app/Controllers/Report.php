@@ -223,10 +223,43 @@ class Report
                 $report->updated_at = date('Y-m-d H:i:s');
                 $report->save();
             } catch (Exception $e) {
-                return \lib\Responsivity::respond("Failed to assign resolver", \lib\Responsivity::HTTP_Internal_Error);
+                return \lib\Responsivity::respond("Failed to assign resolver on case" . $reportID, \lib\Responsivity::HTTP_Internal_Error);
             }
         }
 
-        return \lib\Responsivity::respond($resolver->username . " assigned to cases " . implode(';',$reportIDs));
+        return \lib\Responsivity::respond($resolver->username . " assigned to cases " . implode(';', $reportIDs));
+    }
+
+    public function postReportBulkResolve(\Base $base)
+    {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+
+        $reportIDs = array_values(array_unique(array_filter(explode(';', $base->get('POST.reports')))));
+        $resolved = boolval($base->get('POST.state')) ?? 0;
+        $resolution = $base->get('POST.resolution');
+
+        foreach ($reportIDs as $reportID) {
+            $model = new \Models\Report();
+            $report = $model->findone(['id=?', $reportID]);
+            if (!$report)
+                return \lib\Responsivity::respond('No report found', \lib\Responsivity::HTTP_Not_Found);
+            unset($model);
+
+            if ((!$report->resolver || $report->resolver->id !== $user) && !$rbac->has_role('admin'))
+                return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+
+            $report->resolved = $resolved;
+            $report->resolution = $resolution   ;
+
+            try {
+                $report->updated_at = date('Y-m-d H:i:s');
+                $report->save();
+            } catch (Exception $e) {
+                return \lib\Responsivity::respond("Failed to change state on case" . $reportID, \lib\Responsivity::HTTP_Internal_Error);
+            }
+        }
+        return \lib\Responsivity::respond(implode(';', $reportIDs) . " changed to state " . $resolved);
     }
 }
