@@ -147,7 +147,7 @@ class Report
             return \lib\Responsivity::respond('No report found', \lib\Responsivity::HTTP_Not_Found);
         unset($model);
 
-        if ((!$report->resolver || $report->resolver->id !== $user->id) && !$rbac->has_role('admin'))
+        if ((!$report->resolver || $report->resolver->id !== $user) && !$rbac->has_role('admin'))
             return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
         $resolved = boolval($base->get('POST.state')) ?? 0;
@@ -251,7 +251,7 @@ class Report
                 return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
             $report->resolved = $resolved;
-            $report->resolution = $resolution   ;
+            $report->resolution = $resolution;
 
             try {
                 $report->updated_at = date('Y-m-d H:i:s');
@@ -261,5 +261,34 @@ class Report
             }
         }
         return \lib\Responsivity::respond(implode(';', $reportIDs) . " changed to state " . $resolved);
+    }
+
+    public function postReportEdit(\Base $base)
+    {
+        $rbac = \lib\RibbitCore::get_instance($base);
+        $user = VerifySessionToken($base);
+        $rbac->set_current_user($user);
+        if (!$rbac->has_role('moderator') && !$rbac->has_role('admin'))
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+
+        $model = new \Models\Report();
+        $report = $model->findone(['id=?', $base->get('PARAMS.reportID')]);
+        if (!$report)
+            return \lib\Responsivity::respond('No report found', \lib\Responsivity::HTTP_Not_Found);
+        unset($model);
+
+        if ((!$report->resolver || $report->resolver->id !== $user) && !$rbac->has_role('admin'))
+            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+
+        $report->reason = $base->get('POST.reason') ?? $report->reason;
+        $report->resolution = $base->get('POST.resolution') ?? $report->resolution;
+
+        try {
+            $report->updated_at = date('Y-m-d H:i:s');
+            $report->save();
+            return \lib\Responsivity::respond("Edited case " . $report->id);
+        } catch (Exception $e) {
+            return \lib\Responsivity::respond("Failed to edit case", \lib\Responsivity::HTTP_Internal_Error);
+        }
     }
 }
