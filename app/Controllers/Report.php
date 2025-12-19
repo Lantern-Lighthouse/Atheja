@@ -64,7 +64,22 @@ class Report
                 $filter = ["resolver>0"];
                 break;
             case "unassigned":
-                $filter = ["resolver=?", NULL];
+                $filterParameter = null;
+                $filter = ["resolver=?", $filterParameter];
+                break;
+            case "assigned_to":
+                $filterParameter = (new \Models\User())->findone(['username=?', $base->get('GET.filter_parameter')]);
+                if ($filterParameter)
+                    $filter = ["resolver=?", $filterParameter->id];
+                else
+                    $filter = ["resolver=?", null];
+                break;
+                case "reported_by":
+                    $filterParameter = (new \Models\User())->findone(['username=?', $base->get('GET.filter_parameter')]);
+                    if ($filterParameter)
+                        $filter = ["reporter=?", $filterParameter->id];
+                    else
+                        $filter = ["reporter=?", null];
                 break;
         }
         $reports = $model->find($filter);
