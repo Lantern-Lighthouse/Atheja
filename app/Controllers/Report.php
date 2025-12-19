@@ -74,12 +74,12 @@ class Report
                 else
                     $filter = ["resolver=?", null];
                 break;
-                case "reported_by":
-                    $filterParameter = (new \Models\User())->findone(['username=?', $base->get('GET.filter_parameter')]);
-                    if ($filterParameter)
-                        $filter = ["reporter=?", $filterParameter->id];
-                    else
-                        $filter = ["reporter=?", null];
+            case "reported_by":
+                $filterParameter = (new \Models\User())->findone(['username=?', $base->get('GET.filter_parameter')]);
+                if ($filterParameter)
+                    $filter = ["reporter=?", $filterParameter->id];
+                else
+                    $filter = ["reporter=?", null];
                 break;
         }
         $reports = $model->find($filter);
@@ -167,7 +167,11 @@ class Report
 
         $resolved = boolval($base->get('POST.state')) ?? 0;
         $report->resolved = $resolved;
-        $report->resolution = $base->get('POST.resolution');
+
+        $resolution = $base->get('POST.resolution');
+        if ($resolution)
+            return \lib\Responsivity::respond('Missing resolution text', \lib\Responsivity::HTTP_Not_Acceptable);
+        $report->resolution = $resolution;
 
         try {
             $report->updated_at = date('Y-m-d H:i:s');
@@ -254,6 +258,8 @@ class Report
         $reportIDs = array_values(array_unique(array_filter(explode(';', $base->get('POST.reports')))));
         $resolved = boolval($base->get('POST.state')) ?? 0;
         $resolution = $base->get('POST.resolution');
+        if ($resolution)
+            return \lib\Responsivity::respond('Missing resolution text', \lib\Responsivity::HTTP_Not_Acceptable);
 
         foreach ($reportIDs as $reportID) {
             $model = new \Models\Report();
