@@ -262,7 +262,7 @@ class Report
                 return \lib\Responsivity::respond('No report found', \lib\Responsivity::HTTP_Not_Found);
             unset($model);
 
-            if ((!$report->resolver || $report->resolver->id !== $user) && !$rbac->has_role('admin'))
+            if ((!$report->resolver || $report->resolver->id !== $user->id) && !$rbac->has_role('admin'))
                 return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
 
             $report->resolved = $resolved;
