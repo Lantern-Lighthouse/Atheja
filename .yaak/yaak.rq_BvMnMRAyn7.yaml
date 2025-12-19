@@ -1,0 +1,35 @@
+type: http_request
+model: http_request
+id: rq_BvMnMRAyn7
+createdAt: 2025-12-17T15:14:45.489532
+updatedAt: 2025-12-19T15:56:33.243840300
+workspaceId: wk_iRyJisk9Us
+folderId: fl_Ekm4HJz9Cb
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: state
+    value: '1'
+  - enabled: true
+    name: resolution
+    value: h
+  - enabled: true
+    name: reports
+    value: 1;2;3;4;
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: 2IMIGhIZBn
+method: POST
+name: Bulk Set resolution
+sortPriority: 5000.001
+url: ${[ server_url ]}/api/report/resolve
+urlParameters: []

@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_EUXo9UBnBo
+createdAt: 2025-12-11T20:44:44.292213600
+updatedAt: 2025-12-11T20:57:16.453177800
+workspaceId: wk_iRyJisk9Us
+folderId: fl_Ekm4HJz9Cb
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Get reports
+sortPriority: 0.001
+url: ${[ server_url ]}/api/report?filter=assigned
+urlParameters: []
