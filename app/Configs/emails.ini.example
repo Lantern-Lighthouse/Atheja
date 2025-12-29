@@ -1,0 +1,19 @@
+[mailer]
+; smtp config
+smtp.host = smtp.domain.com
+smtp.port = 587
+smtp.user = info@domain.com
+smtp.pw = 123456789!
+; scheme could be SSL or TLS
+smtp.scheme = TLS
+
+; optional mail settings
+from_mail = noreply@domain.com
+from_name = Blind Obsession
+; mail to receive bounced mails
+errors_to = bounce@domain.com
+; used mail for replies to the sent mail
+reply_to = info@domain.com
+
+; path for storing mail dumps
+storage_path = logs/mail/

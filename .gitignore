@@ -1,5 +1,7 @@
 app/Configs/db.ini
+app/Configs/emails.ini
 vendor/
+logs/
 composer.lock
 
 # SQLite support
