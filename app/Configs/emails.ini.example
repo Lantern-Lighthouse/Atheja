@@ -16,4 +16,4 @@ errors_to = bounce@domain.com
 reply_to = info@domain.com
 
 ; path for storing mail dumps
-storage_path = logs/mail/
+storage_path = "logs/mail/"

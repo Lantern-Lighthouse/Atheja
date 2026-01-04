@@ -144,6 +144,10 @@ class Report
         try {
             $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
+            if ($report->user_reported != null)
+                $this->sendMail([$report->reporter->email, $report->user_reported->email], "Moderator was assigned to case #" . $report->id, "Moderator " . $resolver->username . " was assigned to case.");
+            else if ($report->entry_reported != null)
+                $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Moderator was assigned to case #" . $report->id, "Moderator " . $resolver->username . " was assigned to case.");
             return \lib\Responsivity::respond($resolver->username . " assigned to case " . $report->id);
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to assign resolver", \lib\Responsivity::HTTP_Internal_Error);
@@ -169,7 +173,7 @@ class Report
         $report->resolved = $resolved;
 
         $resolution = $base->get('POST.resolution');
-        if ($resolution)
+        if (!$resolution)
             return \lib\Responsivity::respond('Missing resolution text', \lib\Responsivity::HTTP_Not_Acceptable);
         $report->resolution = $resolution;
 
@@ -258,7 +262,7 @@ class Report
         $reportIDs = array_values(array_unique(array_filter(explode(';', $base->get('POST.reports')))));
         $resolved = boolval($base->get('POST.state')) ?? 0;
         $resolution = $base->get('POST.resolution');
-        if ($resolution)
+        if (!$resolution)
             return \lib\Responsivity::respond('Missing resolution text', \lib\Responsivity::HTTP_Not_Acceptable);
 
         foreach ($reportIDs as $reportID) {
@@ -311,5 +315,27 @@ class Report
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to edit case", \lib\Responsivity::HTTP_Internal_Error);
         }
+    }
+
+    private function sendMail(array $mailTo, string $subject, string $content)
+    {
+        $mailTo = array_filter($mailTo, function ($email) {
+            return !empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL);
+        });
+
+        if (empty($mailTo))
+            throw new Exception("No valid email address provided");
+
+        $mail = new \Mailer();
+
+        $primaryEmail = array_shift($mailTo);
+
+        $mail->addTo($primaryEmail);
+        foreach ($mailTo as $mailAddr) {
+            $mail->addCc($mailAddr);
+        }
+
+        $mail->setHTML($content);
+        $mail->send($subject);
     }
 }
