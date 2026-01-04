@@ -180,6 +180,21 @@ class Report
         try {
             $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
+            switch ($resolved) {
+                case 0:
+                default:
+                    if ($report->user_reported != null)
+                        $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the case with following resolution: " . $resolution);
+                    else if ($report->entry_reported != null)
+                        $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the case with following resolution: " . $resolution);
+                    break;
+                case 1:
+                    if ($report->user_reported != null)
+                        $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was resolved", "Moderator " . $report->resolver->username . " resolved the case with following resolution: " . $resolution);
+                    else if ($report->entry_reported != null)
+                        $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was resolved", "Moderator " . $report->resolver->username . " resolved the case with following resolution: " . $resolution);
+                    break;
+            }
             return \lib\Responsivity::respond($report->id . " changed to state " . $resolved);
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to change state", \lib\Responsivity::HTTP_Internal_Error);
@@ -209,6 +224,10 @@ class Report
         try {
             $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
+            if ($report->user_reported != null)
+                $this->sendMail([$report->reporter->email, $report->user_reported->email], "Moderator was unassigned from case #" . $report->id, "Moderator " . $oldResolverUsername . " was unassigned from case.");
+            else if ($report->entry_reported != null)
+                $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Moderator was unassigned from case #" . $report->id, "Moderator " . $oldResolverUsername . " was unassigned from case.");
             return \lib\Responsivity::respond($oldResolverUsername . " unassigned from case " . $report->id);
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to assign resolver", \lib\Responsivity::HTTP_Internal_Error);
@@ -245,6 +264,10 @@ class Report
             try {
                 $report->updated_at = date('Y-m-d H:i:s');
                 $report->save();
+                if ($report->user_reported != null)
+                    $this->sendMail([$report->reporter->email, $report->user_reported->email], "Moderator was assigned to case #" . $report->id, "Moderator " . $resolver->username . " was assigned to case.");
+                else if ($report->entry_reported != null)
+                    $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Moderator was assigned to case #" . $report->id, "Moderator " . $resolver->username . " was assigned to case.");
             } catch (Exception $e) {
                 return \lib\Responsivity::respond("Failed to assign resolver on case" . $reportID, \lib\Responsivity::HTTP_Internal_Error);
             }
@@ -281,6 +304,21 @@ class Report
             try {
                 $report->updated_at = date('Y-m-d H:i:s');
                 $report->save();
+                switch ($resolved) {
+                    case 0:
+                    default:
+                        if ($report->user_reported != null)
+                            $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the case with following resolution: " . $resolution);
+                        else if ($report->entry_reported != null)
+                            $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the case with following resolution: " . $resolution);
+                        break;
+                    case 1:
+                        if ($report->user_reported != null)
+                            $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was resolved", "Moderator " . $report->resolver->username . " resolved the case with following resolution: " . $resolution);
+                        else if ($report->entry_reported != null)
+                            $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was resolved", "Moderator " . $report->resolver->username . " resolved the case with following resolution: " . $resolution);
+                        break;
+                }
             } catch (Exception $e) {
                 return \lib\Responsivity::respond("Failed to change state on case" . $reportID, \lib\Responsivity::HTTP_Internal_Error);
             }
@@ -311,6 +349,10 @@ class Report
         try {
             $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
+            if ($report->user_reported != null)
+                $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the following case: \nReason: " . $report->reason . "\nResolution: \n" . $report->resolution);
+            else if ($report->entry_reported != null)
+                $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the following case: \nReason: " . $report->reason . "\nResolution: \n" . $report->resolution);
             return \lib\Responsivity::respond("Edited case " . $report->id);
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to edit case", \lib\Responsivity::HTTP_Internal_Error);
