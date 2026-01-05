@@ -144,6 +144,10 @@ class Report
         try {
             $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
+            if ($report->user_reported != null)
+                $this->sendMail([$report->reporter->email, $report->user_reported->email], "Moderator was assigned to case #" . $report->id, "Moderator " . $resolver->username . " was assigned to case.");
+            else if ($report->entry_reported != null)
+                $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Moderator was assigned to case #" . $report->id, "Moderator " . $resolver->username . " was assigned to case.");
             return \lib\Responsivity::respond($resolver->username . " assigned to case " . $report->id);
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to assign resolver", \lib\Responsivity::HTTP_Internal_Error);
@@ -169,13 +173,28 @@ class Report
         $report->resolved = $resolved;
 
         $resolution = $base->get('POST.resolution');
-        if ($resolution)
+        if (!$resolution)
             return \lib\Responsivity::respond('Missing resolution text', \lib\Responsivity::HTTP_Not_Acceptable);
         $report->resolution = $resolution;
 
         try {
             $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
+            switch ($resolved) {
+                case 0:
+                default:
+                    if ($report->user_reported != null)
+                        $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the case with following resolution: " . $resolution);
+                    else if ($report->entry_reported != null)
+                        $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the case with following resolution: " . $resolution);
+                    break;
+                case 1:
+                    if ($report->user_reported != null)
+                        $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was resolved", "Moderator " . $report->resolver->username . " resolved the case with following resolution: " . $resolution);
+                    else if ($report->entry_reported != null)
+                        $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was resolved", "Moderator " . $report->resolver->username . " resolved the case with following resolution: " . $resolution);
+                    break;
+            }
             return \lib\Responsivity::respond($report->id . " changed to state " . $resolved);
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to change state", \lib\Responsivity::HTTP_Internal_Error);
@@ -205,6 +224,10 @@ class Report
         try {
             $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
+            if ($report->user_reported != null)
+                $this->sendMail([$report->reporter->email, $report->user_reported->email], "Moderator was unassigned from case #" . $report->id, "Moderator " . $oldResolverUsername . " was unassigned from case.");
+            else if ($report->entry_reported != null)
+                $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Moderator was unassigned from case #" . $report->id, "Moderator " . $oldResolverUsername . " was unassigned from case.");
             return \lib\Responsivity::respond($oldResolverUsername . " unassigned from case " . $report->id);
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to assign resolver", \lib\Responsivity::HTTP_Internal_Error);
@@ -241,6 +264,10 @@ class Report
             try {
                 $report->updated_at = date('Y-m-d H:i:s');
                 $report->save();
+                if ($report->user_reported != null)
+                    $this->sendMail([$report->reporter->email, $report->user_reported->email], "Moderator was assigned to case #" . $report->id, "Moderator " . $resolver->username . " was assigned to case.");
+                else if ($report->entry_reported != null)
+                    $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Moderator was assigned to case #" . $report->id, "Moderator " . $resolver->username . " was assigned to case.");
             } catch (Exception $e) {
                 return \lib\Responsivity::respond("Failed to assign resolver on case" . $reportID, \lib\Responsivity::HTTP_Internal_Error);
             }
@@ -258,7 +285,7 @@ class Report
         $reportIDs = array_values(array_unique(array_filter(explode(';', $base->get('POST.reports')))));
         $resolved = boolval($base->get('POST.state')) ?? 0;
         $resolution = $base->get('POST.resolution');
-        if ($resolution)
+        if (!$resolution)
             return \lib\Responsivity::respond('Missing resolution text', \lib\Responsivity::HTTP_Not_Acceptable);
 
         foreach ($reportIDs as $reportID) {
@@ -277,6 +304,21 @@ class Report
             try {
                 $report->updated_at = date('Y-m-d H:i:s');
                 $report->save();
+                switch ($resolved) {
+                    case 0:
+                    default:
+                        if ($report->user_reported != null)
+                            $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the case with following resolution: " . $resolution);
+                        else if ($report->entry_reported != null)
+                            $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the case with following resolution: " . $resolution);
+                        break;
+                    case 1:
+                        if ($report->user_reported != null)
+                            $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was resolved", "Moderator " . $report->resolver->username . " resolved the case with following resolution: " . $resolution);
+                        else if ($report->entry_reported != null)
+                            $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was resolved", "Moderator " . $report->resolver->username . " resolved the case with following resolution: " . $resolution);
+                        break;
+                }
             } catch (Exception $e) {
                 return \lib\Responsivity::respond("Failed to change state on case" . $reportID, \lib\Responsivity::HTTP_Internal_Error);
             }
@@ -307,9 +349,35 @@ class Report
         try {
             $report->updated_at = date('Y-m-d H:i:s');
             $report->save();
+            if ($report->user_reported != null)
+                $this->sendMail([$report->reporter->email, $report->user_reported->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the following case: \nReason: " . $report->reason . "\nResolution: \n" . $report->resolution);
+            else if ($report->entry_reported != null)
+                $this->sendMail([$report->reporter->email, $report->entry_reported->author->email], "Case #" . $report->id . " was updated", "Moderator " . $report->resolver->username . " updated the following case: \nReason: " . $report->reason . "\nResolution: \n" . $report->resolution);
             return \lib\Responsivity::respond("Edited case " . $report->id);
         } catch (Exception $e) {
             return \lib\Responsivity::respond("Failed to edit case", \lib\Responsivity::HTTP_Internal_Error);
         }
+    }
+
+    private function sendMail(array $mailTo, string $subject, string $content)
+    {
+        $mailTo = array_filter($mailTo, function ($email) {
+            return !empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL);
+        });
+
+        if (empty($mailTo))
+            throw new Exception("No valid email address provided");
+
+        $mail = new \Mailer();
+
+        $primaryEmail = array_shift($mailTo);
+
+        $mail->addTo($primaryEmail);
+        foreach ($mailTo as $mailAddr) {
+            $mail->addCc($mailAddr);
+        }
+
+        $mail->setHTML($content);
+        $mail->send($subject);
     }
 }
