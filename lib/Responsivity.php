@@ -49,7 +49,7 @@ class Responsivity
     {
         header("Content-Type: application/json");
         http_response_code($code);
-        echo json_encode($message);
+        echo json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         die;
     }
 

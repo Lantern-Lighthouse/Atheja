@@ -40,11 +40,24 @@ function updateConfigValue($base, $key, $value, $iniFile = 'app/Configs/config.i
     \lib\Responsivity::update_config_value($base, $key, $value, $iniFile);
 }
 
-if ($base->get('DEBUG') <= 3) {
-    $base->set('ONERROR', function ($base) {
-        \lib\Responsivity::respond(['status' => $base->get('ERROR.status'), 'text' => $base->get('ERROR.text')], $base->get('ERROR.code'));
-    });
-}
+$base->set('ONERROR', function ($base) {
+    if ($base->get('DEBUG') >= 3){
+        $Tracer = explode("\n", $base->get('ERROR.trace'));
+        $Tracer = array_filter($Tracer);
+    }
+
+    $BobTheBuilder = [
+        //...(condition ? ['index' => $value] : []),
+        ...($base->get('DEBUG') >= 1 ? ['code' => $base->get('ERROR.status')] : []),
+        ...($base->get('DEBUG') >= 1 ? ['status' => $base->get('ERROR.code') . ' ' . $base->get('ERROR.status')] : []),
+        ...($base->get('DEBUG') >= 2 ? ['text' => $base->get('ERROR.text')] : []),
+        ...($base->get('DEBUG') >= 3 ? ['trace' => $Tracer] : []),
+    ];
+
+    //\lib\Responsivity::respond(['status' => $base->get('ERROR.status'), 'text' => $base->get('ERROR.text')], $base->get('ERROR.code'));
+    \lib\Responsivity::respond($BobTheBuilder, $base->get('ERROR.code'));
+});
+
 
 function VerifySessionToken(\Base $base)
 {
