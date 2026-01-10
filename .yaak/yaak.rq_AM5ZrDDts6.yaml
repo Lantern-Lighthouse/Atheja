@@ -1,0 +1,33 @@
+type: http_request
+model: http_request
+id: rq_AM5ZrDDts6
+createdAt: 2025-12-09T20:24:34.541972100
+updatedAt: 2025-12-09T20:29:54.445370400
+workspaceId: wk_iRyJisk9Us
+folderId: fl_PaSwWW8Wtd
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: reason
+    value: Test
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: qnQkzEnw8P
+method: POST
+name: Report entry
+sortPriority: 1333.3333333333333
+url: ${[ server_url ]}/api/search/entry/1/report
+urlParameters:
+- enabled: true
+  name: ''
+  value: ''
+  id: mRuKUag5Xm

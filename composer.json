@@ -1,6 +1,7 @@
 {
   "require": {
     "bcosca/fatfree-core": "^3.9",
-    "ikkez/f3-cortex": "^1.7"
+    "ikkez/f3-cortex": "^1.7",
+    "ikkez/f3-mailer": "^1.2"
   }
 }

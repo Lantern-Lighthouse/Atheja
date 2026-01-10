@@ -296,12 +296,14 @@ class RibbitManager
                 ['user.read', 'Read User', 'user', 'read', 'View user information'],
                 ['user.update', 'Update User', 'user', 'update', 'Update user information'],
                 ['user.delete', 'Delete User', 'user', 'delete', 'Delete user accounts'],
+                ['user.report', 'Report User', 'user', 'report', 'Report user account'],
 
                 ['entry.create', 'Create Entries', 'entry', 'create', 'Create new entries'],
                 ['entry.read', 'Read Entries', 'entry', 'read', 'View entries'],
                 ['entry.update', 'Update Entries', 'entry', 'update', 'Update entries'],
                 ['entry.delete', 'Create Entries', 'entry', 'delete', 'Delete entries'],
                 ['entry.rate', 'Rate Entries', 'entry', 'rate', 'Vote on entries'],
+                ['entry.report', 'Repúort Entries', 'entry', 'report', 'Report entries'],
 
                 ['category.create', 'Create Categories', 'category', 'create', 'Create new categories'],
                 ['category.read', 'Read Categories', 'category', 'read', 'View categories'],
@@ -354,10 +356,12 @@ class RibbitManager
             // User gets basic permissions
             $userPerms = [
                 'user.read',
+                'user.report',
                 'entry.create',
                 'entry.read',
                 'entry.update',
                 'entry.rate',
+                'entry.report',
                 'category.read',
                 'tag.create',
                 'tag.read',

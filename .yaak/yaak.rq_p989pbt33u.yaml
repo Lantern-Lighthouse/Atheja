@@ -1,0 +1,26 @@
+type: http_request
+model: http_request
+id: rq_p989pbt33u
+createdAt: 2025-12-13T19:51:09.574873300
+updatedAt: 2025-12-13T19:51:43.768920500
+workspaceId: wk_iRyJisk9Us
+folderId: fl_Ekm4HJz9Cb
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: application/x-www-form-urlencoded
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/x-www-form-urlencoded
+  id: 2IMIGhIZBn
+method: POST
+name: Unset resolver
+sortPriority: 3000.0
+url: ${[ server_url ]}/api/report/1/unassign
+urlParameters: []
