@@ -318,7 +318,6 @@ class SearchEntries
         if ($newVote == 1)
             $user->karma++;
         elseif ($newVote == -1)
-            // $user->karma = max(0, $user->karma - 1);
             $user->karma--;
     }
 
