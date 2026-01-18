@@ -151,25 +151,25 @@ class RibbitGuard
 
     public static function require_ownership_or_admin($ownerID)
     {
-        return function (\Base $base) use ($ownerID)  {
-            $user = VerifySessionToken($base);
-            if (!$user) {
-                \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
-                return false;
-            }
-
-            self::$rbac->set_current_user($user);
-
-            // Admin user can access anythin
-            if ($user->is_admin)
-                return true;
-
-            // Check ownership
-            if ($user->id == $ownerID)
-                return true;
-
-            \lib\Responsivity::respond('Access denied: resource ownership or admin privileges required', \lib\Responsivity::HTTP_Forbidden);
+        global $base;
+        $user = VerifySessionToken($base);
+        if (!$user) {
+            \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
             return false;
-        };
+        }
+
+        self::$rbac->set_current_user($user);
+
+        // Admin user can access anythin
+        if ($user->is_admin)
+            return true;
+
+        // Check ownership
+        $ownerID = $getResourceOwner($base);
+        if ($user->id == $ownerID)
+            return true;
+
+        \lib\Responsivity::respond('Access denied: resource ownership or admin privileges required', \lib\Responsivity::HTTP_Forbidden);
+        return false;
     }
 }

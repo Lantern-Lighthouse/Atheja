@@ -107,7 +107,7 @@ class Index
             \lib\Responsivity::respond("Error setting up Ribbit: " . $e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
         }
 
-        updateConfigValue($base, 'ATH.SETUP_FINISHED', 1);
+        \lib\Responsivity::update_config_value($base, 'ATH.SETUP_FINISHED', 1, 'app/Configs/config.ini');
         \lib\Responsivity::respond("Database initialised");
     }
     
