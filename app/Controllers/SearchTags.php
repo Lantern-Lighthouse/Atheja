@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Exception;
+use Responsivity\Responsivity;
 
 class SearchTags
 {
@@ -12,21 +13,21 @@ class SearchTags
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.read') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Tag();
         $entries = $model->find();
         if (!$entries)
-            return \lib\Responsivity::respond('Tag not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Tag not found', Responsivity::HTTP_Not_Found);
 
         $cast = array();
         foreach ($entries as $entry) {
             array_push($cast, $entry->name);
         }
         if (sizeof($cast) != 0)
-            \lib\Responsivity::respond($cast);
+            Responsivity::respond($cast);
         else
-            \lib\Responsivity::respond("Tags not found", 404);
+            Responsivity::respond("Tags not found", 404);
     }
 
     public function getSearchTag(\Base $base)
@@ -35,12 +36,12 @@ class SearchTags
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.read') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Tag();
         $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
         if (!$entry) {
-            return \lib\Responsivity::respond('Tag not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Tag not found', Responsivity::HTTP_Not_Found);
         }
         unset($model);
         $model = new \Models\Entry();
@@ -51,7 +52,7 @@ class SearchTags
             'count' => $entries ? count($entries) : 0
         ];
 
-        \lib\Responsivity::respond($cast);
+        Responsivity::respond($cast);
     }
 
     public static function CreateTag(string $tagName)
@@ -71,12 +72,12 @@ class SearchTags
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.create') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         if (self::CreateTag($base->get('POST.tagname')))
-            return \lib\Responsivity::respond('Tag added', \lib\Responsivity::HTTP_Created);
+            return Responsivity::respond('Tag added', Responsivity::HTTP_Created);
         else
-            return \lib\Responsivity::respond('Tag already exists', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Tag already exists', Responsivity::HTTP_Bad_Request);
     }
 
     public function postSearchTagEdit(\Base $base)
@@ -85,22 +86,22 @@ class SearchTags
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.update') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Tag();
         $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Tag not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Tag not found', Responsivity::HTTP_Not_Found);
 
         $entry->name = $base->get('POST.tagname') ?? $entry->name;
 
         try {
             $entry->save();
         } catch (Exception $e) {
-            \lib\Responsivity::respond('Changes not saved', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Changes not saved', Responsivity::HTTP_Internal_Error);
             return;
         }
-        \lib\Responsivity::respond("Tag edited");
+        Responsivity::respond("Tag edited");
     }
 
     public function postSearchTagDelete(\Base $base)
@@ -109,19 +110,19 @@ class SearchTags
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('tag.delete') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Tag();
         $entry = $model->findone(['name=?', $base->get('PARAMS.tag')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Tag not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Tag not found', Responsivity::HTTP_Not_Found);
 
         try {
             $entry->erase();
         } catch (Exception $e) {
-            \lib\Responsivity::respond('Tag not deleted', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Tag not deleted', Responsivity::HTTP_Internal_Error);
             return;
         }
-        \lib\Responsivity::respond("Tag deleted");
+        Responsivity::respond("Tag deleted");
     }
 }

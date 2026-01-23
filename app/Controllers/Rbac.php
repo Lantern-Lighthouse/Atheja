@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Exception;
+use Responsivity\Responsivity;
 
 class Rbac
 {
@@ -21,66 +22,66 @@ class Rbac
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $roles = $this->manager->get_all_roles();
-        \lib\Responsivity::respond($roles);
+        Responsivity::respond($roles);
     }
 
     public function postRoleCreate(\Base $base)
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $name = $base->get('POST.name');
         $displayName = $base->get('POST.display_name');
         $description = $base->get('POST.description') ?? '';
 
         if (!$name || !$displayName)
-            return \lib\Responsivity::respond('Name and display name are required', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Name and display name are required', Responsivity::HTTP_Bad_Request);
 
         if ($this->manager->create_role($name, $displayName, $description))
-            \lib\Responsivity::respond('Role created successfully', \lib\Responsivity::HTTP_Created);
+            Responsivity::respond('Role created successfully', Responsivity::HTTP_Created);
         else
-            \lib\Responsivity::respond('Failed to create role', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to create role', Responsivity::HTTP_Internal_Error);
     }
 
     public function postRoleEdit(\Base $base)
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $roleName = $base->get('PARAMS.role');
         $model = new \Models\RbacRole();
         $role = $model->findone(['name=?', $roleName]);
         if (!$role)
-            return \lib\Responsivity::respond('Role not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Role not found', Responsivity::HTTP_Not_Found);
 
         if ($role->is_system_role)
-            return \lib\Responsivity::respond('Cannot edit system role', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Cannot edit system role', Responsivity::HTTP_Forbidden);
 
         $role->display_name = $base->get('POST.display_name') ?? $role->display_name;
         $role->description = $base->get('POST.description') ?? $role->description;
 
         try {
             $role->save();
-            \lib\Responsivity::respond('Role updated successfully');
+            Responsivity::respond('Role updated successfully');
         } catch (Exception $e) {
-            \lib\Responsivity::respond('Failed to update role', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to update role', Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -88,17 +89,17 @@ class Rbac
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $roleName = $base->get('PARAMS.role');
         if ($this->manager->delete_role($roleName))
-            \lib\Responsivity::respond('Role deleted successfully');
+            Responsivity::respond('Role deleted successfully');
         else
-            \lib\Responsivity::respond('Failed to delete role', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to delete role', Responsivity::HTTP_Internal_Error);
     }
 
     //endregion
@@ -108,25 +109,25 @@ class Rbac
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $permissions = $this->manager->get_all_permissions();
-        \lib\Responsivity::respond($permissions);
+        Responsivity::respond($permissions);
     }
 
     public function postPermissionCreate(\Base $base)
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $name = $base->get('POST.name');
         $displayName = $base->get('POST.display_name');
@@ -134,29 +135,29 @@ class Rbac
         $action = $base->get('POST.action');
         $description = $base->get('POST.description');
         if (!$name || !$displayName || !$resource || !$action)
-            return \lib\Responsivity::respond('Name, display name, resource, and action are required', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Name, display name, resource, and action are required', Responsivity::HTTP_Bad_Request);
 
         if ($this->manager->create_permission($name, $displayName, $resource, $action, $description))
-            \lib\Responsivity::respond('Permission created successfully', \lib\Responsivity::HTTP_Created);
+            Responsivity::respond('Permission created successfully', Responsivity::HTTP_Created);
         else
-            \lib\Responsivity::respond('Failed to create permission', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to create permission', Responsivity::HTTP_Internal_Error);
     }
 
     public function postPermissionDelete(\Base $base)
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Bad_Request);
 
         $permissionName = $base->get('PARAMS.permission');
         if ($this->manager->delete_permission($permissionName))
-            \lib\Responsivity::respond('Permission deleted successfully');
+            Responsivity::respond('Permission deleted successfully');
         else
-            \lib\Responsivity::respond('Failed to delete permission', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to delete permission', Responsivity::HTTP_Internal_Error);
     }
     //endregion
 
@@ -165,42 +166,42 @@ class Rbac
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $roleName = $base->get('PARAMS.role');
         $permissionName = $base->get('POST.permission');
         if (!$permissionName)
-            \lib\Responsivity::respond('Permission name is required', \lib\Responsivity::HTTP_Bad_Request);
+            Responsivity::respond('Permission name is required', Responsivity::HTTP_Bad_Request);
 
         if ($this->manager->assign_permission_to_role($roleName, $permissionName))
-            \lib\Responsivity::respond('Permission assigned to role successfully');
+            Responsivity::respond('Permission assigned to role successfully');
         else
-            \lib\Responsivity::respond('Failed to assign permission to role', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to assign permission to role', Responsivity::HTTP_Internal_Error);
     }
 
     public function postRolePermissionRevoke(\Base $base)
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $roleName = $base->get('PARAMS.role');
         $permissionName = $base->get('POST.permission');
         if (!$permissionName)
-            return \lib\Responsivity::respond('Permission name is required', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Permission name is required', Responsivity::HTTP_Bad_Request);
 
         if ($this->manager->remove_permission_from_role($roleName, $permissionName))
-            \lib\Responsivity::respond('Permission revoked from role successfully');
+            Responsivity::respond('Permission revoked from role successfully');
         else
-            \lib\Responsivity::respond('Failed to revoke permission from role', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to revoke permission from role', Responsivity::HTTP_Internal_Error);
     }
     //endregion
 
@@ -209,45 +210,45 @@ class Rbac
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $userID = $base->get('PARAMS.user');
         $roleName = $base->get('POST.role');
         if (!$roleName)
-            return \lib\Responsivity::respond('Role name is required', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Role name is required', Responsivity::HTTP_Bad_Request);
 
         if ($this->rbac->asign_role_to_user($userID, $roleName))
-            \lib\Responsivity::respond('Role assigned to user successfully');
+            Responsivity::respond('Role assigned to user successfully');
         else
-            \lib\Responsivity::respond('Failed to assign role to user', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to assign role to user', Responsivity::HTTP_Internal_Error);
     }
 
     public function postUserRoleRevoke(\Base $base)
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         if (!$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $userID = (new \Models\User())->findone(['username=?', $base->get('PARAMS.user')])->id;
         if (!$userID) 
-            return \lib\Responsivity::respond('User not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('User not found', Responsivity::HTTP_Not_Found);
 
         $roleName = $base->get('POST.role');
         if (!$roleName)
-            \lib\Responsivity::respond('Role name is required', \lib\Responsivity::HTTP_Bad_Request);
+            Responsivity::respond('Role name is required', Responsivity::HTTP_Bad_Request);
 
         if ($this->rbac->remove_role_from_user($userID, $roleName))
-            \lib\Responsivity::respond('Role revoked from user successfully');
+            Responsivity::respond('Role revoked from user successfully');
         else
-            \lib\Responsivity::respond('Failed to revoke role from user', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to revoke role from user', Responsivity::HTTP_Internal_Error);
     }
     //endregion
 
@@ -256,17 +257,17 @@ class Rbac
     {
         $user = VerifySessionToken($base);
         if (!$user)
-            return \lib\Responsivity::respond("Unauthorized", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized", Responsivity::HTTP_Unauthorized);
 
         $this->rbac->set_current_user($user);
         $model = new \Models\User();
         $targetUser = $model->findone(['username=?', $base->get('PARAMS.user')]);
         if (!$targetUser)
-            \lib\Responsivity::respond('User not found', \lib\Responsivity::HTTP_Not_Found);
+            Responsivity::respond('User not found', Responsivity::HTTP_Not_Found);
 
         $targetUserID = $targetUser->id;
         if ($user->id != $targetUserID && !$this->rbac->has_permission('system.rbac') && !$user->is_admin)
-            return \lib\Responsivity::respond('Insufficient permissions', \lib\Responsivity::HTTP_Forbidden);
+            return Responsivity::respond('Insufficient permissions', Responsivity::HTTP_Forbidden);
 
         $roles = [];
         if ($targetUser->roles) {
@@ -300,7 +301,7 @@ class Rbac
             'all_permissions' => $targetUser->getPermissions()
         ];
 
-        \lib\Responsivity::respond($response);
+        Responsivity::respond($response);
     }
     //endregion
 
@@ -309,12 +310,12 @@ class Rbac
     {
         $user = VerifySessionToken($base);
         if (!$user || !$user->is_admin)
-            return \lib\Responsivity::respond("Unauthorized - Admin access required", \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond("Unauthorized - Admin access required", Responsivity::HTTP_Unauthorized);
 
         if ($this->manager->setup_default_roles_and_permissions())
-            \lib\Responsivity::respond('RBAC system setup completed successfully');
+            Responsivity::respond('RBAC system setup completed successfully');
         else
-            \lib\Responsivity::respond('Failed to setup RBAC system', \lib\Responsivity::HTTP_Internal_Error);
+            Responsivity::respond('Failed to setup RBAC system', Responsivity::HTTP_Internal_Error);
     }
     //endregion
 }
