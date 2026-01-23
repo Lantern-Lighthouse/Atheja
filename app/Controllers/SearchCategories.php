@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Exception;
+use Responsivity\Responsivity;
 
 class SearchCategories
 {
@@ -12,7 +13,7 @@ class SearchCategories
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('category.read') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Category();
         $entries = $model->afind();
@@ -24,7 +25,7 @@ class SearchCategories
                 'icon' => $entry['icon'],
             );
         }
-        \lib\Responsivity::respond($cast);
+        Responsivity::respond($cast);
     }
 
     public function postSearchCategoryCreate(\Base $base)
@@ -33,7 +34,7 @@ class SearchCategories
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('category.create') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Category();
         $model->name = $base->get('POST.name');
@@ -43,10 +44,10 @@ class SearchCategories
         try {
             $model->save();
         } catch (Exception $e) {
-            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond($e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
 
-        \lib\Responsivity::respond("Category created", \lib\Responsivity::HTTP_Created);
+        Responsivity::respond("Category created", Responsivity::HTTP_Created);
     }
 
     public function postSearchCategoryEdit(\Base $base)
@@ -55,12 +56,12 @@ class SearchCategories
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('category.update') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Category();
         $entry = $model->findone(['name=?', $base->get('PARAMS.category')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Category not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Category not found', Responsivity::HTTP_Not_Found);
 
         $entry->name = $base->get('POST.name') ?? $entry->name;
         $entry->type = $base->get('POST.type') ?? $entry->type;
@@ -69,10 +70,10 @@ class SearchCategories
         try {
             $entry->save();
         } catch (Exception $e) {
-            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond($e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
 
-        \lib\Responsivity::respond("Category edited");
+        Responsivity::respond("Category edited");
     }
 
     public function postSearchCategoryDelete(\Base $base)
@@ -81,19 +82,19 @@ class SearchCategories
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('category.delete') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Category();
         $entry = $model->findone(['name=?', $base->get('PARAMS.category')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Category not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Category not found', Responsivity::HTTP_Not_Found);
 
         try {
             $entry->erase();
         } catch (Exception $e) {
-            return \lib\Responsivity::respond('Unable to delete category', \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond('Unable to delete category', Responsivity::HTTP_Internal_Error);
         }
 
-        \lib\Responsivity::respond("Category deleted", \lib\Responsivity::HTTP_OK);
+        Responsivity::respond("Category deleted", Responsivity::HTTP_OK);
     }
 }
