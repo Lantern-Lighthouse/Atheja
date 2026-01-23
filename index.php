@@ -17,7 +17,7 @@ $base->config('./app/Configs/config.ini');
 switch ($base->get("ATH.DATABASE_CONNECTION_TYPE")) {
     case "sqlite":
         if (!file_exists(substr($base->get('db.dsn'), 7))) {
-            \lib\Responsivity::respond('Database file not found', \lib\Responsivity::HTTP_Internal_Error);
+            \Responsivity\Responsivity::respond('Database file not found', \Responsivity\Responsivity::HTTP_Internal_Error);
         }
         $base->set('DB', new DB\SQL($base->get('db.dsn'), null, null, [PDO::ATTR_STRINGIFY_FETCHES => false]));
         if (filesize(substr($base->get('db.dsn'), 7)) == 0)
@@ -48,7 +48,7 @@ $base->set('ONERROR', function ($base) {
         ...($base->get('DEBUG') >= 3 ? ['trace' => $Tracer] : []),
     ];
 
-    \lib\Responsivity::respond($BobTheBuilder, $base->get('ERROR.code'));
+    \Responsivity\Responsivity::respond($BobTheBuilder, $base->get('ERROR.code'));
 });
 
 
