@@ -17,7 +17,7 @@ class Identicon
         $b = hexdec(substr($hash, 4, 2));
 
         // Allocate colors
-        $backgroundColor = imagecolorallocate($image, 240, 240, 240);
+        imagecolorallocate($image, 240, 240, 240);
         $foregroundColor = imagecolorallocate($image, $r, $g, $b);
 
         // Calculate cell size
@@ -55,13 +55,13 @@ class Identicon
         $image = self::generate_from_string($string);
         header('Content-Type: image/png');
         imagepng($image);
-        imagedestroy($image);
+        unset($image);
     }
 
     public static function save_image($string, $filename)
     {
         $image = self::generate_from_string($string);
         imagepng($image, $filename);
-        imagedestroy($image);
+        unset($image);
     }
 }

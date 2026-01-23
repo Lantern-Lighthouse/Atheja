@@ -1,0 +1,31 @@
+type: http_request
+model: http_request
+id: rq_iy6nyHXHLo
+createdAt: 2026-01-23T17:23:20.531301716
+updatedAt: 2026-01-23T17:26:07.346499123
+workspaceId: wk_iRyJisk9Us
+folderId: fl_ghAVc4Zzxq
+authentication: {}
+authenticationType: null
+body:
+  form:
+  - enabled: true
+    name: name
+    value: Videos
+  - enabled: true
+    name: type
+    value: gallery
+  - enabled: true
+    name: icon
+    value: videocam
+  - enabled: true
+    name: ''
+    value: ''
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Get user avatar
+sortPriority: 6000.0
+url: ${[ server_url ]}/api/user/pisekpiskovec/avatar
+urlParameters: []
