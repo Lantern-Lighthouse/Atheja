@@ -34,6 +34,7 @@ class RibbitGuard
                 return false;
             }
 
+            if (!self::$rbac) self::init($base);
             self::$rbac->set_current_user($user);
             if (!self::$rbac->has_permission($permission)) {
                 \Responsivity\Responsivity::respond('Insufficient permission: ' . $permission . ' required', \Responsivity\Responsivity::HTTP_Forbidden);
@@ -58,6 +59,7 @@ class RibbitGuard
                 return false;
             }
 
+            if (!self::$rbac) self::init($base);
             self::$rbac->set_current_user($user);
             if (!self::$rbac->has_role($role)) {
                 \Responsivity\Responsivity::respond('Insufficient role privileges: ' . $role . ' role required', \Responsivity\Responsivity::HTTP_Forbidden);
@@ -83,6 +85,7 @@ class RibbitGuard
                 return false;
             }
 
+            if (!self::$rbac) self::init($base);
             self::$rbac->set_current_user($user);
             foreach ($permissions as $permission) {
                 if (self::$rbac->has_permission($permission))
@@ -109,6 +112,7 @@ class RibbitGuard
                 return false;
             }
 
+            if (!self::$rbac) self::init($base);
             self::$rbac->set_current_user($user);
             foreach ($roles as $role)
                 if (self::$rbac->has_role($role))
@@ -133,6 +137,7 @@ class RibbitGuard
                 return false;
             }
 
+            if (!self::$rbac) self::init($base);
             self::$rbac->set_current_user($user);
 
             // Admin user can access anythin
@@ -158,14 +163,14 @@ class RibbitGuard
             return false;
         }
 
+        if (!self::$rbac) self::init($base);
         self::$rbac->set_current_user($user);
 
-        // Admin user can access anythin
+        // Admin user can access anything
         if ($user->is_admin)
             return true;
 
         // Check ownership
-        $ownerID = $getResourceOwner($base);
         if ($user->id == $ownerID)
             return true;
 
