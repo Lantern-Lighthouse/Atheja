@@ -2,18 +2,20 @@
 
 namespace Controllers;
 
+use Responsivity\Responsivity;
+
 class Search
 {
     public function getSearchEntries(\Base $base)
     {
         $query = $base->get('GET.q') ?? $base->get('GET.s');
         if (!$query)
-            return \lib\Responsivity::respond('Query parameter required', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Query parameter required', Responsivity::HTTP_Bad_Request);
 
         $keywords = array_map('trim', array_map('strtolower', preg_split('/[\s,;]+/', $query)));
         $keywords = array_filter($keywords);
         if (empty($keywords))
-            return \lib\Responsivity::respond('No valid keywords provided', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('No valid keywords provided', Responsivity::HTTP_Bad_Request);
 
         $nsfwFilter = intval($base->get('GET.safe') ?? 0); // Safe search
 
@@ -34,7 +36,7 @@ class Search
         });
 
 
-        \lib\Responsivity::respond([
+        Responsivity::respond([
             'query' => $query,
             'keywords' => $keywords,
             'total_results' => count($filteredResults),
@@ -164,12 +166,12 @@ class Search
     {
         $query = $base->get('POST.query');
         if (!$query)
-            return \lib\Responsivity::respond('Query required', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Query required', Responsivity::HTTP_Bad_Request);
 
         $keywords = array_map('trim', array_map('strtolower', preg_split('/[\s,;]+/', $query)));
         $keywords = array_filter($keywords);
         if (empty($keywords))
-            return \lib\Responsivity::respond('No valid keywords provided', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('No valid keywords provided', Responsivity::HTTP_Bad_Request);
 
         // Optional filters
         $categoryFilter = strtolower($base->get('POST.category'));
@@ -202,7 +204,7 @@ class Search
         $filteredResults = array_values($filteredResults);
         $filteredResults = array_slice($filteredResults, 0, $limit);
 
-        \lib\Responsivity::respond([
+        Responsivity::respond([
             'query' => $query,
             'keywords' => $keywords,
             'filters' => [

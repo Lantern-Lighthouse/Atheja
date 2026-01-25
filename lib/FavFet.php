@@ -21,7 +21,7 @@ class FavFet
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
         $error = curl_error($ch);
-        curl_close($ch);
+        unset($ch);
 
         if ($data === false) {
             error_log("cURL Error for $url: $error");

@@ -5,6 +5,7 @@ namespace Controllers;
 use Exception;
 use lib\FavFet;
 use lib\URLser;
+use Responsivity\Responsivity;
 
 class SearchEntries
 {
@@ -14,12 +15,12 @@ class SearchEntries
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('entry.read') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Entry not found', Responsivity::HTTP_Not_Found);
 
         $tags = [];
         foreach ($entry->tags as $tag) {
@@ -58,7 +59,7 @@ class SearchEntries
             'id' => $entry->_id,
         ];
 
-        \lib\Responsivity::respond($cast);
+        Responsivity::respond($cast);
     }
 
     public function postSearchEntryCreate(\Base $base)
@@ -67,25 +68,25 @@ class SearchEntries
         $author = VerifySessionToken($base);
         $rbac->set_current_user($author);
         if ($rbac->has_permission('entry.create') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $model = new \Models\Entry();
 
         // Name setting
         if ($base->get('POST.fetch-name-from-site')) {
             if (!$base->get('POST.page-url'))
-                return \lib\Responsivity::respond('URL not found', \lib\Responsivity::HTTP_Not_Found);
+                return Responsivity::respond('URL not found', Responsivity::HTTP_Not_Found);
             else if ($model->findone(['url=?', $base->get('POST.page-url')]))
-                return \lib\Responsivity::respond('URL already found', \lib\Responsivity::HTTP_Bad_Request);
+                return Responsivity::respond('URL already found', Responsivity::HTTP_Bad_Request);
 
             $pgName = URLser::get_page_name($base->get('POST.page-url'));
             if ($pgName == false && !$base->get('POST.page-name'))
-                return \lib\Responsivity::respond("Error getting page title. Please insert the name manually.", \lib\Responsivity::HTTP_Bad_Request);
+                return Responsivity::respond("Error getting page title. Please insert the name manually.", Responsivity::HTTP_Bad_Request);
             else
                 $pgName = $base->get('POST.page-name');
         } else {
             if (!$base->get('POST.page-name'))
-                return \lib\Responsivity::respond('Page name not found', \lib\Responsivity::HTTP_Not_Found);
+                return Responsivity::respond('Page name not found', Responsivity::HTTP_Not_Found);
             $pgName = $base->get('POST.page-name');
         }
         $model->name = $pgName;
@@ -95,9 +96,9 @@ class SearchEntries
 
         // URL setting
         if (!$base->get('POST.page-url'))
-            return \lib\Responsivity::respond('URL not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('URL not found', Responsivity::HTTP_Not_Found);
         else if ($model->findone(['url=?', $base->get('POST.page-url')]))
-            return \lib\Responsivity::respond('URL already found', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('URL already found', Responsivity::HTTP_Bad_Request);
         $model->url = $base->get('POST.page-url');
 
         // Category setting
@@ -152,9 +153,9 @@ class SearchEntries
 
             if (!$model->get('is_nsfw'))
                 $this->createAuthorUpvote($author, $model);
-            \lib\Responsivity::respond('Entry added', \lib\Responsivity::HTTP_Created);
+            Responsivity::respond('Entry added', Responsivity::HTTP_Created);
         } catch (Exception $e) {
-            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond($e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
 
     }
@@ -164,13 +165,13 @@ class SearchEntries
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Entry not found', Responsivity::HTTP_Not_Found);
 
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $entry->name = $base->get('POST.page-name') ?? $entry->name;
         $entry->description = $base->get('POST.page-desc') ?? $entry->description;
@@ -183,9 +184,9 @@ class SearchEntries
         // Saving and feedback
         try {
             $entry->save();
-            \lib\Responsivity::respond('Entry edited');
+            Responsivity::respond('Entry edited');
         } catch (Exception $e) {
-            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond($e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -194,16 +195,16 @@ class SearchEntries
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Entry not found', Responsivity::HTTP_Not_Found);
 
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         if ($entry->erase())
-            \lib\Responsivity::respond("Entry deleted");
+            Responsivity::respond("Entry deleted");
     }
 
     public function postSearchEntryRate(\Base $base)
@@ -212,18 +213,18 @@ class SearchEntries
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('entry.rate') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $entryId = $base->get('PARAMS.entry');
         $voteType = $base->get('POST.vote_type'); // 1 for upvote, -1 for downvote
 
         if (!in_array($voteType, [1, -1]))
-            return \lib\Responsivity::respond('Invalid vote type', \lib\Responsivity::HTTP_Bad_Request);
+            return Responsivity::respond('Invalid vote type', Responsivity::HTTP_Bad_Request);
 
         $entryModel = new \Models\Entry();
         $entry = $entryModel->findone(['id=?', $entryId]);
         if (!$entry)
-            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Entry not found', Responsivity::HTTP_Not_Found);
 
         $entryAuthor = $entry->author;
 
@@ -263,7 +264,7 @@ class SearchEntries
             $entry->save();
             $entryAuthor->save();
 
-            return \lib\Responsivity::respond([
+            return Responsivity::respond([
                 'message' => $message,
                 'upvotes' => $entry->upvotes,
                 'downvotes' => $entry->downvotes,
@@ -271,7 +272,7 @@ class SearchEntries
                 'user_vote' => $existingVote ? ($existingVote->dry() ? null : $existingVote->vote_type) : $voteType
             ]);
         } catch (Exception $e) {
-            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond($e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -326,13 +327,13 @@ class SearchEntries
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Entry not found', Responsivity::HTTP_Not_Found);
 
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         // loading current tags to a stack
         $tagStack = [];
@@ -356,9 +357,9 @@ class SearchEntries
         try {
             $entry->updated_at = date('Y-m-d H:i:s');
             $entry->save();
-            return \lib\Responsivity::respond('Tags pushed');
+            return Responsivity::respond('Tags pushed');
         } catch (Exception $e) {
-            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond($e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -367,7 +368,7 @@ class SearchEntries
         $model = new \Models\Entry();
         $entry = $model->findone(['id=?', $base->get('PARAMS.entry')]);
         if (!$entry)
-            return \lib\Responsivity::respond('Entry not found', \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond('Entry not found', Responsivity::HTTP_Not_Found);
 
         unset($model);
 
@@ -375,7 +376,7 @@ class SearchEntries
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if (!\lib\RibbitGuard::require_ownership_or_admin($entry->author))
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         // loading current tags to a stack
         $tagStack = [];
@@ -403,9 +404,9 @@ class SearchEntries
         try {
             $entry->updated_at = date('Y-m-d H:i:s');
             $entry->save();
-            return \lib\Responsivity::respond('Tags popped');
+            return Responsivity::respond('Tags popped');
         } catch (Exception $e) {
-            return \lib\Responsivity::respond($e->getMessage(), \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond($e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
     }
 
@@ -414,14 +415,14 @@ class SearchEntries
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
         if ($rbac->has_permission('user.report') == false)
-            return \lib\Responsivity::respond('Unauthorized', \lib\Responsivity::HTTP_Unauthorized);
+            return Responsivity::respond('Unauthorized', Responsivity::HTTP_Unauthorized);
 
         $reportModel = new \Models\Report();
         $entryModel = new \Models\Entry();
         
         $reported_entry = $entryModel->findone(['id=?', $base->get('PARAMS.entry')]);
         if(!$reported_entry)
-            return \lib\Responsivity::respond("Entry not found", \lib\Responsivity::HTTP_Not_Found);
+            return Responsivity::respond("Entry not found", Responsivity::HTTP_Not_Found);
 
         $reportModel->reporter = $user;
         $reportModel->entry_reported = $reported_entry;
@@ -429,9 +430,9 @@ class SearchEntries
         
         try {
             $reportModel->save();
-            return \lib\Responsivity::respond('Report created', \lib\Responsivity::HTTP_Created);
+            return Responsivity::respond('Report created', Responsivity::HTTP_Created);
         } catch (Exception $e) {
-            return \lib\Responsivity::respond('Failed to report', \lib\Responsivity::HTTP_Internal_Error);
+            return Responsivity::respond('Failed to report', Responsivity::HTTP_Internal_Error);
         }
     }
 }

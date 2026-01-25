@@ -71,6 +71,7 @@ class RibbitManager
 
             $permModel->name = $name;
             $permModel->display_name = $displayName;
+            $permModel->descriptiom = $description;
             $permModel->resource = $resource;
             $permModel->action = $action;
             $permModel->is_system_permission = $isSystemPermission;
