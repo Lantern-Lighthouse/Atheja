@@ -3,9 +3,9 @@
 namespace Controllers;
 
 use Exception;
-use lib\FavFet;
 use lib\URLser;
 use Responsivity\Responsivity;
+use FavFet\FavFet;
 
 class SearchEntries
 {
@@ -105,7 +105,7 @@ class SearchEntries
         $model->category = $base->get('POST.view-category') ?? 1;
 
         // Favicon setting
-        $model->favicon = FavFet::get_favicon_as_base64($base->get('POST.page-url'));
+        $model->favicon = FavFet::getFaviconAsBase64($base->get('POST.page-url'));
 
         // Rating setting
         $model->is_nsfw = $base->get('POST.is-nsfw') ?? $base->get('ATH.ASSUME_UNKNOWN_AS_NSFW');
