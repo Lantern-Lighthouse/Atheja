@@ -3,9 +3,9 @@
 namespace Controllers;
 
 use Exception;
-use lib\URLser;
 use Responsivity\Responsivity;
 use FavFet\FavFet;
+use URLser\URLser;
 
 class SearchEntries
 {
@@ -79,7 +79,7 @@ class SearchEntries
             else if ($model->findone(['url=?', $base->get('POST.page-url')]))
                 return Responsivity::respond('URL already found', Responsivity::HTTP_Bad_Request);
 
-            $pgName = URLser::get_page_name($base->get('POST.page-url'));
+            $pgName = URLser::getPageName($base->get('POST.page-url'));
             if ($pgName == false && !$base->get('POST.page-name'))
                 return Responsivity::respond("Error getting page title. Please insert the name manually.", Responsivity::HTTP_Bad_Request);
             else
@@ -137,7 +137,7 @@ class SearchEntries
             array_push($tagsOut, $tagID);
         }
 
-        foreach (array_map("strtolower", URLser::parse_domain($base->get('POST.page-url'))) as $tag) {
+        foreach (array_map("strtolower", URLser::parseDomain($base->get('POST.page-url'))) as $tag) {
             if (empty($tag))
                 continue;
             \Controllers\SearchTags::CreateTag(trim($tag));
