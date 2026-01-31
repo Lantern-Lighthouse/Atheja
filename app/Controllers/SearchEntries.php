@@ -80,9 +80,9 @@ class SearchEntries
                 return Responsivity::respond('URL already found', Responsivity::HTTP_Bad_Request);
 
             $pgName = URLser::getPageName($base->get('POST.page-url'));
-            if ($pgName == false && !$base->get('POST.page-name'))
+            if ($pgName == false && $base->get('POST.page-name') == null)
                 return Responsivity::respond("Error getting page title. Please insert the name manually.", Responsivity::HTTP_Bad_Request);
-            else
+            else if ($pgName != false && $base->get('POST.page-name') != null)
                 $pgName = $base->get('POST.page-name');
         } else {
             if (!$base->get('POST.page-name'))
@@ -410,7 +410,8 @@ class SearchEntries
         }
     }
 
-    public function getEntryReport (\Base $base) {
+    public function getEntryReport(\Base $base)
+    {
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
@@ -419,15 +420,15 @@ class SearchEntries
 
         $reportModel = new \Models\Report();
         $entryModel = new \Models\Entry();
-        
+
         $reported_entry = $entryModel->findone(['id=?', $base->get('PARAMS.entry')]);
-        if(!$reported_entry)
+        if (!$reported_entry)
             return Responsivity::respond("Entry not found", Responsivity::HTTP_Not_Found);
 
         $reportModel->reporter = $user;
         $reportModel->entry_reported = $reported_entry;
         $reportModel->reason = $base->get('POST.reason');
-        
+
         try {
             $reportModel->save();
             return Responsivity::respond('Report created', Responsivity::HTTP_Created);
