@@ -3,9 +3,9 @@
 namespace Controllers;
 
 use Exception;
-use lib\FavFet;
-use lib\URLser;
 use Responsivity\Responsivity;
+use FavFet\FavFet;
+use URLser\URLser;
 
 class SearchEntries
 {
@@ -79,10 +79,10 @@ class SearchEntries
             else if ($model->findone(['url=?', $base->get('POST.page-url')]))
                 return Responsivity::respond('URL already found', Responsivity::HTTP_Bad_Request);
 
-            $pgName = URLser::get_page_name($base->get('POST.page-url'));
-            if ($pgName == false && !$base->get('POST.page-name'))
+            $pgName = URLser::getPageName($base->get('POST.page-url'));
+            if ($pgName == false && $base->get('POST.page-name') == null)
                 return Responsivity::respond("Error getting page title. Please insert the name manually.", Responsivity::HTTP_Bad_Request);
-            else
+            else if ($pgName != false && $base->get('POST.page-name') != null)
                 $pgName = $base->get('POST.page-name');
         } else {
             if (!$base->get('POST.page-name'))
@@ -105,7 +105,7 @@ class SearchEntries
         $model->category = $base->get('POST.view-category') ?? 1;
 
         // Favicon setting
-        $model->favicon = FavFet::get_favicon_as_base64($base->get('POST.page-url'));
+        $model->favicon = FavFet::getFaviconAsBase64($base->get('POST.page-url'));
 
         // Rating setting
         $model->is_nsfw = $base->get('POST.is-nsfw') ?? $base->get('ATH.ASSUME_UNKNOWN_AS_NSFW');
@@ -137,7 +137,7 @@ class SearchEntries
             array_push($tagsOut, $tagID);
         }
 
-        foreach (array_map("strtolower", URLser::parse_domain($base->get('POST.page-url'))) as $tag) {
+        foreach (array_map("strtolower", URLser::parseDomain($base->get('POST.page-url'))) as $tag) {
             if (empty($tag))
                 continue;
             \Controllers\SearchTags::CreateTag(trim($tag));
@@ -410,7 +410,8 @@ class SearchEntries
         }
     }
 
-    public function getEntryReport (\Base $base) {
+    public function getEntryReport(\Base $base)
+    {
         $rbac = \lib\RibbitCore::get_instance($base);
         $user = VerifySessionToken($base);
         $rbac->set_current_user($user);
@@ -419,15 +420,15 @@ class SearchEntries
 
         $reportModel = new \Models\Report();
         $entryModel = new \Models\Entry();
-        
+
         $reported_entry = $entryModel->findone(['id=?', $base->get('PARAMS.entry')]);
-        if(!$reported_entry)
+        if (!$reported_entry)
             return Responsivity::respond("Entry not found", Responsivity::HTTP_Not_Found);
 
         $reportModel->reporter = $user;
         $reportModel->entry_reported = $reported_entry;
         $reportModel->reason = $base->get('POST.reason');
-        
+
         try {
             $reportModel->save();
             return Responsivity::respond('Report created', Responsivity::HTTP_Created);
