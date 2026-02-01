@@ -3,6 +3,8 @@
     "bcosca/fatfree-core": "^3.9",
     "ikkez/f3-cortex": "^1.7",
     "ikkez/f3-mailer": "^1.2",
-    "lantern-lighthouse/responsivity": "^1.1.0"
+    "lantern-lighthouse/responsivity": "^1.1.0",
+    "lantern-lighthouse/favfet": "^1.1.3",
+    "lantern-lighthouse/urlser":"^1.1.4"
   }
 }
