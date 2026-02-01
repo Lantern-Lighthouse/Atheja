@@ -3,8 +3,8 @@
 namespace Controllers;
 
 use Exception;
-use lib\Identicon;
 use Responsivity\Responsivity;
+use Identicon\Identicon;
 
 class User
 {
@@ -149,7 +149,7 @@ class User
             return Responsivity::respond("User not found", Responsivity::HTTP_Not_Found);
 
         try {
-            Identicon::output_image($user->username);
+            Identicon::outputImage($user->username);
         } catch (Exception $e) {
             return Responsivity::respond("Unable to display avatar: " . $e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
