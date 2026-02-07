@@ -55,7 +55,7 @@ class User
         $sessionModel->expires_at = $expiry;
         $sessionModel->save();
 
-        Responsivity::respond(['session_token' => $sessionToken, 'expires_at' => $expiry]);
+        Responsivity::respond(['session_token' => $sessionToken, 'expires_at' => $expiry, 'username' => $user->username, 'displayname' => $user->displayname]);
     }
 
     public function getUser(\Base $base)
@@ -110,7 +110,6 @@ class User
         $entry->displayname = $base->get('POST.displayname') ?? $entry->displayname;
         $entry->email = $base->get('POST.email') ?? $entry->email;
         $entry->password = $base->get('POST.password') ? password_hash($base->get('POST.password'), PASSWORD_DEFAULT) : $entry->password;
-        // $entry->is_admin = $base->get('POST.permissions') ?? $entry->is_admin;
 
         try {
             $entry->save();
@@ -165,15 +164,15 @@ class User
 
         $reportModel = new \Models\Report();
         $userModel = new \Models\User();
-        
+
         $reported_user = $userModel->findone(['username=?', $base->get('PARAMS.user')]);
-        if(!$reported_user)
+        if (!$reported_user)
             return Responsivity::respond("User not found", Responsivity::HTTP_Not_Found);
 
         $reportModel->reporter = $user;
         $reportModel->user_reported = $reported_user;
         $reportModel->reason = $base->get('POST.reason');
-        
+
         try {
             $reportModel->save();
             return Responsivity::respond('Report created', Responsivity::HTTP_Created);
