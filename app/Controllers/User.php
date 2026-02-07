@@ -55,7 +55,21 @@ class User
         $sessionModel->expires_at = $expiry;
         $sessionModel->save();
 
-        Responsivity::respond(['session_token' => $sessionToken, 'expires_at' => $expiry, 'username' => $user->username, 'displayname' => $user->displayname]);
+        if ($user->hasRole('guest')) {
+            $role = 'muted';
+        } else if ($user->hasRole('user')) {
+            $role = 'user';
+        } else if ($user->hasRole('moderator') || $user->hasRole('admin')) {
+            $role = 'moderator';
+        }
+
+        Responsivity::respond([
+            'session_token' => $sessionToken,
+            'expires_at' => $expiry,
+            'username' => $user->username,
+            'displayname' => $user->displayname,
+            ...(isset($role) ? ['role' => $role] : [])
+        ]);
     }
 
     public function getUser(\Base $base)
@@ -73,6 +87,14 @@ class User
             return Responsivity::respond('User not found', Responsivity::HTTP_Not_Found);
         }
 
+        if ($entry->hasRole('guest')) {
+            $role = 'muted';
+        } else if ($entry->hasRole('user')) {
+            $role = 'user';
+        } else if ($entry->hasRole('moderator') || $entry->hasRole('admin')) {
+            $role = 'moderator';
+        }
+
         $cast = [
             'id' => $entry->id,
             'username' => $entry->username,
@@ -80,6 +102,7 @@ class User
             'email' => $entry->email,
             'karma' => $entry->karma,
             'account_created_at' => $entry->account_created,
+            ...(isset($role) ? ['role' => $role] : [])
         ];
 
         Responsivity::respond($cast);
