@@ -3,8 +3,8 @@
 namespace Controllers;
 
 use Exception;
-use lib\Identicon;
 use Responsivity\Responsivity;
+use Identicon\Identicon;
 
 class User
 {
@@ -55,7 +55,21 @@ class User
         $sessionModel->expires_at = $expiry;
         $sessionModel->save();
 
-        Responsivity::respond(['session_token' => $sessionToken, 'expires_at' => $expiry]);
+        if ($user->hasRole('guest')) {
+            $role = 'muted';
+        } else if ($user->hasRole('user')) {
+            $role = 'user';
+        } else if ($user->hasRole('moderator') || $user->hasRole('admin')) {
+            $role = 'moderator';
+        }
+
+        Responsivity::respond([
+            'session_token' => $sessionToken,
+            'expires_at' => $expiry,
+            'username' => $user->username,
+            'displayname' => $user->displayname,
+            ...(isset($role) ? ['role' => $role] : [])
+        ]);
     }
 
     public function getUser(\Base $base)
@@ -73,6 +87,14 @@ class User
             return Responsivity::respond('User not found', Responsivity::HTTP_Not_Found);
         }
 
+        if ($entry->hasRole('guest')) {
+            $role = 'muted';
+        } else if ($entry->hasRole('user')) {
+            $role = 'user';
+        } else if ($entry->hasRole('moderator') || $entry->hasRole('admin')) {
+            $role = 'moderator';
+        }
+
         $cast = [
             'id' => $entry->id,
             'username' => $entry->username,
@@ -80,6 +102,7 @@ class User
             'email' => $entry->email,
             'karma' => $entry->karma,
             'account_created_at' => $entry->account_created,
+            ...(isset($role) ? ['role' => $role] : [])
         ];
 
         Responsivity::respond($cast);
@@ -110,7 +133,6 @@ class User
         $entry->displayname = $base->get('POST.displayname') ?? $entry->displayname;
         $entry->email = $base->get('POST.email') ?? $entry->email;
         $entry->password = $base->get('POST.password') ? password_hash($base->get('POST.password'), PASSWORD_DEFAULT) : $entry->password;
-        // $entry->is_admin = $base->get('POST.permissions') ?? $entry->is_admin;
 
         try {
             $entry->save();
@@ -149,7 +171,7 @@ class User
             return Responsivity::respond("User not found", Responsivity::HTTP_Not_Found);
 
         try {
-            Identicon::output_image($user->username);
+            Identicon::outputImage($user->username);
         } catch (Exception $e) {
             return Responsivity::respond("Unable to display avatar: " . $e->getMessage(), Responsivity::HTTP_Internal_Error);
         }
@@ -165,15 +187,15 @@ class User
 
         $reportModel = new \Models\Report();
         $userModel = new \Models\User();
-        
+
         $reported_user = $userModel->findone(['username=?', $base->get('PARAMS.user')]);
-        if(!$reported_user)
+        if (!$reported_user)
             return Responsivity::respond("User not found", Responsivity::HTTP_Not_Found);
 
         $reportModel->reporter = $user;
         $reportModel->user_reported = $reported_user;
         $reportModel->reason = $base->get('POST.reason');
-        
+
         try {
             $reportModel->save();
             return Responsivity::respond('Report created', Responsivity::HTTP_Created);
